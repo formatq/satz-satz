@@ -1,0 +1,4911 @@
+{
+  "id": "tuer",
+  "label": "die Tür",
+  "dimensions": [
+    {
+      "id": "subject",
+      "label": "Subjekt",
+      "values": [
+        "der Mann",
+        "die Frau",
+        "das Kind",
+        "die Kinder"
+      ]
+    },
+    {
+      "id": "verb",
+      "label": "Verb",
+      "values": [
+        "aufmachen",
+        "zumachen",
+        "öffnen",
+        "schließen",
+        "reparieren"
+      ]
+    },
+    {
+      "id": "tense",
+      "label": "Zeitform",
+      "values": [
+        "Präsens",
+        "Präteritum",
+        "Perfekt",
+        "Futur I"
+      ]
+    },
+    {
+      "id": "voice",
+      "label": "Genus Verbi",
+      "values": [
+        "Aktiv",
+        "Passiv"
+      ]
+    }
+  ],
+  "variants": {
+    "der Mann|aufmachen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "macht",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "auf",
+          "prefix"
+        ]
+      ],
+      "ru": "Мужчина открывает дверь."
+    },
+    "der Mann|aufmachen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь открывается мужчиной."
+    },
+    "der Mann|aufmachen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "machte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "auf",
+          "prefix"
+        ]
+      ],
+      "ru": "Мужчина открыл дверь."
+    },
+    "der Mann|aufmachen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была открыта мужчиной."
+    },
+    "der Mann|aufmachen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина открыл дверь."
+    },
+    "der Mann|aufmachen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была открыта мужчиной."
+    },
+    "der Mann|aufmachen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "aufmachen",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина откроет дверь."
+    },
+    "der Mann|aufmachen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет открыта мужчиной."
+    },
+    "der Mann|zumachen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "macht",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zu",
+          "prefix"
+        ]
+      ],
+      "ru": "Мужчина закрывает дверь."
+    },
+    "der Mann|zumachen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь закрывается мужчиной."
+    },
+    "der Mann|zumachen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "machte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zu",
+          "prefix"
+        ]
+      ],
+      "ru": "Мужчина закрыл дверь."
+    },
+    "der Mann|zumachen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была закрыта мужчиной."
+    },
+    "der Mann|zumachen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина закрыл дверь."
+    },
+    "der Mann|zumachen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была закрыта мужчиной."
+    },
+    "der Mann|zumachen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zumachen",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина закроет дверь."
+    },
+    "der Mann|zumachen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет закрыта мужчиной."
+    },
+    "der Mann|öffnen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "öffnet",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Мужчина открывает дверь."
+    },
+    "der Mann|öffnen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь открывается мужчиной."
+    },
+    "der Mann|öffnen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "öffnete",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Мужчина открыл дверь."
+    },
+    "der Mann|öffnen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была открыта мужчиной."
+    },
+    "der Mann|öffnen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина открыл дверь."
+    },
+    "der Mann|öffnen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была открыта мужчиной."
+    },
+    "der Mann|öffnen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "öffnen",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина откроет дверь."
+    },
+    "der Mann|öffnen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет открыта мужчиной."
+    },
+    "der Mann|schließen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "schließt",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Мужчина закрывает дверь."
+    },
+    "der Mann|schließen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь закрывается мужчиной."
+    },
+    "der Mann|schließen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "schloss",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Мужчина закрыл дверь."
+    },
+    "der Mann|schließen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была закрыта мужчиной."
+    },
+    "der Mann|schließen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина закрыл дверь."
+    },
+    "der Mann|schließen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была закрыта мужчиной."
+    },
+    "der Mann|schließen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "schließen",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина закроет дверь."
+    },
+    "der Mann|schließen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет закрыта мужчиной."
+    },
+    "der Mann|reparieren|Präsens|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Мужчина ремонтирует дверь."
+    },
+    "der Mann|reparieren|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь ремонтируется мужчиной."
+    },
+    "der Mann|reparieren|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "reparierte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Мужчина отремонтировал дверь."
+    },
+    "der Mann|reparieren|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была отремонтирована мужчиной."
+    },
+    "der Mann|reparieren|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина отремонтировал дверь."
+    },
+    "der Mann|reparieren|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была отремонтирована мужчиной."
+    },
+    "der Mann|reparieren|Futur I|Aktiv": {
+      "de": [
+        [
+          "Der",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "reparieren",
+          "verb"
+        ]
+      ],
+      "ru": "Мужчина отремонтирует дверь."
+    },
+    "der Mann|reparieren|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Mann",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет отремонтирована мужчиной."
+    },
+    "die Frau|aufmachen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "macht",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "auf",
+          "prefix"
+        ]
+      ],
+      "ru": "Женщина открывает дверь."
+    },
+    "die Frau|aufmachen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь открывается женщиной."
+    },
+    "die Frau|aufmachen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "machte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "auf",
+          "prefix"
+        ]
+      ],
+      "ru": "Женщина открыла дверь."
+    },
+    "die Frau|aufmachen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была открыта женщиной."
+    },
+    "die Frau|aufmachen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина открыла дверь."
+    },
+    "die Frau|aufmachen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была открыта женщиной."
+    },
+    "die Frau|aufmachen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "aufmachen",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина откроет дверь."
+    },
+    "die Frau|aufmachen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет открыта женщиной."
+    },
+    "die Frau|zumachen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "macht",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zu",
+          "prefix"
+        ]
+      ],
+      "ru": "Женщина закрывает дверь."
+    },
+    "die Frau|zumachen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь закрывается женщиной."
+    },
+    "die Frau|zumachen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "machte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zu",
+          "prefix"
+        ]
+      ],
+      "ru": "Женщина закрыла дверь."
+    },
+    "die Frau|zumachen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была закрыта женщиной."
+    },
+    "die Frau|zumachen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина закрыла дверь."
+    },
+    "die Frau|zumachen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была закрыта женщиной."
+    },
+    "die Frau|zumachen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zumachen",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина закроет дверь."
+    },
+    "die Frau|zumachen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет закрыта женщиной."
+    },
+    "die Frau|öffnen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "öffnet",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Женщина открывает дверь."
+    },
+    "die Frau|öffnen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь открывается женщиной."
+    },
+    "die Frau|öffnen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "öffnete",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Женщина открыла дверь."
+    },
+    "die Frau|öffnen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была открыта женщиной."
+    },
+    "die Frau|öffnen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина открыла дверь."
+    },
+    "die Frau|öffnen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была открыта женщиной."
+    },
+    "die Frau|öffnen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "öffnen",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина откроет дверь."
+    },
+    "die Frau|öffnen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет открыта женщиной."
+    },
+    "die Frau|schließen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "schließt",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Женщина закрывает дверь."
+    },
+    "die Frau|schließen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь закрывается женщиной."
+    },
+    "die Frau|schließen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "schloss",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Женщина закрыла дверь."
+    },
+    "die Frau|schließen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была закрыта женщиной."
+    },
+    "die Frau|schließen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина закрыла дверь."
+    },
+    "die Frau|schließen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была закрыта женщиной."
+    },
+    "die Frau|schließen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "schließen",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина закроет дверь."
+    },
+    "die Frau|schließen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет закрыта женщиной."
+    },
+    "die Frau|reparieren|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Женщина ремонтирует дверь."
+    },
+    "die Frau|reparieren|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь ремонтируется женщиной."
+    },
+    "die Frau|reparieren|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "reparierte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Женщина отремонтировала дверь."
+    },
+    "die Frau|reparieren|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была отремонтирована женщиной."
+    },
+    "die Frau|reparieren|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина отремонтировала дверь."
+    },
+    "die Frau|reparieren|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была отремонтирована женщиной."
+    },
+    "die Frau|reparieren|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "reparieren",
+          "verb"
+        ]
+      ],
+      "ru": "Женщина отремонтирует дверь."
+    },
+    "die Frau|reparieren|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "der",
+          "art"
+        ],
+        [
+          "Frau",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет отремонтирована женщиной."
+    },
+    "das Kind|aufmachen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "macht",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "auf",
+          "prefix"
+        ]
+      ],
+      "ru": "Ребёнок открывает дверь."
+    },
+    "das Kind|aufmachen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь открывается ребёнком."
+    },
+    "das Kind|aufmachen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "machte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "auf",
+          "prefix"
+        ]
+      ],
+      "ru": "Ребёнок открыл дверь."
+    },
+    "das Kind|aufmachen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была открыта ребёнком."
+    },
+    "das Kind|aufmachen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок открыл дверь."
+    },
+    "das Kind|aufmachen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была открыта ребёнком."
+    },
+    "das Kind|aufmachen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "aufmachen",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок откроет дверь."
+    },
+    "das Kind|aufmachen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет открыта ребёнком."
+    },
+    "das Kind|zumachen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "macht",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zu",
+          "prefix"
+        ]
+      ],
+      "ru": "Ребёнок закрывает дверь."
+    },
+    "das Kind|zumachen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь закрывается ребёнком."
+    },
+    "das Kind|zumachen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "machte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zu",
+          "prefix"
+        ]
+      ],
+      "ru": "Ребёнок закрыл дверь."
+    },
+    "das Kind|zumachen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была закрыта ребёнком."
+    },
+    "das Kind|zumachen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок закрыл дверь."
+    },
+    "das Kind|zumachen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была закрыта ребёнком."
+    },
+    "das Kind|zumachen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zumachen",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок закроет дверь."
+    },
+    "das Kind|zumachen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет закрыта ребёнком."
+    },
+    "das Kind|öffnen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "öffnet",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Ребёнок открывает дверь."
+    },
+    "das Kind|öffnen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь открывается ребёнком."
+    },
+    "das Kind|öffnen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "öffnete",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Ребёнок открыл дверь."
+    },
+    "das Kind|öffnen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была открыта ребёнком."
+    },
+    "das Kind|öffnen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок открыл дверь."
+    },
+    "das Kind|öffnen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была открыта ребёнком."
+    },
+    "das Kind|öffnen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "öffnen",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок откроет дверь."
+    },
+    "das Kind|öffnen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет открыта ребёнком."
+    },
+    "das Kind|schließen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "schließt",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Ребёнок закрывает дверь."
+    },
+    "das Kind|schließen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь закрывается ребёнком."
+    },
+    "das Kind|schließen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "schloss",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Ребёнок закрыл дверь."
+    },
+    "das Kind|schließen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была закрыта ребёнком."
+    },
+    "das Kind|schließen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок закрыл дверь."
+    },
+    "das Kind|schließen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была закрыта ребёнком."
+    },
+    "das Kind|schließen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "schließen",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок закроет дверь."
+    },
+    "das Kind|schließen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет закрыта ребёнком."
+    },
+    "das Kind|reparieren|Präsens|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Ребёнок ремонтирует дверь."
+    },
+    "das Kind|reparieren|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь ремонтируется ребёнком."
+    },
+    "das Kind|reparieren|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "reparierte",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Ребёнок отремонтировал дверь."
+    },
+    "das Kind|reparieren|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была отремонтирована ребёнком."
+    },
+    "das Kind|reparieren|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "hat",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок отремонтировал дверь."
+    },
+    "das Kind|reparieren|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была отремонтирована ребёнком."
+    },
+    "das Kind|reparieren|Futur I|Aktiv": {
+      "de": [
+        [
+          "Das",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "reparieren",
+          "verb"
+        ]
+      ],
+      "ru": "Ребёнок отремонтирует дверь."
+    },
+    "das Kind|reparieren|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "vom",
+          "art"
+        ],
+        [
+          "Kind",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет отремонтирована ребёнком."
+    },
+    "die Kinder|aufmachen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "machen",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "auf",
+          "prefix"
+        ]
+      ],
+      "ru": "Дети открывают дверь."
+    },
+    "die Kinder|aufmachen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь открывается детьми."
+    },
+    "die Kinder|aufmachen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "machten",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "auf",
+          "prefix"
+        ]
+      ],
+      "ru": "Дети открыли дверь."
+    },
+    "die Kinder|aufmachen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была открыта детьми."
+    },
+    "die Kinder|aufmachen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "haben",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дети открыли дверь."
+    },
+    "die Kinder|aufmachen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была открыта детьми."
+    },
+    "die Kinder|aufmachen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "werden",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "aufmachen",
+          "verb"
+        ]
+      ],
+      "ru": "Дети откроют дверь."
+    },
+    "die Kinder|aufmachen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "aufgemacht",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет открыта детьми."
+    },
+    "die Kinder|zumachen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "machen",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zu",
+          "prefix"
+        ]
+      ],
+      "ru": "Дети закрывают дверь."
+    },
+    "die Kinder|zumachen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь закрывается детьми."
+    },
+    "die Kinder|zumachen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "machten",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zu",
+          "prefix"
+        ]
+      ],
+      "ru": "Дети закрыли дверь."
+    },
+    "die Kinder|zumachen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была закрыта детьми."
+    },
+    "die Kinder|zumachen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "haben",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ]
+      ],
+      "ru": "Дети закрыли дверь."
+    },
+    "die Kinder|zumachen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была закрыта детьми."
+    },
+    "die Kinder|zumachen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "werden",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "zumachen",
+          "verb"
+        ]
+      ],
+      "ru": "Дети закроют дверь."
+    },
+    "die Kinder|zumachen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "zugemacht",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет закрыта детьми."
+    },
+    "die Kinder|öffnen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "öffnen",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Дети открывают дверь."
+    },
+    "die Kinder|öffnen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь открывается детьми."
+    },
+    "die Kinder|öffnen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "öffneten",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Дети открыли дверь."
+    },
+    "die Kinder|öffnen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была открыта детьми."
+    },
+    "die Kinder|öffnen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "haben",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ]
+      ],
+      "ru": "Дети открыли дверь."
+    },
+    "die Kinder|öffnen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была открыта детьми."
+    },
+    "die Kinder|öffnen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "werden",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "öffnen",
+          "verb"
+        ]
+      ],
+      "ru": "Дети откроют дверь."
+    },
+    "die Kinder|öffnen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "geöffnet",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет открыта детьми."
+    },
+    "die Kinder|schließen|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "schließen",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Дети закрывают дверь."
+    },
+    "die Kinder|schließen|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь закрывается детьми."
+    },
+    "die Kinder|schließen|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "schlossen",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Дети закрыли дверь."
+    },
+    "die Kinder|schließen|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была закрыта детьми."
+    },
+    "die Kinder|schließen|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "haben",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ]
+      ],
+      "ru": "Дети закрыли дверь."
+    },
+    "die Kinder|schließen|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была закрыта детьми."
+    },
+    "die Kinder|schließen|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "werden",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "schließen",
+          "verb"
+        ]
+      ],
+      "ru": "Дети закроют дверь."
+    },
+    "die Kinder|schließen|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "geschlossen",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет закрыта детьми."
+    },
+    "die Kinder|reparieren|Präsens|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "reparieren",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Дети ремонтируют дверь."
+    },
+    "die Kinder|reparieren|Präsens|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь ремонтируется детьми."
+    },
+    "die Kinder|reparieren|Präteritum|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "reparierten",
+          "verb"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ]
+      ],
+      "ru": "Дети отремонтировали дверь."
+    },
+    "die Kinder|reparieren|Präteritum|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wurde",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дверь была отремонтирована детьми."
+    },
+    "die Kinder|reparieren|Perfekt|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "haben",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ]
+      ],
+      "ru": "Дети отремонтировали дверь."
+    },
+    "die Kinder|reparieren|Perfekt|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "ist",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "worden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь была отремонтирована детьми."
+    },
+    "die Kinder|reparieren|Futur I|Aktiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Kinder",
+          "subj"
+        ],
+        [
+          "werden",
+          "aux"
+        ],
+        [
+          "die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "reparieren",
+          "verb"
+        ]
+      ],
+      "ru": "Дети отремонтируют дверь."
+    },
+    "die Kinder|reparieren|Futur I|Passiv": {
+      "de": [
+        [
+          "Die",
+          "art"
+        ],
+        [
+          "Tür",
+          "obj"
+        ],
+        [
+          "wird",
+          "aux"
+        ],
+        [
+          "von",
+          "art"
+        ],
+        [
+          "den",
+          "art"
+        ],
+        [
+          "Kindern",
+          "subj"
+        ],
+        [
+          "repariert",
+          "verb"
+        ],
+        [
+          "werden",
+          "aux"
+        ]
+      ],
+      "ru": "Дверь будет отремонтирована детьми."
+    }
+  }
+}

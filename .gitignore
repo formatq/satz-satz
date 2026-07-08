@@ -1,0 +1,5 @@
+node_modules/
+dist/
+.idea/
+*.iml
+.claude/settings.local.json
