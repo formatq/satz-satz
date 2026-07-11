@@ -10,12 +10,15 @@ import type { Selection, SentenceVariant, Toggles, Token } from '../lib/types'
 
 type RuGender = 'm' | 'f' | 'n' | 'pl'
 
+// Conjugation index into the six-row paradigm: ich·du·er·wir·ihr·sie.
+type Person = 0 | 1 | 2 | 3 | 4 | 5
+
 interface Subject {
   de: string
   von: string
   pronoun: string
   vonPronoun: string
-  plural: boolean
+  person: Person
   ru: string
   ruPronoun: string
   ruGender: RuGender
@@ -25,38 +28,65 @@ interface Subject {
 
 const SUBJECTS: Subject[] = [
   {
-    de: 'der Mann', von: 'vom Mann', pronoun: 'er', vonPronoun: 'von ihm', plural: false,
+    de: 'der Mann', von: 'vom Mann', pronoun: 'er', vonPronoun: 'von ihm', person: 2,
     ru: 'мужчина', ruPronoun: 'он', ruGender: 'm', ruInstr: 'мужчиной', ruInstrPronoun: 'им',
   },
   {
-    de: 'die Frau', von: 'von der Frau', pronoun: 'sie', vonPronoun: 'von ihr', plural: false,
+    de: 'die Frau', von: 'von der Frau', pronoun: 'sie', vonPronoun: 'von ihr', person: 2,
     ru: 'женщина', ruPronoun: 'она', ruGender: 'f', ruInstr: 'женщиной', ruInstrPronoun: 'ей',
   },
   {
     // Russian "ребёнок" is masculine, so the pronoun is "он" even though German uses "es".
-    de: 'das Kind', von: 'vom Kind', pronoun: 'es', vonPronoun: 'von ihm', plural: false,
+    de: 'das Kind', von: 'vom Kind', pronoun: 'es', vonPronoun: 'von ihm', person: 2,
     ru: 'ребёнок', ruPronoun: 'он', ruGender: 'm', ruInstr: 'ребёнком', ruInstrPronoun: 'им',
   },
   {
-    de: 'die Kinder', von: 'von den Kindern', pronoun: 'sie', vonPronoun: 'von ihnen', plural: true,
+    de: 'die Kinder', von: 'von den Kindern', pronoun: 'sie', vonPronoun: 'von ihnen', person: 5,
     ru: 'дети', ruPronoun: 'они', ruGender: 'pl', ruInstr: 'детьми', ruInstrPronoun: 'ими',
+  },
+]
+
+// Personal pronouns as subjects. They reuse the Subject shape, so every slot
+// (agreement, von-phrase, Russian) works unchanged; `pronoun` = `de`.
+const PERSONS: Subject[] = [
+  {
+    de: 'ich', von: 'von mir', pronoun: 'ich', vonPronoun: 'von mir', person: 0,
+    ru: 'я', ruPronoun: 'я', ruGender: 'm', ruInstr: 'мной', ruInstrPronoun: 'мной',
+  },
+  {
+    de: 'du', von: 'von dir', pronoun: 'du', vonPronoun: 'von dir', person: 1,
+    ru: 'ты', ruPronoun: 'ты', ruGender: 'm', ruInstr: 'тобой', ruInstrPronoun: 'тобой',
+  },
+  {
+    de: 'er', von: 'von ihm', pronoun: 'er', vonPronoun: 'von ihm', person: 2,
+    ru: 'он', ruPronoun: 'он', ruGender: 'm', ruInstr: 'им', ruInstrPronoun: 'им',
+  },
+  {
+    de: 'wir', von: 'von uns', pronoun: 'wir', vonPronoun: 'von uns', person: 3,
+    ru: 'мы', ruPronoun: 'мы', ruGender: 'pl', ruInstr: 'нами', ruInstrPronoun: 'нами',
+  },
+  {
+    de: 'ihr', von: 'von euch', pronoun: 'ihr', vonPronoun: 'von euch', person: 4,
+    ru: 'вы', ruPronoun: 'вы', ruGender: 'pl', ruInstr: 'вами', ruInstrPronoun: 'вами',
+  },
+  {
+    de: 'sie', von: 'von ihnen', pronoun: 'sie', vonPronoun: 'von ihnen', person: 5,
+    ru: 'они', ruPronoun: 'они', ruGender: 'pl', ruInstr: 'ими', ruInstrPronoun: 'ими',
   },
 ]
 
 interface Verb {
   lemma: string
   sep: string | null
-  praesens3: string
-  praesensPl: string
-  praet3: string
-  praetPl: string
+  /** Six finite forms each, indexed by Person: ich·du·er·wir·ihr·sie. */
+  praesens: string[]
+  praeteritum: string[]
   partizip2: string
   ru: {
-    pres3: string
-    presPl: string
+    /** Six forms indexed by Person: я·ты·он·мы·вы·они. */
+    pres: string[]
+    fut: string[]
     past: Record<RuGender, string>
-    fut3: string
-    futPl: string
     passivPres: string
     passivPart: Record<'m' | 'f' | 'n', string>
   }
@@ -66,57 +96,61 @@ interface Verb {
 const VERBS: Verb[] = [
   {
     lemma: 'öffnen', sep: null,
-    praesens3: 'öffnet', praesensPl: 'öffnen',
-    praet3: 'öffnete', praetPl: 'öffneten',
+    praesens: ['öffne', 'öffnest', 'öffnet', 'öffnen', 'öffnet', 'öffnen'],
+    praeteritum: ['öffnete', 'öffnetest', 'öffnete', 'öffneten', 'öffnetet', 'öffneten'],
     partizip2: 'geöffnet',
     ru: {
-      pres3: 'открывает', presPl: 'открывают',
+      pres: ['открываю', 'открываешь', 'открывает', 'открываем', 'открываете', 'открывают'],
+      fut: ['открою', 'откроешь', 'откроет', 'откроем', 'откроете', 'откроют'],
       past: { m: 'открыл', f: 'открыла', n: 'открыло', pl: 'открыли' },
-      fut3: 'откроет', futPl: 'откроют',
       passivPres: 'открывается',
       passivPart: { m: 'открыт', f: 'открыта', n: 'открыто' },
     },
   },
   {
     lemma: 'reparieren', sep: null,
-    praesens3: 'repariert', praesensPl: 'reparieren',
-    praet3: 'reparierte', praetPl: 'reparierten',
+    praesens: ['repariere', 'reparierst', 'repariert', 'reparieren', 'repariert', 'reparieren'],
+    praeteritum: ['reparierte', 'repariertest', 'reparierte', 'reparierten', 'repariertet', 'reparierten'],
     partizip2: 'repariert',
     ru: {
-      pres3: 'ремонтирует', presPl: 'ремонтируют',
+      pres: ['ремонтирую', 'ремонтируешь', 'ремонтирует', 'ремонтируем', 'ремонтируете', 'ремонтируют'],
+      fut: ['отремонтирую', 'отремонтируешь', 'отремонтирует', 'отремонтируем', 'отремонтируете', 'отремонтируют'],
       past: { m: 'отремонтировал', f: 'отремонтировала', n: 'отремонтировало', pl: 'отремонтировали' },
-      fut3: 'отремонтирует', futPl: 'отремонтируют',
       passivPres: 'ремонтируется',
       passivPart: { m: 'отремонтирован', f: 'отремонтирована', n: 'отремонтировано' },
     },
   },
   {
     lemma: 'aufmachen', sep: 'auf',
-    praesens3: 'macht', praesensPl: 'machen',
-    praet3: 'machte', praetPl: 'machten',
+    praesens: ['mache', 'machst', 'macht', 'machen', 'macht', 'machen'],
+    praeteritum: ['machte', 'machtest', 'machte', 'machten', 'machtet', 'machten'],
     partizip2: 'aufgemacht',
     ru: {
-      pres3: 'открывает', presPl: 'открывают',
+      pres: ['открываю', 'открываешь', 'открывает', 'открываем', 'открываете', 'открывают'],
+      fut: ['открою', 'откроешь', 'откроет', 'откроем', 'откроете', 'откроют'],
       past: { m: 'открыл', f: 'открыла', n: 'открыло', pl: 'открыли' },
-      fut3: 'откроет', futPl: 'откроют',
       passivPres: 'открывается',
       passivPart: { m: 'открыт', f: 'открыта', n: 'открыто' },
     },
   },
   {
     lemma: 'zumachen', sep: 'zu',
-    praesens3: 'macht', praesensPl: 'machen',
-    praet3: 'machte', praetPl: 'machten',
+    praesens: ['mache', 'machst', 'macht', 'machen', 'macht', 'machen'],
+    praeteritum: ['machte', 'machtest', 'machte', 'machten', 'machtet', 'machten'],
     partizip2: 'zugemacht',
     ru: {
-      pres3: 'закрывает', presPl: 'закрывают',
+      pres: ['закрываю', 'закрываешь', 'закрывает', 'закрываем', 'закрываете', 'закрывают'],
+      fut: ['закрою', 'закроешь', 'закроет', 'закроем', 'закроете', 'закроют'],
       past: { m: 'закрыл', f: 'закрыла', n: 'закрыло', pl: 'закрыли' },
-      fut3: 'закроет', futPl: 'закроют',
       passivPres: 'закрывается',
       passivPart: { m: 'закрыт', f: 'закрыта', n: 'закрыто' },
     },
   },
 ]
+
+/** Auxiliary paradigms, indexed by Person. */
+const HABEN = ['habe', 'hast', 'hat', 'haben', 'habt', 'haben']
+const WERDEN = ['werde', 'wirst', 'wird', 'werden', 'werdet', 'werden']
 
 interface Obj {
   de: string
@@ -179,10 +213,10 @@ type Satzart = (typeof SATZARTEN)[number]
 // ---------------------------------------------------------------------------
 // Dial configuration (consumed by the UI and the reducer)
 
-export const DIAL = { subject: 0, verb: 1, object: 2, adjective: 3, tense: 4, voice: 5, satzart: 6 } as const
+export const DIAL = { subject: 0, person: 1, verb: 2, object: 3, adjective: 4, tense: 5, voice: 6, satzart: 7 } as const
 
 export interface DialSpec {
-  id: 'subject' | 'verb' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart'
+  id: 'subject' | 'person' | 'verb' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart'
   label: string
   values: string[]
   /** Toggle that enables/disables the whole dial (checkbox inline with the label). */
@@ -196,6 +230,7 @@ export const DIALS: DialSpec[] = [
     id: 'subject', label: 'Subjekt', values: SUBJECTS.map((s) => s.de),
     features: [{ key: 'subjectPronoun', label: 'Pronomen' }],
   },
+  { id: 'person', label: 'Person', values: PERSONS.map((p) => p.de), enable: 'person' },
   {
     id: 'verb', label: 'Verb', values: VERBS.map((v) => v.lemma),
     features: [{ key: 'separable', label: 'trennbar' }],
@@ -222,6 +257,7 @@ export function initialSelection(): Selection {
       tenses: true,
       voice: true,
       satzart: false,
+      person: false,
       adjective: false,
       separable: true,
       indefinite: false,
@@ -233,6 +269,11 @@ export function initialSelection(): Selection {
 
 export function isDialDisabled(dial: number, toggles: Toggles): boolean {
   switch (DIALS[dial].id) {
+    // Exactly one of Subjekt/Person drives the sentence at a time.
+    case 'subject':
+      return toggles.person
+    case 'person':
+      return !toggles.person
     case 'adjective':
       // A pronoun object cannot carry an adjective ("die alte sie" is not a thing).
       return !toggles.adjective || toggles.objectPronoun
@@ -301,15 +342,15 @@ const subjPhrase: Slot = (c) => (c.subjPron ? [[c.subject.pronoun, 'subj']] : no
 const objPhrase: Slot = (c) => objectTokens(c, 'acc')
 const objAsSubject: Slot = (c) => objectTokens(c, 'nom')
 const vonPhrase: Slot = (c) => nounPhrase(c.subjPron ? c.subject.vonPronoun : c.subject.von, 'subj')
-const finPraesens: Slot = (c) => [[c.subject.plural ? c.verb.praesensPl : c.verb.praesens3, 'verb']]
-const finPraeteritum: Slot = (c) => [[c.subject.plural ? c.verb.praetPl : c.verb.praet3, 'verb']]
+const finPraesens: Slot = (c) => [[c.verb.praesens[c.subject.person], 'verb']]
+const finPraeteritum: Slot = (c) => [[c.verb.praeteritum[c.subject.person], 'verb']]
 // Verb-final position (Nebensatz): a separable verb fuses back onto its
 // finite form — "macht … auf" becomes "… aufmacht".
 const finPraesensFused: Slot = (c) => [
-  [(c.verb.sep ?? '') + (c.subject.plural ? c.verb.praesensPl : c.verb.praesens3), 'verb'],
+  [(c.verb.sep ?? '') + c.verb.praesens[c.subject.person], 'verb'],
 ]
 const finPraeteritumFused: Slot = (c) => [
-  [(c.verb.sep ?? '') + (c.subject.plural ? c.verb.praetPl : c.verb.praet3), 'verb'],
+  [(c.verb.sep ?? '') + c.verb.praeteritum[c.subject.person], 'verb'],
 ]
 const weil: Slot = () => [
   ['…,', 'other'],
@@ -318,8 +359,8 @@ const weil: Slot = () => [
 const prefix: Slot = (c) => (c.verb.sep ? [[c.verb.sep, 'prefix']] : [])
 const partizip2: Slot = (c) => [[c.verb.partizip2, 'verb']]
 const infinitiv: Slot = (c) => [[c.verb.lemma, 'verb']]
-const auxHaben: Slot = (c) => [[c.subject.plural ? 'haben' : 'hat', 'aux']]
-const auxWerden: Slot = (c) => [[c.subject.plural ? 'werden' : 'wird', 'aux']]
+const auxHaben: Slot = (c) => [[HABEN[c.subject.person], 'aux']]
+const auxWerden: Slot = (c) => [[WERDEN[c.subject.person], 'aux']]
 // Passiv finite verbs agree with the object (always singular here), not the agent.
 const wirdSg: Slot = () => [['wird', 'aux']]
 const wurdeSg: Slot = () => [['wurde', 'aux']]
@@ -375,12 +416,12 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
       : `${adjective ? ruAdjective(adjective, object.ruGender, 'acc') + ' ' : ''}${object.ruAcc}`
     switch (tense) {
       case 'Präsens':
-        return `${subj} ${subject.plural ? verb.ru.presPl : verb.ru.pres3} ${obj}`
+        return `${subj} ${verb.ru.pres[subject.person]} ${obj}`
       case 'Präteritum':
       case 'Perfekt':
         return `${subj} ${verb.ru.past[subject.ruGender]} ${obj}`
       case 'Futur I':
-        return `${subj} ${subject.plural ? verb.ru.futPl : verb.ru.fut3} ${obj}`
+        return `${subj} ${verb.ru.fut[subject.person]} ${obj}`
     }
   }
   const objSubj = c.objPron
@@ -421,7 +462,7 @@ function capitalize(text: string): string {
 export function compose(sel: Selection): SentenceVariant {
   const { toggles } = sel
   const ctx: Ctx = {
-    subject: SUBJECTS[sel.indices[DIAL.subject]],
+    subject: toggles.person ? PERSONS[sel.indices[DIAL.person]] : SUBJECTS[sel.indices[DIAL.subject]],
     verb: VERBS[sel.indices[DIAL.verb]],
     object: OBJECTS[sel.indices[DIAL.object]],
     adjective: toggles.adjective && !toggles.objectPronoun ? ADJECTIVES[sel.indices[DIAL.adjective]] : null,

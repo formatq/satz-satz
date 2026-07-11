@@ -17,6 +17,8 @@ export interface Toggles {
   voice: boolean
   /** Off → Hauptsatz only, sentence-type dial disabled. */
   satzart: boolean
+  /** On → the Person dial (ich/du/er/…) drives the subject; the Subjekt dial is disabled. */
+  person: boolean
   /** Off → no adjective in the object phrase, adjective dial disabled. */
   adjective: boolean
   /** Off → separable verbs unavailable in the verb dial. */

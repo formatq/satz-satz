@@ -74,8 +74,11 @@ export default function App() {
             featureToggles={dial.features?.map((feature) => ({
               label: feature.label,
               checked: toggles[feature.key],
-              // An article makes no sense on a pronoun object.
-              disabled: feature.key === 'indefinite' && toggles.objectPronoun,
+              // Locked along with the dial (Subjekt while Person drives), and
+              // an article makes no sense on a pronoun object.
+              disabled:
+                isDialDisabled(i, toggles) ||
+                (feature.key === 'indefinite' && toggles.objectPronoun),
               onChange: () => dispatch({ type: 'toggle', key: feature.key }),
             }))}
             onSelect={(index) => dispatch({ type: 'select', dial: i, index })}

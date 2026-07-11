@@ -94,6 +94,22 @@ describe('reducer', () => {
     expect(state.history[0].de).toBe('Der Mann öffnet die Tür.')
   })
 
+  it('enabling Person swaps the driving dial and moves the active marker', () => {
+    const state = run(
+      { type: 'activate', dial: DIAL.subject },
+      { type: 'toggle', key: 'person' },
+      { type: 'select', dial: DIAL.person, index: 3 },
+    )
+    expect(state.active).toBe(DIAL.person)
+    expect(state.history[0].de).toBe('Wir öffnen die Tür.')
+    // Subject dial is locked while Person drives.
+    const blocked = reduce(state, { type: 'select', dial: DIAL.subject, index: 1 })
+    expect(blocked.history[0].de).toBe('Wir öffnen die Tür.')
+    const off = reduce(state, { type: 'toggle', key: 'person' })
+    expect(off.selection.indices[DIAL.person]).toBe(0)
+    expect(off.history[0].de).toBe('Der Mann öffnet die Tür.')
+  })
+
   it('enabling Satzart and picking Frage rewrites the sentence with a question mark', () => {
     const state = run(
       { type: 'toggle', key: 'satzart' },

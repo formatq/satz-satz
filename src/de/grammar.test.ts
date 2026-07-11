@@ -10,9 +10,11 @@ import { compose, DIAL, initialSelection } from './grammar'
 // tense:   0 Präsens · 1 Präteritum · 2 Perfekt · 3 Futur I
 // voice:   0 Aktiv · 1 Passiv
 // satzart: 0 Hauptsatz · 1 Frage · 2 Nebensatz
+// person:  0 ich · 1 du · 2 er · 3 wir · 4 ihr · 5 sie
 
 interface Setup {
   subject?: number
+  person?: number
   verb?: number
   object?: number
   adjective?: number
@@ -25,6 +27,7 @@ interface Setup {
 function make(setup: Setup): Selection {
   const selection = initialSelection()
   selection.indices[DIAL.subject] = setup.subject ?? 0
+  selection.indices[DIAL.person] = setup.person ?? 0
   selection.indices[DIAL.verb] = setup.verb ?? 0
   selection.indices[DIAL.object] = setup.object ?? 0
   selection.indices[DIAL.adjective] = setup.adjective ?? 0
@@ -163,6 +166,45 @@ describe('pronouns', () => {
 
   it('suppresses the adjective while the object is a pronoun', () => {
     expect(de({ toggles: { adjective: true, objectPronoun: true } })).toBe('Der Mann öffnet sie.')
+  })
+})
+
+describe('person', () => {
+  const on = { toggles: { person: true } }
+
+  it('conjugates through the whole paradigm in Präsens', () => {
+    expect(de({ ...on, person: 0 })).toBe('Ich öffne die Tür.')
+    expect(de({ ...on, person: 1 })).toBe('Du öffnest die Tür.')
+    expect(de({ ...on, person: 2 })).toBe('Er öffnet die Tür.')
+    expect(de({ ...on, person: 3 })).toBe('Wir öffnen die Tür.')
+    expect(de({ ...on, person: 4 })).toBe('Ihr öffnet die Tür.')
+    expect(de({ ...on, person: 5 })).toBe('Sie öffnen die Tür.')
+    expect(ru({ ...on, person: 0 })).toBe('Я открываю дверь.')
+    expect(ru({ ...on, person: 4 })).toBe('Вы открываете дверь.')
+  })
+
+  it('conjugates the auxiliaries (wirst!) and splits separable verbs', () => {
+    expect(de({ ...on, person: 1, verb: 2 })).toBe('Du machst die Tür auf.')
+    expect(de({ ...on, person: 0, verb: 2, tense: 2 })).toBe('Ich habe die Tür aufgemacht.')
+    expect(de({ ...on, person: 1, tense: 3 })).toBe('Du wirst die Tür öffnen.')
+    expect(de({ ...on, person: 4, tense: 2 })).toBe('Ihr habt die Tür geöffnet.')
+    expect(de({ ...on, person: 1, tense: 1 })).toBe('Du öffnetest die Tür.')
+  })
+
+  it('declines the person in the Passiv von-phrase', () => {
+    expect(de({ ...on, person: 0, voice: 1 })).toBe('Die Tür wird von mir geöffnet.')
+    expect(de({ ...on, person: 3, voice: 1 })).toBe('Die Tür wird von uns geöffnet.')
+    expect(ru({ ...on, person: 0, voice: 1 })).toBe('Дверь открывается мной.')
+  })
+
+  it('keeps person agreement in Frage and Nebensatz', () => {
+    const satz = { toggles: { person: true, satzart: true } }
+    expect(de({ ...satz, person: 1, verb: 2, satzart: 1 })).toBe('Machst du die Tür auf?')
+    expect(de({ ...satz, person: 0, verb: 2, satzart: 2 })).toBe('…, weil ich die Tür aufmache.')
+  })
+
+  it('falls back to the Subjekt dial while the toggle is off', () => {
+    expect(de({ person: 3, toggles: { person: false } })).toBe('Der Mann öffnet die Tür.')
   })
 })
 
