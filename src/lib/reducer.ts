@@ -1,7 +1,7 @@
 import { compose, DIAL, DIALS, initialSelection, isDialDisabled, isValueAvailable } from '../de/grammar'
 import { diffTokens } from './diff'
 import { stepClamped } from './navigation'
-import type { Selection, Toggles, Token } from './types'
+import type { Selection, SentenceVariant, Toggles } from './types'
 
 export interface HistoryEntry {
   de: string
@@ -27,8 +27,8 @@ export type Action =
 
 const HISTORY_CAP = 50
 
-export function tokensText(tokens: Token[]): string {
-  return tokens.map(([text]) => text).join(' ') + '.'
+export function sentenceText(variant: SentenceVariant): string {
+  return variant.de.map(([text]) => text).join(' ') + variant.end
 }
 
 export function makeInitialState(): AppState {
@@ -39,7 +39,7 @@ export function makeInitialState(): AppState {
     active: 0,
     generation: 0,
     changed: diffTokens(null, variant.de),
-    history: [{ de: tokensText(variant.de), ru: variant.ru }],
+    history: [{ de: sentenceText(variant), ru: variant.ru }],
   }
 }
 
@@ -51,8 +51,8 @@ export function makeInitialState(): AppState {
 function withSelection(state: AppState, selection: Selection, active: number): AppState {
   const prev = compose(state.selection)
   const next = compose(selection)
-  const de = tokensText(next.de)
-  if (de === tokensText(prev.de)) return { ...state, selection, active }
+  const de = sentenceText(next)
+  if (de === sentenceText(prev)) return { ...state, selection, active }
   const entry = { de, ru: next.ru }
   const history =
     state.history[0]?.de === de ? state.history : [entry, ...state.history].slice(0, HISTORY_CAP)
@@ -115,6 +115,7 @@ export function reduce(state: AppState, action: Action): AppState {
       // greyed-out dial and the sentence agree.
       if (!nextToggles.tenses) indices[DIAL.tense] = 0
       if (!nextToggles.voice) indices[DIAL.voice] = 0
+      if (!nextToggles.satzart) indices[DIAL.satzart] = 0
       // A value made unavailable (separable verb after "trennbar" goes off)
       // snaps to the first available one.
       for (let dial = 0; dial < DIALS.length; dial++) {

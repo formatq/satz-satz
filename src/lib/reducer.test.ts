@@ -94,6 +94,17 @@ describe('reducer', () => {
     expect(state.history[0].de).toBe('Der Mann öffnet die Tür.')
   })
 
+  it('enabling Satzart and picking Frage rewrites the sentence with a question mark', () => {
+    const state = run(
+      { type: 'toggle', key: 'satzart' },
+      { type: 'select', dial: DIAL.satzart, index: 1 },
+    )
+    expect(state.history[0].de).toBe('Öffnet der Mann die Tür?')
+    const off = reduce(state, { type: 'toggle', key: 'satzart' })
+    expect(off.selection.indices[DIAL.satzart]).toBe(0)
+    expect(off.history[0].de).toBe('Der Mann öffnet die Tür.')
+  })
+
   it('ignores spin and select on a disabled dial', () => {
     // The adjective dial is disabled by default (toggle off).
     const state = run(

@@ -47,6 +47,7 @@ export default function App() {
         tokens={variant.de}
         changed={state.changed}
         generation={state.generation}
+        end={variant.end}
         ru={variant.ru}
       />
       <div className="selectors">

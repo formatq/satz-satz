@@ -4,6 +4,8 @@ export type Token = [text: string, role: TokenRole]
 
 export interface SentenceVariant {
   de: Token[]
+  /** End mark for the German sentence ('.' or '?'); ru carries its own. */
+  end: string
   ru: string
 }
 
@@ -13,6 +15,8 @@ export interface Toggles {
   tenses: boolean
   /** Off → Aktiv only, voice dial disabled. */
   voice: boolean
+  /** Off → Hauptsatz only, sentence-type dial disabled. */
+  satzart: boolean
   /** Off → no adjective in the object phrase, adjective dial disabled. */
   adjective: boolean
   /** Off → separable verbs unavailable in the verb dial. */

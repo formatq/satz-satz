@@ -170,17 +170,19 @@ const ADJECTIVES: Adjective[] = [
 
 export const TENSES = ['Präsens', 'Präteritum', 'Perfekt', 'Futur I'] as const
 export const VOICES = ['Aktiv', 'Passiv'] as const
+export const SATZARTEN = ['Hauptsatz', 'Frage', 'Nebensatz'] as const
 
 type Tense = (typeof TENSES)[number]
 type Voice = (typeof VOICES)[number]
+type Satzart = (typeof SATZARTEN)[number]
 
 // ---------------------------------------------------------------------------
 // Dial configuration (consumed by the UI and the reducer)
 
-export const DIAL = { subject: 0, verb: 1, object: 2, adjective: 3, tense: 4, voice: 5 } as const
+export const DIAL = { subject: 0, verb: 1, object: 2, adjective: 3, tense: 4, voice: 5, satzart: 6 } as const
 
 export interface DialSpec {
-  id: 'subject' | 'verb' | 'object' | 'adjective' | 'tense' | 'voice'
+  id: 'subject' | 'verb' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart'
   label: string
   values: string[]
   /** Toggle that enables/disables the whole dial (checkbox inline with the label). */
@@ -208,6 +210,7 @@ export const DIALS: DialSpec[] = [
   { id: 'adjective', label: 'Adjektiv', values: ADJECTIVES.map((a) => a.de), enable: 'adjective' },
   { id: 'tense', label: 'Zeitform', values: [...TENSES], enable: 'tenses' },
   { id: 'voice', label: 'Genus Verbi', values: [...VOICES], enable: 'voice' },
+  { id: 'satzart', label: 'Satzart', values: [...SATZARTEN], enable: 'satzart' },
 ]
 
 export function initialSelection(): Selection {
@@ -218,6 +221,7 @@ export function initialSelection(): Selection {
     toggles: {
       tenses: true,
       voice: true,
+      satzart: false,
       adjective: false,
       separable: true,
       indefinite: false,
@@ -236,6 +240,8 @@ export function isDialDisabled(dial: number, toggles: Toggles): boolean {
       return !toggles.tenses
     case 'voice':
       return !toggles.voice
+    case 'satzart':
+      return !toggles.satzart
     default:
       return false
   }
@@ -297,6 +303,18 @@ const objAsSubject: Slot = (c) => objectTokens(c, 'nom')
 const vonPhrase: Slot = (c) => nounPhrase(c.subjPron ? c.subject.vonPronoun : c.subject.von, 'subj')
 const finPraesens: Slot = (c) => [[c.subject.plural ? c.verb.praesensPl : c.verb.praesens3, 'verb']]
 const finPraeteritum: Slot = (c) => [[c.subject.plural ? c.verb.praetPl : c.verb.praet3, 'verb']]
+// Verb-final position (Nebensatz): a separable verb fuses back onto its
+// finite form — "macht … auf" becomes "… aufmacht".
+const finPraesensFused: Slot = (c) => [
+  [(c.verb.sep ?? '') + (c.subject.plural ? c.verb.praesensPl : c.verb.praesens3), 'verb'],
+]
+const finPraeteritumFused: Slot = (c) => [
+  [(c.verb.sep ?? '') + (c.subject.plural ? c.verb.praetPl : c.verb.praet3), 'verb'],
+]
+const weil: Slot = () => [
+  ['…,', 'other'],
+  ['weil', 'other'],
+]
 const prefix: Slot = (c) => (c.verb.sep ? [[c.verb.sep, 'prefix']] : [])
 const partizip2: Slot = (c) => [[c.verb.partizip2, 'verb']]
 const infinitiv: Slot = (c) => [[c.verb.lemma, 'verb']]
@@ -309,15 +327,35 @@ const istSg: Slot = () => [['ist', 'aux']]
 const worden: Slot = () => [['worden', 'aux']]
 const werdenInf: Slot = () => [['werden', 'aux']]
 
-const FRAMES: Record<`${Tense}|${Voice}`, Slot[]> = {
-  'Präsens|Aktiv': [subjPhrase, finPraesens, objPhrase, prefix],
-  'Präteritum|Aktiv': [subjPhrase, finPraeteritum, objPhrase, prefix],
-  'Perfekt|Aktiv': [subjPhrase, auxHaben, objPhrase, partizip2],
-  'Futur I|Aktiv': [subjPhrase, auxWerden, objPhrase, infinitiv],
-  'Präsens|Passiv': [objAsSubject, wirdSg, vonPhrase, partizip2],
-  'Präteritum|Passiv': [objAsSubject, wurdeSg, vonPhrase, partizip2],
-  'Perfekt|Passiv': [objAsSubject, istSg, vonPhrase, partizip2, worden],
-  'Futur I|Passiv': [objAsSubject, wirdSg, vonPhrase, partizip2, werdenInf],
+const FRAMES: Record<`${Satzart}|${Tense}|${Voice}`, Slot[]> = {
+  // Hauptsatz: verb-second declarative.
+  'Hauptsatz|Präsens|Aktiv': [subjPhrase, finPraesens, objPhrase, prefix],
+  'Hauptsatz|Präteritum|Aktiv': [subjPhrase, finPraeteritum, objPhrase, prefix],
+  'Hauptsatz|Perfekt|Aktiv': [subjPhrase, auxHaben, objPhrase, partizip2],
+  'Hauptsatz|Futur I|Aktiv': [subjPhrase, auxWerden, objPhrase, infinitiv],
+  'Hauptsatz|Präsens|Passiv': [objAsSubject, wirdSg, vonPhrase, partizip2],
+  'Hauptsatz|Präteritum|Passiv': [objAsSubject, wurdeSg, vonPhrase, partizip2],
+  'Hauptsatz|Perfekt|Passiv': [objAsSubject, istSg, vonPhrase, partizip2, worden],
+  'Hauptsatz|Futur I|Passiv': [objAsSubject, wirdSg, vonPhrase, partizip2, werdenInf],
+  // Frage (ja/nein): the finite verb moves to first position.
+  'Frage|Präsens|Aktiv': [finPraesens, subjPhrase, objPhrase, prefix],
+  'Frage|Präteritum|Aktiv': [finPraeteritum, subjPhrase, objPhrase, prefix],
+  'Frage|Perfekt|Aktiv': [auxHaben, subjPhrase, objPhrase, partizip2],
+  'Frage|Futur I|Aktiv': [auxWerden, subjPhrase, objPhrase, infinitiv],
+  'Frage|Präsens|Passiv': [wirdSg, objAsSubject, vonPhrase, partizip2],
+  'Frage|Präteritum|Passiv': [wurdeSg, objAsSubject, vonPhrase, partizip2],
+  'Frage|Perfekt|Passiv': [istSg, objAsSubject, vonPhrase, partizip2, worden],
+  'Frage|Futur I|Passiv': [wirdSg, objAsSubject, vonPhrase, partizip2, werdenInf],
+  // Nebensatz (weil): the finite verb moves to last position; separable
+  // verbs fuse back together.
+  'Nebensatz|Präsens|Aktiv': [weil, subjPhrase, objPhrase, finPraesensFused],
+  'Nebensatz|Präteritum|Aktiv': [weil, subjPhrase, objPhrase, finPraeteritumFused],
+  'Nebensatz|Perfekt|Aktiv': [weil, subjPhrase, objPhrase, partizip2, auxHaben],
+  'Nebensatz|Futur I|Aktiv': [weil, subjPhrase, objPhrase, infinitiv, auxWerden],
+  'Nebensatz|Präsens|Passiv': [weil, objAsSubject, vonPhrase, partizip2, wirdSg],
+  'Nebensatz|Präteritum|Passiv': [weil, objAsSubject, vonPhrase, partizip2, wurdeSg],
+  'Nebensatz|Perfekt|Passiv': [weil, objAsSubject, vonPhrase, partizip2, worden, istSg],
+  'Nebensatz|Futur I|Passiv': [weil, objAsSubject, vonPhrase, partizip2, werdenInf, wirdSg],
 }
 
 // ---------------------------------------------------------------------------
@@ -327,38 +365,49 @@ function ruAdjective(adjective: Adjective, gender: 'm' | 'f' | 'n', kase: 'nom' 
   return kase === 'acc' && gender === 'f' ? adjective.ru.fAcc : adjective.ru[gender]
 }
 
-function composeRussian(c: Ctx, tense: Tense, voice: Voice): string {
+/** Clause body without final punctuation or leading capital. */
+function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
   const { subject, verb, object, adjective } = c
   if (voice === 'Aktiv') {
-    const subj = capitalize(c.subjPron ? subject.ruPronoun : subject.ru)
+    const subj = c.subjPron ? subject.ruPronoun : subject.ru
     const obj = c.objPron
       ? object.ruAccPron
       : `${adjective ? ruAdjective(adjective, object.ruGender, 'acc') + ' ' : ''}${object.ruAcc}`
     switch (tense) {
       case 'Präsens':
-        return `${subj} ${subject.plural ? verb.ru.presPl : verb.ru.pres3} ${obj}.`
+        return `${subj} ${subject.plural ? verb.ru.presPl : verb.ru.pres3} ${obj}`
       case 'Präteritum':
       case 'Perfekt':
-        return `${subj} ${verb.ru.past[subject.ruGender]} ${obj}.`
+        return `${subj} ${verb.ru.past[subject.ruGender]} ${obj}`
       case 'Futur I':
-        return `${subj} ${subject.plural ? verb.ru.futPl : verb.ru.fut3} ${obj}.`
+        return `${subj} ${subject.plural ? verb.ru.futPl : verb.ru.fut3} ${obj}`
     }
   }
-  const objSubj = capitalize(
-    c.objPron
-      ? object.ruNomPron
-      : `${adjective ? ruAdjective(adjective, object.ruGender, 'nom') + ' ' : ''}${object.ru}`,
-  )
+  const objSubj = c.objPron
+    ? object.ruNomPron
+    : `${adjective ? ruAdjective(adjective, object.ruGender, 'nom') + ' ' : ''}${object.ru}`
   const agent = c.subjPron ? subject.ruInstrPronoun : subject.ruInstr
   const part = verb.ru.passivPart[object.ruGender]
   switch (tense) {
     case 'Präsens':
-      return `${objSubj} ${verb.ru.passivPres} ${agent}.`
+      return `${objSubj} ${verb.ru.passivPres} ${agent}`
     case 'Präteritum':
     case 'Perfekt':
-      return `${objSubj} ${object.ruWas} ${part} ${agent}.`
+      return `${objSubj} ${object.ruWas} ${part} ${agent}`
     case 'Futur I':
-      return `${objSubj} ${object.ruWillBe} ${part} ${agent}.`
+      return `${objSubj} ${object.ruWillBe} ${part} ${agent}`
+  }
+}
+
+function composeRussian(c: Ctx, tense: Tense, voice: Voice, satzart: Satzart): string {
+  const body = russianBody(c, tense, voice)
+  switch (satzart) {
+    case 'Hauptsatz':
+      return `${capitalize(body)}.`
+    case 'Frage':
+      return `${capitalize(body)}?`
+    case 'Nebensatz':
+      return `…, потому что ${body}.`
   }
 }
 
@@ -383,7 +432,13 @@ export function compose(sel: Selection): SentenceVariant {
   // Disabled dimensions pin to their first value even if the index is stale.
   const tense = TENSES[toggles.tenses ? sel.indices[DIAL.tense] : 0]
   const voice = VOICES[toggles.voice ? sel.indices[DIAL.voice] : 0]
-  const tokens = FRAMES[`${tense}|${voice}`].flatMap((slot) => slot(ctx))
+  const satzart = SATZARTEN[toggles.satzart ? sel.indices[DIAL.satzart] : 0]
+  const tokens = FRAMES[`${satzart}|${tense}|${voice}`].flatMap((slot) => slot(ctx))
+  // Capitalize the first word; the Nebensatz opener "…," has no letter to raise.
   tokens[0] = [capitalize(tokens[0][0]), tokens[0][1]]
-  return { de: tokens, ru: composeRussian(ctx, tense, voice) }
+  return {
+    de: tokens,
+    end: satzart === 'Frage' ? '?' : '.',
+    ru: composeRussian(ctx, tense, voice, satzart),
+  }
 }

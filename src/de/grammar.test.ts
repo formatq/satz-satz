@@ -9,6 +9,7 @@ import { compose, DIAL, initialSelection } from './grammar'
 // adjective: 0 alt · 1 neu · 2 kaputt
 // tense:   0 Präsens · 1 Präteritum · 2 Perfekt · 3 Futur I
 // voice:   0 Aktiv · 1 Passiv
+// satzart: 0 Hauptsatz · 1 Frage · 2 Nebensatz
 
 interface Setup {
   subject?: number
@@ -17,6 +18,7 @@ interface Setup {
   adjective?: number
   tense?: number
   voice?: number
+  satzart?: number
   toggles?: Partial<Toggles>
 }
 
@@ -28,12 +30,14 @@ function make(setup: Setup): Selection {
   selection.indices[DIAL.adjective] = setup.adjective ?? 0
   selection.indices[DIAL.tense] = setup.tense ?? 0
   selection.indices[DIAL.voice] = setup.voice ?? 0
+  selection.indices[DIAL.satzart] = setup.satzart ?? 0
   selection.toggles = { ...selection.toggles, ...setup.toggles }
   return selection
 }
 
 function de(setup: Setup): string {
-  return compose(make(setup)).de.map(([text]) => text).join(' ') + '.'
+  const variant = compose(make(setup))
+  return variant.de.map(([text]) => text).join(' ') + variant.end
 }
 
 function ru(setup: Setup): string {
@@ -159,6 +163,38 @@ describe('pronouns', () => {
 
   it('suppresses the adjective while the object is a pronoun', () => {
     expect(de({ toggles: { adjective: true, objectPronoun: true } })).toBe('Der Mann öffnet sie.')
+  })
+})
+
+describe('Satzart', () => {
+  const on = { toggles: { satzart: true } }
+
+  it('moves the finite verb to first position in a Frage', () => {
+    expect(de({ ...on, satzart: 1, verb: 2 })).toBe('Macht der Mann die Tür auf?')
+    expect(de({ ...on, satzart: 1, verb: 2, tense: 2 })).toBe('Hat der Mann die Tür aufgemacht?')
+    expect(de({ ...on, satzart: 1, voice: 1 })).toBe('Wird die Tür vom Mann geöffnet?')
+    expect(ru({ ...on, satzart: 1 })).toBe('Мужчина открывает дверь?')
+  })
+
+  it('moves the finite verb to last position in a Nebensatz', () => {
+    expect(de({ ...on, satzart: 2 })).toBe('…, weil der Mann die Tür öffnet.')
+    expect(de({ ...on, satzart: 2, tense: 2, verb: 2 })).toBe('…, weil der Mann die Tür aufgemacht hat.')
+    expect(de({ ...on, satzart: 2, tense: 3, verb: 2 })).toBe('…, weil der Mann die Tür aufmachen wird.')
+    expect(ru({ ...on, satzart: 2 })).toBe('…, потому что мужчина открывает дверь.')
+  })
+
+  it('fuses a separable verb back together in the Nebensatz', () => {
+    expect(de({ ...on, satzart: 2, verb: 2 })).toBe('…, weil der Mann die Tür aufmacht.')
+    expect(de({ ...on, satzart: 2, verb: 3, subject: 3, tense: 1 })).toBe('…, weil die Kinder die Tür zumachten.')
+  })
+
+  it('orders the Passiv verb cluster correctly in the Nebensatz', () => {
+    expect(de({ ...on, satzart: 2, voice: 1, tense: 2, verb: 2 })).toBe('…, weil die Tür vom Mann aufgemacht worden ist.')
+    expect(de({ ...on, satzart: 2, voice: 1, tense: 3 })).toBe('…, weil die Tür vom Mann geöffnet werden wird.')
+  })
+
+  it('pins to Hauptsatz while the toggle is off', () => {
+    expect(de({ satzart: 1, toggles: { satzart: false } })).toBe('Der Mann öffnet die Tür.')
   })
 })
 
