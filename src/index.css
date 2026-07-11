@@ -241,3 +241,58 @@ input[type='checkbox']:disabled {
 .history li.history-newest {
   color: var(--fg);
 }
+
+/* Mobile ----------------------------------------------------------------
+   Minimal adaptation: the page scrolls, but the sentence sticks to the top
+   so it stays pinned while you reach wrapped selectors and the history. */
+
+@media (max-width: 700px) {
+  body {
+    overflow: auto;
+  }
+
+  .app {
+    height: auto;
+    min-height: 100dvh;
+    padding: 0 0.75rem 1rem;
+    gap: 1rem;
+  }
+
+  .sentence-block {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    width: calc(100% + 1.5rem); /* cover the .app side padding */
+    background: var(--bg);
+    min-height: 0;
+    padding: 0.9rem 0.75rem 0.6rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .sentence {
+    font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .translation {
+    font-size: 0.95rem;
+  }
+
+  .selectors {
+    gap: 0.6rem 0.75rem;
+  }
+
+  .option {
+    /* Finger-sized tap targets. */
+    padding: 0.3rem 0.4rem;
+  }
+
+  .history {
+    flex: none;
+    overflow: visible;
+  }
+
+  .history-rule {
+    position: static;
+  }
+}
