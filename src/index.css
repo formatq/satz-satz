@@ -117,16 +117,8 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  min-height: 1.2rem;
   user-select: none;
   -webkit-user-select: none;
-}
-
-.selector-enable {
-  cursor: pointer;
 }
 
 .selector {
@@ -173,26 +165,6 @@ body {
 .option-unavailable {
   opacity: 0.35;
   cursor: default;
-}
-
-/* A disabled dial greys out but keeps its footprint: no layout jump. */
-.selector-disabled .selector {
-  opacity: 0.4;
-}
-
-.selector-disabled .option {
-  cursor: default;
-}
-
-.selector-feature {
-  font-size: 0.8rem;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 input[type='checkbox'] {
@@ -249,10 +221,58 @@ input[type='checkbox']:disabled {
   color: var(--fg);
 }
 
-/* Hamburger menu (mobile only) ------------------------------------------ */
+/* Hamburger menu --------------------------------------------------------
+   All configuration lives here; hidden dials don't render at all, so the
+   first impression stays simple. */
 
 .settings {
-  display: none;
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 3;
+}
+
+.settings-button {
+  background: var(--dial-bg);
+  border: 1px solid var(--rule);
+  border-radius: 0.75rem;
+  color: var(--fg);
+  font: inherit;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.settings-backdrop {
+  position: fixed;
+  inset: 0;
+}
+
+.settings-menu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 0.5rem);
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.settings-menu label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* Mobile ----------------------------------------------------------------
@@ -260,62 +280,6 @@ input[type='checkbox']:disabled {
    so it stays pinned while you reach wrapped selectors and the history. */
 
 @media (max-width: 700px) {
-  /* Disabled dials are hidden instead of greyed; their enable-toggles move
-     into the hamburger menu, floating bottom-right within thumb reach. */
-  .selector-block.selector-disabled {
-    display: none;
-  }
-
-  .settings {
-    display: block;
-    position: fixed;
-    bottom: 0.75rem;
-    right: 0.75rem;
-    z-index: 3;
-  }
-
-  .settings-button {
-    background: var(--dial-bg);
-    border: 1px solid var(--rule);
-    border-radius: 0.75rem;
-    color: var(--fg);
-    font: inherit;
-    font-size: 1.2rem;
-    line-height: 1;
-    padding: 0.55rem 0.65rem;
-    cursor: pointer;
-    box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.15);
-  }
-
-  .settings-backdrop {
-    position: fixed;
-    inset: 0;
-  }
-
-  .settings-menu {
-    position: absolute;
-    right: 0;
-    bottom: calc(100% + 0.5rem);
-    background: var(--bg);
-    border: 1px solid var(--rule);
-    border-radius: 0.75rem;
-    padding: 0.75rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
-    white-space: nowrap;
-  }
-
-  .settings-menu label {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-  }
   body {
     overflow: auto;
   }
@@ -334,7 +298,9 @@ input[type='checkbox']:disabled {
     width: calc(100% + 1.5rem); /* cover the .app side padding */
     background: var(--bg);
     min-height: 0;
-    padding: 0.9rem 0.75rem 0.6rem;
+    /* Symmetric side padding keeps the centered text clear of the fixed
+       hamburger button in the top-left corner. */
+    padding: 0.9rem 3.75rem 0.6rem;
     border-bottom: 1px solid var(--rule);
   }
 

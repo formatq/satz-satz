@@ -2,7 +2,14 @@ import { useEffect, useReducer, useState } from 'react'
 import { HistoryFeed } from './components/HistoryFeed'
 import { Selector } from './components/Selector'
 import { Sentence } from './components/Sentence'
-import { compose, DIALS, isDialDisabled, isValueAvailable } from './de/grammar'
+import {
+  compose,
+  DIALS,
+  isDialDisabled,
+  isToggleLocked,
+  isValueAvailable,
+  MENU_TOGGLES,
+} from './de/grammar'
 import { makeInitialState, reduce } from './lib/reducer'
 
 export default function App() {
@@ -51,45 +58,25 @@ export default function App() {
         ru={variant.ru}
       />
       <div className="selectors">
-        {DIALS.map((dial, i) => (
-          <Selector
-            key={dial.id}
-            label={dial.label}
-            values={dial.values}
-            index={state.selection.indices[i]}
-            active={state.active === i}
-            disabled={isDialDisabled(i, toggles)}
-            available={dial.values.map((_, v) => isValueAvailable(i, v, toggles))}
-            enableToggle={
-              dial.enable
-                ? {
-                    checked: toggles[dial.enable],
-                    // The adjective checkbox locks while the object is a pronoun:
-                    // a pronoun object cannot carry an adjective.
-                    disabled: dial.id === 'adjective' && toggles.objectPronoun,
-                    onChange: () => dispatch({ type: 'toggle', key: dial.enable! }),
-                  }
-                : undefined
-            }
-            featureToggles={dial.features?.map((feature) => ({
-              label: feature.label,
-              checked: toggles[feature.key],
-              // Locked along with the dial (Subjekt while Person drives), and
-              // an article makes no sense on a pronoun object.
-              disabled:
-                isDialDisabled(i, toggles) ||
-                (feature.key === 'indefinite' && toggles.objectPronoun),
-              onChange: () => dispatch({ type: 'toggle', key: feature.key }),
-            }))}
-            onSelect={(index) => dispatch({ type: 'select', dial: i, index })}
-            onSpin={(direction) => dispatch({ type: 'spin', dial: i, direction })}
-            onActivate={() => dispatch({ type: 'activate', dial: i })}
-          />
-        ))}
+        {DIALS.map((dial, i) =>
+          isDialDisabled(i, toggles) ? null : (
+            <Selector
+              key={dial.id}
+              label={dial.label}
+              values={dial.values}
+              index={state.selection.indices[i]}
+              active={state.active === i}
+              available={dial.values.map((_, v) => isValueAvailable(i, v, toggles))}
+              onSelect={(index) => dispatch({ type: 'select', dial: i, index })}
+              onSpin={(direction) => dispatch({ type: 'spin', dial: i, direction })}
+              onActivate={() => dispatch({ type: 'activate', dial: i })}
+            />
+          ),
+        )}
       </div>
       <HistoryFeed entries={state.history} />
-      {/* Mobile-only hamburger: disabled dials are hidden there instead of
-          greyed, so their enable-toggles live in this menu. */}
+      {/* All configuration lives here: hidden dials and features are opened
+          up one by one, so the first impression stays simple. */}
       <div className="settings">
         <button
           type="button"
@@ -103,15 +90,15 @@ export default function App() {
           <>
             <div className="settings-backdrop" onClick={() => setMenuOpen(false)} />
             <div className="settings-menu">
-              {DIALS.filter((dial) => dial.enable).map((dial) => (
-                <label key={dial.id}>
+              {MENU_TOGGLES.map(({ key, label }) => (
+                <label key={key}>
                   <input
                     type="checkbox"
-                    checked={toggles[dial.enable!]}
-                    disabled={dial.id === 'adjective' && toggles.objectPronoun}
-                    onChange={() => dispatch({ type: 'toggle', key: dial.enable! })}
+                    checked={toggles[key]}
+                    disabled={isToggleLocked(key, toggles)}
+                    onChange={() => dispatch({ type: 'toggle', key })}
                   />
-                  <span>{dial.label}</span>
+                  <span>{label}</span>
                 </label>
               ))}
             </div>

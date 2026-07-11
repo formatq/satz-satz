@@ -6,16 +6,18 @@ function run(...actions: Action[]): AppState {
   return actions.reduce(reduce, makeInitialState())
 }
 
+const tensesOn: Action = { type: 'toggle', key: 'tenses' }
+
 describe('reducer', () => {
-  it('starts with one history entry and no highlights', () => {
+  it('starts simple: one history entry, indefinite article, no highlights', () => {
     const state = makeInitialState()
     expect(state.history).toHaveLength(1)
-    expect(state.history[0].de).toBe('Der Mann öffnet die Tür.')
+    expect(state.history[0].de).toBe('Der Mann öffnet eine Tür.')
     expect(state.changed.every((flag) => !flag)).toBe(true)
   })
 
   it('spin updates the index, generation, diff flags and history', () => {
-    const state = run({ type: 'spin', dial: DIAL.tense, direction: 1 })
+    const state = run(tensesOn, { type: 'spin', dial: DIAL.tense, direction: 1 })
     expect(state.selection.indices[DIAL.tense]).toBe(1)
     expect(state.generation).toBe(1)
     expect(state.history).toHaveLength(2)
@@ -24,9 +26,10 @@ describe('reducer', () => {
   })
 
   it('spin clamps at the edges instead of wrapping', () => {
-    const atStart = run({ type: 'spin', dial: DIAL.tense, direction: -1 })
+    const atStart = run(tensesOn, { type: 'spin', dial: DIAL.tense, direction: -1 })
     expect(atStart.selection.indices[DIAL.tense]).toBe(0)
     const atEnd = run(
+      tensesOn,
       ...Array.from({ length: 6 }, () => ({ type: 'spin', dial: DIAL.tense, direction: 1 }) as Action),
     )
     expect(atEnd.selection.indices[DIAL.tense]).toBe(3)
@@ -36,11 +39,12 @@ describe('reducer', () => {
     const state = run({ type: 'select', dial: DIAL.subject, index: 3 })
     expect(state.selection.indices[DIAL.subject]).toBe(3)
     expect(state.active).toBe(DIAL.subject)
-    expect(state.history[0].de).toBe('Die Kinder öffnen die Tür.')
+    expect(state.history[0].de).toBe('Die Kinder öffnen eine Tür.')
   })
 
   it('drops consecutive duplicate history entries', () => {
     const state = run(
+      tensesOn,
       { type: 'spin', dial: DIAL.tense, direction: 1 },
       { type: 'spin', dial: DIAL.tense, direction: -1 },
     )
@@ -49,41 +53,29 @@ describe('reducer', () => {
   })
 
   it('toggling a feature that changes the sentence pushes history with highlights', () => {
-    const state = run({ type: 'toggle', key: 'subjectPronoun' })
-    expect(state.history[0].de).toBe('Er öffnet die Tür.')
+    const state = run({ type: 'toggle', key: 'objectPronoun' })
+    expect(state.history[0].de).toBe('Der Mann öffnet sie.')
     expect(state.changed.some((flag) => flag)).toBe(true)
     expect(state.generation).toBe(1)
   })
 
-  it('toggling a feature that does not change the sentence leaves history alone', () => {
-    // öffnen is inseparable, so flipping "trennbar" off changes nothing.
-    const state = run({ type: 'toggle', key: 'separable' })
-    expect(state.selection.toggles.separable).toBe(false)
+  it('toggling a dimension on does not change the sentence or history', () => {
+    // The tense dial appears pinned at Präsens — same sentence.
+    const state = run(tensesOn)
+    expect(state.selection.toggles.tenses).toBe(true)
     expect(state.generation).toBe(0)
     expect(state.history).toHaveLength(1)
   })
 
-  it('turning "trennbar" off snaps a separable verb to the first available one', () => {
-    const state = run(
-      { type: 'select', dial: DIAL.verb, index: 2 }, // aufmachen
-      { type: 'toggle', key: 'separable' },
-    )
-    expect(state.selection.indices[DIAL.verb]).toBe(0) // öffnen
+  it('switching the indefinite article off restores the definite forms', () => {
+    const state = run({ type: 'toggle', key: 'indefinite' })
     expect(state.history[0].de).toBe('Der Mann öffnet die Tür.')
-  })
-
-  it('spin skips unavailable separable verbs', () => {
-    const state = run(
-      { type: 'toggle', key: 'separable' },
-      { type: 'spin', dial: DIAL.verb, direction: 1 },
-      { type: 'spin', dial: DIAL.verb, direction: 1 },
-    )
-    // öffnen → reparieren, then clamped: aufmachen/zumachen are unavailable.
-    expect(state.selection.indices[DIAL.verb]).toBe(1)
   })
 
   it('turning a dimension off pins it back to the default value', () => {
     const state = run(
+      tensesOn,
+      { type: 'toggle', key: 'voice' },
       { type: 'select', dial: DIAL.tense, index: 2 },
       { type: 'select', dial: DIAL.voice, index: 1 },
       { type: 'toggle', key: 'tenses' },
@@ -91,7 +83,7 @@ describe('reducer', () => {
     )
     expect(state.selection.indices[DIAL.tense]).toBe(0)
     expect(state.selection.indices[DIAL.voice]).toBe(0)
-    expect(state.history[0].de).toBe('Der Mann öffnet die Tür.')
+    expect(state.history[0].de).toBe('Der Mann öffnet eine Tür.')
   })
 
   it('enabling Person swaps the driving dial and moves the active marker', () => {
@@ -101,22 +93,23 @@ describe('reducer', () => {
       { type: 'select', dial: DIAL.person, index: 3 },
     )
     expect(state.active).toBe(DIAL.person)
-    expect(state.history[0].de).toBe('Wir öffnen die Tür.')
+    expect(state.history[0].de).toBe('Wir öffnen eine Tür.')
     // Subject dial is locked while Person drives.
     const blocked = reduce(state, { type: 'select', dial: DIAL.subject, index: 1 })
-    expect(blocked.history[0].de).toBe('Wir öffnen die Tür.')
+    expect(blocked.history[0].de).toBe('Wir öffnen eine Tür.')
     const off = reduce(state, { type: 'toggle', key: 'person' })
     expect(off.selection.indices[DIAL.person]).toBe(0)
-    expect(off.history[0].de).toBe('Der Mann öffnet die Tür.')
+    expect(off.history[0].de).toBe('Der Mann öffnet eine Tür.')
   })
 
   it('enabling a modal snaps the tense out of Perfekt and blocks it', () => {
     const state = run(
+      tensesOn,
       { type: 'select', dial: DIAL.tense, index: 2 }, // Perfekt
       { type: 'toggle', key: 'modal' },
     )
     expect(state.selection.indices[DIAL.tense]).toBe(0)
-    expect(state.history[0].de).toBe('Der Mann kann die Tür öffnen.')
+    expect(state.history[0].de).toBe('Der Mann kann eine Tür öffnen.')
     // Perfekt/Futur stay unreachable while the modal is on.
     const blocked = reduce(state, { type: 'select', dial: DIAL.tense, index: 3 })
     expect(blocked.selection.indices[DIAL.tense]).toBe(0)
@@ -131,10 +124,10 @@ describe('reducer', () => {
       { type: 'toggle', key: 'satzart' },
       { type: 'select', dial: DIAL.satzart, index: 1 },
     )
-    expect(state.history[0].de).toBe('Öffnet der Mann die Tür?')
+    expect(state.history[0].de).toBe('Öffnet der Mann eine Tür?')
     const off = reduce(state, { type: 'toggle', key: 'satzart' })
     expect(off.selection.indices[DIAL.satzart]).toBe(0)
-    expect(off.history[0].de).toBe('Der Mann öffnet die Tür.')
+    expect(off.history[0].de).toBe('Der Mann öffnet eine Tür.')
   })
 
   it('ignores spin and select on a disabled dial', () => {
@@ -148,14 +141,14 @@ describe('reducer', () => {
   })
 
   it('move-active skips disabled dials and wraps', () => {
-    // From the object dial, moving right skips the disabled adjective dial.
+    // Default state: only Subjekt, Verb and Objekt are enabled.
     const state = run(
-      { type: 'activate', dial: DIAL.object },
+      { type: 'activate', dial: DIAL.subject },
       { type: 'move-active', direction: 1 },
     )
-    expect(state.active).toBe(DIAL.tense)
-    const wrapped = reduce(
-      run({ type: 'activate', dial: DIAL.voice }),
+    expect(state.active).toBe(DIAL.verb)
+    const wrapped = run(
+      { type: 'activate', dial: DIAL.object },
       { type: 'move-active', direction: 1 },
     )
     expect(wrapped.active).toBe(DIAL.subject)
@@ -163,6 +156,7 @@ describe('reducer', () => {
 
   it('moves the active marker off a dial its own toggle just disabled', () => {
     const state = run(
+      { type: 'toggle', key: 'voice' },
       { type: 'activate', dial: DIAL.voice },
       { type: 'toggle', key: 'voice' },
     )
@@ -174,6 +168,6 @@ describe('reducer', () => {
       { type: 'toggle', key: 'adjective' },
       { type: 'select', dial: DIAL.adjective, index: 2 },
     )
-    expect(state.history[0].de).toBe('Der Mann öffnet die kaputte Tür.')
+    expect(state.history[0].de).toBe('Der Mann öffnet eine kaputte Tür.')
   })
 })

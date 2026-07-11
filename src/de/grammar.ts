@@ -16,62 +16,47 @@ type Person = 0 | 1 | 2 | 3 | 4 | 5
 interface Subject {
   de: string
   von: string
-  pronoun: string
-  vonPronoun: string
   person: Person
   ru: string
-  ruPronoun: string
   ruGender: RuGender
   ruInstr: string
-  ruInstrPronoun: string
 }
 
 const SUBJECTS: Subject[] = [
   {
-    de: 'der Mann', von: 'vom Mann', pronoun: 'er', vonPronoun: 'von ihm', person: 2,
-    ru: 'мужчина', ruPronoun: 'он', ruGender: 'm', ruInstr: 'мужчиной', ruInstrPronoun: 'им',
+    de: 'der Mann', von: 'vom Mann', person: 2, ru: 'мужчина', ruGender: 'm', ruInstr: 'мужчиной',
   },
   {
-    de: 'die Frau', von: 'von der Frau', pronoun: 'sie', vonPronoun: 'von ihr', person: 2,
-    ru: 'женщина', ruPronoun: 'она', ruGender: 'f', ruInstr: 'женщиной', ruInstrPronoun: 'ей',
+    de: 'die Frau', von: 'von der Frau', person: 2, ru: 'женщина', ruGender: 'f', ruInstr: 'женщиной',
   },
   {
-    // Russian "ребёнок" is masculine, so the pronoun is "он" even though German uses "es".
-    de: 'das Kind', von: 'vom Kind', pronoun: 'es', vonPronoun: 'von ihm', person: 2,
-    ru: 'ребёнок', ruPronoun: 'он', ruGender: 'm', ruInstr: 'ребёнком', ruInstrPronoun: 'им',
+    de: 'das Kind', von: 'vom Kind', person: 2, ru: 'ребёнок', ruGender: 'm', ruInstr: 'ребёнком',
   },
   {
-    de: 'die Kinder', von: 'von den Kindern', pronoun: 'sie', vonPronoun: 'von ihnen', person: 5,
-    ru: 'дети', ruPronoun: 'они', ruGender: 'pl', ruInstr: 'детьми', ruInstrPronoun: 'ими',
+    de: 'die Kinder', von: 'von den Kindern', person: 5, ru: 'дети', ruGender: 'pl', ruInstr: 'детьми',
   },
 ]
 
 // Personal pronouns as subjects. They reuse the Subject shape, so every slot
-// (agreement, von-phrase, Russian) works unchanged; `pronoun` = `de`.
+// (agreement, von-phrase, Russian) works unchanged.
 const PERSONS: Subject[] = [
   {
-    de: 'ich', von: 'von mir', pronoun: 'ich', vonPronoun: 'von mir', person: 0,
-    ru: 'я', ruPronoun: 'я', ruGender: 'm', ruInstr: 'мной', ruInstrPronoun: 'мной',
+    de: 'ich', von: 'von mir', person: 0, ru: 'я', ruGender: 'm', ruInstr: 'мной',
   },
   {
-    de: 'du', von: 'von dir', pronoun: 'du', vonPronoun: 'von dir', person: 1,
-    ru: 'ты', ruPronoun: 'ты', ruGender: 'm', ruInstr: 'тобой', ruInstrPronoun: 'тобой',
+    de: 'du', von: 'von dir', person: 1, ru: 'ты', ruGender: 'm', ruInstr: 'тобой',
   },
   {
-    de: 'er', von: 'von ihm', pronoun: 'er', vonPronoun: 'von ihm', person: 2,
-    ru: 'он', ruPronoun: 'он', ruGender: 'm', ruInstr: 'им', ruInstrPronoun: 'им',
+    de: 'er', von: 'von ihm', person: 2, ru: 'он', ruGender: 'm', ruInstr: 'им',
   },
   {
-    de: 'wir', von: 'von uns', pronoun: 'wir', vonPronoun: 'von uns', person: 3,
-    ru: 'мы', ruPronoun: 'мы', ruGender: 'pl', ruInstr: 'нами', ruInstrPronoun: 'нами',
+    de: 'wir', von: 'von uns', person: 3, ru: 'мы', ruGender: 'pl', ruInstr: 'нами',
   },
   {
-    de: 'ihr', von: 'von euch', pronoun: 'ihr', vonPronoun: 'von euch', person: 4,
-    ru: 'вы', ruPronoun: 'вы', ruGender: 'pl', ruInstr: 'вами', ruInstrPronoun: 'вами',
+    de: 'ihr', von: 'von euch', person: 4, ru: 'вы', ruGender: 'pl', ruInstr: 'вами',
   },
   {
-    de: 'sie', von: 'von ihnen', pronoun: 'sie', vonPronoun: 'von ihnen', person: 5,
-    ru: 'они', ruPronoun: 'они', ruGender: 'pl', ruInstr: 'ими', ruInstrPronoun: 'ими',
+    de: 'sie', von: 'von ihnen', person: 5, ru: 'они', ruGender: 'pl', ruInstr: 'ими',
   },
 ]
 
@@ -94,7 +79,6 @@ interface Verb {
   }
 }
 
-// Inseparable verbs first: they stay available when the "trennbar" toggle is off.
 const VERBS: Verb[] = [
   {
     lemma: 'öffnen', sep: null,
@@ -270,55 +254,52 @@ export interface DialSpec {
   id: 'subject' | 'person' | 'verb' | 'modal' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart'
   label: string
   values: string[]
-  /** Toggle that enables/disables the whole dial (checkbox inline with the label). */
-  enable?: keyof Toggles
-  /** Feature checkboxes under the dial that change what the dial produces. */
-  features?: { key: keyof Toggles; label: string }[]
 }
 
 export const DIALS: DialSpec[] = [
-  {
-    id: 'subject', label: 'Subjekt', values: SUBJECTS.map((s) => s.de),
-    features: [{ key: 'subjectPronoun', label: 'Pronomen' }],
-  },
-  { id: 'person', label: 'Person', values: PERSONS.map((p) => p.de), enable: 'person' },
-  {
-    id: 'verb', label: 'Verb', values: VERBS.map((v) => v.lemma),
-    features: [
-      { key: 'separable', label: 'trennbar' },
-      { key: 'negation', label: 'Negation' },
-    ],
-  },
-  { id: 'modal', label: 'Modalverb', values: MODALS.map((m) => m.lemma), enable: 'modal' },
-  {
-    id: 'object', label: 'Objekt', values: OBJECTS.map((o) => o.de),
-    features: [
-      { key: 'objectPronoun', label: 'Pronomen' },
-      { key: 'indefinite', label: 'unbestimmt' },
-    ],
-  },
-  { id: 'adjective', label: 'Adjektiv', values: ADJECTIVES.map((a) => a.de), enable: 'adjective' },
-  { id: 'tense', label: 'Zeitform', values: [...TENSES], enable: 'tenses' },
-  { id: 'voice', label: 'Genus Verbi', values: [...VOICES], enable: 'voice' },
-  { id: 'satzart', label: 'Satzart', values: [...SATZARTEN], enable: 'satzart' },
+  { id: 'subject', label: 'Subjekt', values: SUBJECTS.map((s) => s.de) },
+  { id: 'person', label: 'Person', values: PERSONS.map((p) => p.de) },
+  { id: 'verb', label: 'Verb', values: VERBS.map((v) => v.lemma) },
+  { id: 'modal', label: 'Modalverb', values: MODALS.map((m) => m.lemma) },
+  { id: 'object', label: 'Objekt', values: OBJECTS.map((o) => o.de) },
+  { id: 'adjective', label: 'Adjektiv', values: ADJECTIVES.map((a) => a.de) },
+  { id: 'tense', label: 'Zeitform', values: [...TENSES] },
+  { id: 'voice', label: 'Genus Verbi', values: [...VOICES] },
+  { id: 'satzart', label: 'Satzart', values: [...SATZARTEN] },
 ]
+
+/** Everything configurable, in hamburger-menu order: dials first, then features. */
+export const MENU_TOGGLES: { key: keyof Toggles; label: string }[] = [
+  { key: 'person', label: 'Person' },
+  { key: 'modal', label: 'Modalverb' },
+  { key: 'adjective', label: 'Adjektiv' },
+  { key: 'tenses', label: 'Zeitform' },
+  { key: 'voice', label: 'Genus Verbi' },
+  { key: 'satzart', label: 'Satzart' },
+  { key: 'indefinite', label: 'unbestimmter Artikel' },
+  { key: 'negation', label: 'Negation' },
+  { key: 'objectPronoun', label: 'Pronomen (Objekt)' },
+]
+
+/** Menu entries locked in the current state: a pronoun object takes no article and no adjective. */
+export function isToggleLocked(key: keyof Toggles, toggles: Toggles): boolean {
+  return (key === 'adjective' || key === 'indefinite') && toggles.objectPronoun
+}
 
 export function initialSelection(): Selection {
   return {
     indices: DIALS.map(() => 0),
-    // v1 dimensions start enabled; the new features (adjective, pronouns)
-    // start off so the initial sentence stays simple.
+    // First impression is the simple app — Subjekt · Verb · Objekt only;
+    // everything else is opened up from the hamburger menu over time.
     toggles: {
-      tenses: true,
-      voice: true,
+      tenses: false,
+      voice: false,
       satzart: false,
       person: false,
       modal: false,
       adjective: false,
-      separable: true,
-      indefinite: false,
+      indefinite: true,
       negation: false,
-      subjectPronoun: false,
       objectPronoun: false,
     },
   }
@@ -348,16 +329,9 @@ export function isDialDisabled(dial: number, toggles: Toggles): boolean {
 }
 
 export function isValueAvailable(dial: number, index: number, toggles: Toggles): boolean {
-  switch (DIALS[dial].id) {
-    case 'verb':
-      return !VERBS[index].sep || toggles.separable
-    case 'tense':
-      // With a modal the app stays out of double-infinitive territory
-      // (hat aufmachen können): Präsens and Präteritum only.
-      return !toggles.modal || index < 2
-    default:
-      return true
-  }
+  // With a modal the app stays out of double-infinitive territory
+  // (hat aufmachen können): Präsens and Präteritum only.
+  return DIALS[dial].id !== 'tense' || !toggles.modal || index < 2
 }
 
 // ---------------------------------------------------------------------------
@@ -369,7 +343,6 @@ interface Ctx {
   modal: Modal | null
   object: Obj
   adjective: Adjective | null
-  subjPron: boolean
   objPron: boolean
   indef: boolean
   neg: boolean
@@ -420,15 +393,12 @@ function objectTokens(c: Ctx, kase: 'nom' | 'acc'): Token[] {
 
 type Slot = (c: Ctx) => Token[]
 
-const subjPhrase: Slot = (c) => (c.subjPron ? [[c.subject.pronoun, 'subj']] : nounPhrase(c.subject.de, 'subj'))
+const subjPhrase: Slot = (c) => nounPhrase(c.subject.de, 'subj')
 // `nicht` negates the predicate, so in every frame it lands right after the
 // object (Aktiv) / the agent (Passiv), just before the final verb cluster.
 const objPhrase: Slot = (c) => [...objectTokens(c, 'acc'), ...nichtTokens(c)]
 const objAsSubject: Slot = (c) => objectTokens(c, 'nom')
-const vonPhrase: Slot = (c) => [
-  ...nounPhrase(c.subjPron ? c.subject.vonPronoun : c.subject.von, 'subj'),
-  ...nichtTokens(c),
-]
+const vonPhrase: Slot = (c) => [...nounPhrase(c.subject.von, 'subj'), ...nichtTokens(c)]
 const finPraesens: Slot = (c) => [[c.verb.praesens[c.subject.person], 'verb']]
 const finPraeteritum: Slot = (c) => [[c.verb.praeteritum[c.subject.person], 'verb']]
 // Verb-final position (Nebensatz): a separable verb fuses back onto its
@@ -529,7 +499,7 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
   // Russian negates with "не" before the (finite) verb, for nicht and kein alike.
   const ne = c.neg ? 'не ' : ''
   if (voice === 'Aktiv') {
-    const subj = c.subjPron ? subject.ruPronoun : subject.ru
+    const subj = subject.ru
     const obj = c.objPron
       ? object.ruAccPron
       : `${adjective ? ruAdjective(adjective, object.ruGender, 'acc') + ' ' : ''}${object.ruAcc}`
@@ -553,7 +523,7 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
   const objSubj = c.objPron
     ? object.ruNomPron
     : `${adjective ? ruAdjective(adjective, object.ruGender, 'nom') + ' ' : ''}${object.ru}`
-  const agent = c.subjPron ? subject.ruInstrPronoun : subject.ruInstr
+  const agent = subject.ruInstr
   const part = verb.ru.passivPart[object.ruGender]
   if (modal) {
     // The modal agrees with the passive subject: дверь может/должна быть открыта.
@@ -601,7 +571,6 @@ export function compose(sel: Selection): SentenceVariant {
     modal: toggles.modal ? MODALS[sel.indices[DIAL.modal]] : null,
     object: OBJECTS[sel.indices[DIAL.object]],
     adjective: toggles.adjective && !toggles.objectPronoun ? ADJECTIVES[sel.indices[DIAL.adjective]] : null,
-    subjPron: toggles.subjectPronoun,
     objPron: toggles.objectPronoun,
     indef: toggles.indefinite,
     neg: toggles.negation,

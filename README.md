@@ -2,15 +2,14 @@
 
 One German sentence, eight fixed-position selectors: **Subjekt · Person · Verb · Objekt · Adjektiv · Zeitform · Genus Verbi · Satzart**. Pick a value, the sentence recomposes instantly, and the words that changed flash with a fading highlight — watch the article agree (`die Tür / den Schrank`), the adjective ending flip (`der alte / ein alter`), the separable prefix jump to the end (and fuse back in the Nebensatz), the object become the subject in Passiv.
 
-Features are **toggleable**, so a learner can start with plain Präsens Aktiv and switch things on one at a time:
+The first impression is deliberately simple — just **Subjekt · Verb · Objekt** and a Präsens sentence. Everything else lives in the **hamburger menu** (top-left) and is opened up one toggle at a time; hidden dimensions don't render at all:
 
-- **Zeitform / Genus Verbi / Adjektiv / Satzart** — checkboxes enable or disable the whole dimension (disabled dials pin to Präsens / Aktiv / no adjective / Hauptsatz).
 - **Person** — swaps the Subjekt dial for the full conjugation paradigm `ich · du · er · wir · ihr · sie` (`öffne / öffnest / öffnet …`, `von mir / von dir …` in Passiv).
-- **trennbar** — adds separable verbs (`aufmachen`, `zumachen`) to the verb list.
-- **Pronomen** (on Subjekt and Objekt) — replaces the noun with the matching pronoun to study declension: `er → von ihm`, `der Schrank → ihn → er`.
-- **unbestimmt** — indefinite article for the object, switching the adjective to mixed declension (`der alte → ein alter`).
-- **Negation** — `nicht` before the verb cluster (`öffnet die Tür nicht`), switching to `kein-` when the object is indefinite (`öffnet keine Tür`).
 - **Modalverb** — `können / müssen / wollen` take the finite slot and send the main verb to the end as an infinitive (`kann die Tür aufmachen`, Passiv: `muss geöffnet werden`); tense is limited to Präsens/Präteritum to stay out of double-infinitive territory.
+- **Adjektiv / Zeitform / Genus Verbi / Satzart** — enable whole dimensions (otherwise pinned to no adjective / Präsens / Aktiv / Hauptsatz).
+- **unbestimmter Artikel** (on by default) — `eine Tür / einen Schrank / ein Fenster`; off restores `die / den / das`. Switches the adjective between mixed and weak declension (`ein alter ↔ der alte`).
+- **Negation** — `nicht` before the verb cluster (`öffnet die Tür nicht`), switching to `kein-` when the object is indefinite (`öffnet keine Tür`).
+- **Pronomen (Objekt)** — replaces the object with the matching pronoun to study declension: `der Schrank → ihn → er`.
 
 
 ![img.png](img.png)

@@ -37,7 +37,17 @@ function make(setup: Setup): Selection {
   selection.indices[DIAL.tense] = setup.tense ?? 0
   selection.indices[DIAL.voice] = setup.voice ?? 0
   selection.indices[DIAL.satzart] = setup.satzart ?? 0
-  selection.toggles = { ...selection.toggles, ...setup.toggles }
+  selection.toggles = {
+    ...selection.toggles,
+    // The app defaults to the indefinite article; these golden tests were
+    // written against definite forms, so pin it off unless a test opts in.
+    indefinite: false,
+    // Setting an index implies enabling the dimension; explicit toggles win.
+    tenses: setup.tense !== undefined,
+    voice: setup.voice !== undefined,
+    satzart: setup.satzart !== undefined,
+    ...setup.toggles,
+  }
   return selection
 }
 
@@ -51,7 +61,13 @@ function ru(setup: Setup): string {
 }
 
 describe('German composition', () => {
-  it('composes the initial sentence', () => {
+  it('composes the initial sentence with the default indefinite article', () => {
+    const variant = compose(initialSelection())
+    expect(variant.de.map(([text]) => text).join(' ') + variant.end).toBe('Der Mann öffnet eine Tür.')
+    expect(variant.ru).toBe('Мужчина открывает дверь.')
+  })
+
+  it('composes the definite base sentence', () => {
     expect(de({})).toBe('Der Mann öffnet die Tür.')
     expect(ru({})).toBe('Мужчина открывает дверь.')
   })
@@ -145,14 +161,7 @@ describe('indefinite article', () => {
   })
 })
 
-describe('pronouns', () => {
-  it('replaces the subject with a nominative pronoun', () => {
-    expect(de({ toggles: { subjectPronoun: true } })).toBe('Er öffnet die Tür.')
-    expect(de({ subject: 1, toggles: { subjectPronoun: true } })).toBe('Sie öffnet die Tür.')
-    expect(de({ subject: 2, toggles: { subjectPronoun: true } })).toBe('Es öffnet die Tür.')
-    expect(ru({ toggles: { subjectPronoun: true } })).toBe('Он открывает дверь.')
-  })
-
+describe('object pronoun', () => {
   it('replaces the object with an accusative pronoun by gender', () => {
     expect(de({ toggles: { objectPronoun: true } })).toBe('Der Mann öffnet sie.')
     expect(de({ object: 1, toggles: { objectPronoun: true } })).toBe('Der Mann öffnet ihn.')
@@ -161,10 +170,10 @@ describe('pronouns', () => {
   })
 
   it('declines both pronouns in Passiv (nominative object, dative agent)', () => {
-    const both = { toggles: { subjectPronoun: true, objectPronoun: true } }
-    expect(de({ ...both, voice: 1 })).toBe('Sie wird von ihm geöffnet.')
-    expect(ru({ ...both, voice: 1 })).toBe('Она открывается им.')
-    expect(de({ ...both, subject: 3, object: 1, voice: 1 })).toBe('Er wird von ihnen geöffnet.')
+    const both = { toggles: { person: true, objectPronoun: true } }
+    expect(de({ ...both, person: 2, voice: 1 })).toBe('Sie wird von ihm geöffnet.')
+    expect(ru({ ...both, person: 2, voice: 1 })).toBe('Она открывается им.')
+    expect(de({ ...both, person: 5, object: 1, voice: 1 })).toBe('Er wird von ihnen geöffnet.')
   })
 
   it('suppresses the adjective while the object is a pronoun', () => {

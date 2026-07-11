@@ -1,27 +1,12 @@
 import { useEffect, useRef } from 'react'
 
-interface EnableToggle {
-  checked: boolean
-  disabled?: boolean
-  onChange: () => void
-}
-
-interface FeatureToggle extends EnableToggle {
-  label: string
-}
-
 interface SelectorProps {
   label: string
   values: string[]
   index: number
   active: boolean
-  disabled: boolean
-  /** Per-value availability (e.g. separable verbs while "trennbar" is off). */
+  /** Per-value availability (e.g. Perfekt/Futur while a modal is active). */
   available: boolean[]
-  /** Checkbox inline with the label that enables/disables the whole dial. */
-  enableToggle?: EnableToggle
-  /** Checkboxes under the list that change what the dial produces. */
-  featureToggles?: FeatureToggle[]
   onSelect: (index: number) => void
   onSpin: (direction: 1 | -1) => void
   onActivate: () => void
@@ -32,19 +17,14 @@ const WHEEL_STEP_PX = 40
 /**
  * One fixed-position vertical selector: every value is visible, the current
  * one is highlighted. Click a value to select it; the mouse wheel steps
- * (clamped, no wrap). Unavailable values render dimmed and inert; a disabled
- * dial greys out entirely but keeps its footprint, so toggling causes no
- * layout jump.
+ * (clamped, no wrap). Unavailable values render dimmed and inert.
  */
 export function Selector({
   label,
   values,
   index,
   active,
-  disabled,
   available,
-  enableToggle,
-  featureToggles,
   onSelect,
   onSpin,
   onActivate,
@@ -80,23 +60,11 @@ export function Selector({
   const width = Math.max(...values.map((v) => v.length), label.length) + 3
 
   return (
-    <div className={`selector-block${disabled ? ' selector-disabled' : ''}`}>
-      {enableToggle ? (
-        <label className="selector-head selector-enable">
-          <input
-            type="checkbox"
-            checked={enableToggle.checked}
-            disabled={enableToggle.disabled}
-            onChange={enableToggle.onChange}
-          />
-          <span>{label}</span>
-        </label>
-      ) : (
-        <div className="selector-head">{label}</div>
-      )}
+    <div className="selector-block">
+      <div className="selector-head">{label}</div>
       <div
         ref={listRef}
-        className={`selector${active && !disabled ? ' selector-active' : ''}`}
+        className={`selector${active ? ' selector-active' : ''}`}
         style={{ width: `${width}ch` }}
         onClick={onActivate}
       >
@@ -107,24 +75,13 @@ export function Selector({
             className={`option${i === index ? ' option-current' : ''}${
               available[i] ? '' : ' option-unavailable'
             }`}
-            disabled={disabled || !available[i]}
+            disabled={!available[i]}
             onClick={() => onSelect(i)}
           >
             {value}
           </button>
         ))}
       </div>
-      {featureToggles?.map((feature) => (
-        <label key={feature.label} className="selector-feature">
-          <input
-            type="checkbox"
-            checked={feature.checked}
-            disabled={feature.disabled}
-            onChange={feature.onChange}
-          />
-          <span>{feature.label}</span>
-        </label>
-      ))}
     </div>
   )
 }
