@@ -14,7 +14,7 @@ Primary platform: **desktop** (keyboard + mouse wheel). Touch support comes for 
 
 Template "the door" — subject × verb × tense × voice:
 
-| Dials | Sentence |
+| Dials | Sentence |.ы
 |---|---|
 | der Mann · aufmachen · Präsens · Aktiv | **Der Mann** **macht** die Tür **auf**. |
 | die Frau · aufmachen · Präsens · Aktiv | **Die Frau** macht die Tür auf. |

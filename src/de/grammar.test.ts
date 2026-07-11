@@ -106,6 +106,35 @@ describe('adjective', () => {
   })
 })
 
+describe('indefinite article', () => {
+  const ein = { toggles: { indefinite: true } }
+
+  it('declines ein- by gender and case', () => {
+    expect(de({ ...ein })).toBe('Der Mann öffnet eine Tür.')
+    expect(de({ ...ein, object: 1 })).toBe('Der Mann öffnet einen Schrank.')
+    expect(de({ ...ein, object: 2 })).toBe('Der Mann öffnet ein Fenster.')
+    expect(de({ ...ein, object: 1, voice: 1 })).toBe('Ein Schrank wird vom Mann geöffnet.')
+  })
+
+  it('switches the adjective to mixed declension: it carries the gender marker', () => {
+    const einAdj = { toggles: { indefinite: true, adjective: true } }
+    expect(de({ ...einAdj })).toBe('Der Mann öffnet eine alte Tür.')
+    expect(de({ ...einAdj, object: 1 })).toBe('Der Mann öffnet einen alten Schrank.')
+    expect(de({ ...einAdj, object: 2, adjective: 2 })).toBe('Der Mann öffnet ein kaputtes Fenster.')
+    // Nominative in Passiv: -er/-es where the definite article had plain -e.
+    expect(de({ ...einAdj, object: 1, voice: 1 })).toBe('Ein alter Schrank wird vom Mann geöffnet.')
+    expect(de({ ...einAdj, object: 2, voice: 1 })).toBe('Ein altes Fenster wird vom Mann geöffnet.')
+  })
+
+  it('keeps the Russian translation unchanged (Russian has no articles)', () => {
+    expect(ru({ ...ein })).toBe('Мужчина открывает дверь.')
+  })
+
+  it('is ignored while the object is a pronoun', () => {
+    expect(de({ toggles: { indefinite: true, objectPronoun: true } })).toBe('Der Mann öffnet sie.')
+  })
+})
+
 describe('pronouns', () => {
   it('replaces the subject with a nominative pronoun', () => {
     expect(de({ toggles: { subjectPronoun: true } })).toBe('Er öffnet die Tür.')

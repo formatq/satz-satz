@@ -70,15 +70,13 @@ export default function App() {
                   }
                 : undefined
             }
-            featureToggle={
-              dial.feature
-                ? {
-                    label: dial.feature.label,
-                    checked: toggles[dial.feature.key],
-                    onChange: () => dispatch({ type: 'toggle', key: dial.feature!.key }),
-                  }
-                : undefined
-            }
+            featureToggles={dial.features?.map((feature) => ({
+              label: feature.label,
+              checked: toggles[feature.key],
+              // An article makes no sense on a pronoun object.
+              disabled: feature.key === 'indefinite' && toggles.objectPronoun,
+              onChange: () => dispatch({ type: 'toggle', key: feature.key }),
+            }))}
             onSelect={(index) => dispatch({ type: 'select', dial: i, index })}
             onSpin={(direction) => dispatch({ type: 'spin', dial: i, direction })}
             onActivate={() => dispatch({ type: 'activate', dial: i })}

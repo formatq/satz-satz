@@ -20,8 +20,8 @@ interface SelectorProps {
   available: boolean[]
   /** Checkbox inline with the label that enables/disables the whole dial. */
   enableToggle?: EnableToggle
-  /** Checkbox under the list that changes what the dial produces. */
-  featureToggle?: FeatureToggle
+  /** Checkboxes under the list that change what the dial produces. */
+  featureToggles?: FeatureToggle[]
   onSelect: (index: number) => void
   onSpin: (direction: 1 | -1) => void
   onActivate: () => void
@@ -44,7 +44,7 @@ export function Selector({
   disabled,
   available,
   enableToggle,
-  featureToggle,
+  featureToggles,
   onSelect,
   onSpin,
   onActivate,
@@ -114,17 +114,17 @@ export function Selector({
           </button>
         ))}
       </div>
-      {featureToggle && (
-        <label className="selector-feature">
+      {featureToggles?.map((feature) => (
+        <label key={feature.label} className="selector-feature">
           <input
             type="checkbox"
-            checked={featureToggle.checked}
-            disabled={featureToggle.disabled}
-            onChange={featureToggle.onChange}
+            checked={feature.checked}
+            disabled={feature.disabled}
+            onChange={feature.onChange}
           />
-          <span>{featureToggle.label}</span>
+          <span>{feature.label}</span>
         </label>
-      )}
+      ))}
     </div>
   )
 }

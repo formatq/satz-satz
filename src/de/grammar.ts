@@ -124,6 +124,8 @@ interface Obj {
   gender: 'm' | 'f' | 'n'
   artNom: string
   artAcc: string
+  einNom: string
+  einAcc: string
   pronNom: string
   pronAcc: string
   ru: string
@@ -139,15 +141,18 @@ interface Obj {
 // verb × object combination stays grammatical AND sensible.
 const OBJECTS: Obj[] = [
   {
-    de: 'die Tür', noun: 'Tür', gender: 'f', artNom: 'die', artAcc: 'die', pronNom: 'sie', pronAcc: 'sie',
+    de: 'die Tür', noun: 'Tür', gender: 'f', artNom: 'die', artAcc: 'die', einNom: 'eine', einAcc: 'eine',
+    pronNom: 'sie', pronAcc: 'sie',
     ru: 'дверь', ruAcc: 'дверь', ruNomPron: 'она', ruAccPron: 'её', ruGender: 'f', ruWas: 'была', ruWillBe: 'будет',
   },
   {
-    de: 'der Schrank', noun: 'Schrank', gender: 'm', artNom: 'der', artAcc: 'den', pronNom: 'er', pronAcc: 'ihn',
+    de: 'der Schrank', noun: 'Schrank', gender: 'm', artNom: 'der', artAcc: 'den', einNom: 'ein', einAcc: 'einen',
+    pronNom: 'er', pronAcc: 'ihn',
     ru: 'шкаф', ruAcc: 'шкаф', ruNomPron: 'он', ruAccPron: 'его', ruGender: 'm', ruWas: 'был', ruWillBe: 'будет',
   },
   {
-    de: 'das Fenster', noun: 'Fenster', gender: 'n', artNom: 'das', artAcc: 'das', pronNom: 'es', pronAcc: 'es',
+    de: 'das Fenster', noun: 'Fenster', gender: 'n', artNom: 'das', artAcc: 'das', einNom: 'ein', einAcc: 'ein',
+    pronNom: 'es', pronAcc: 'es',
     ru: 'окно', ruAcc: 'окно', ruNomPron: 'оно', ruAccPron: 'его', ruGender: 'n', ruWas: 'было', ruWillBe: 'будет',
   },
 ]
@@ -180,22 +185,25 @@ export interface DialSpec {
   values: string[]
   /** Toggle that enables/disables the whole dial (checkbox inline with the label). */
   enable?: keyof Toggles
-  /** Feature checkbox under the dial that changes what the dial produces. */
-  feature?: { key: keyof Toggles; label: string }
+  /** Feature checkboxes under the dial that change what the dial produces. */
+  features?: { key: keyof Toggles; label: string }[]
 }
 
 export const DIALS: DialSpec[] = [
   {
     id: 'subject', label: 'Subjekt', values: SUBJECTS.map((s) => s.de),
-    feature: { key: 'subjectPronoun', label: 'Pronomen' },
+    features: [{ key: 'subjectPronoun', label: 'Pronomen' }],
   },
   {
     id: 'verb', label: 'Verb', values: VERBS.map((v) => v.lemma),
-    feature: { key: 'separable', label: 'trennbar' },
+    features: [{ key: 'separable', label: 'trennbar' }],
   },
   {
     id: 'object', label: 'Objekt', values: OBJECTS.map((o) => o.de),
-    feature: { key: 'objectPronoun', label: 'Pronomen' },
+    features: [
+      { key: 'objectPronoun', label: 'Pronomen' },
+      { key: 'indefinite', label: 'unbestimmt' },
+    ],
   },
   { id: 'adjective', label: 'Adjektiv', values: ADJECTIVES.map((a) => a.de), enable: 'adjective' },
   { id: 'tense', label: 'Zeitform', values: [...TENSES], enable: 'tenses' },
@@ -212,6 +220,7 @@ export function initialSelection(): Selection {
       voice: true,
       adjective: false,
       separable: true,
+      indefinite: false,
       subjectPronoun: false,
       objectPronoun: false,
     },
@@ -246,6 +255,7 @@ interface Ctx {
   adjective: Adjective | null
   subjPron: boolean
   objPron: boolean
+  indef: boolean
 }
 
 // A multi-word noun phrase: last word is the noun/pronoun, everything before
@@ -255,14 +265,25 @@ function nounPhrase(phrase: string, nounRole: Token[1]): Token[] {
   return words.map((word, i) => [word, i === words.length - 1 ? nounRole : 'art'])
 }
 
+// Adjective ending in the noun phrase we reach (nominative/accusative,
+// singular). Weak declension after der/die/das: -e, except masculine
+// accusative -en. Mixed declension after ein-: the adjective carries the
+// gender marker the article dropped (-er/-es), masculine accusative -en.
+function adjectiveEnding(gender: 'm' | 'f' | 'n', kase: 'nom' | 'acc', indef: boolean): string {
+  if (gender === 'm') return kase === 'acc' ? 'en' : indef ? 'er' : 'e'
+  if (gender === 'n') return indef ? 'es' : 'e'
+  return 'e'
+}
+
 function objectTokens(c: Ctx, kase: 'nom' | 'acc'): Token[] {
   const o = c.object
   if (c.objPron) return [[kase === 'nom' ? o.pronNom : o.pronAcc, 'obj']]
-  const tokens: Token[] = [[kase === 'nom' ? o.artNom : o.artAcc, 'art']]
+  const article = c.indef
+    ? kase === 'nom' ? o.einNom : o.einAcc
+    : kase === 'nom' ? o.artNom : o.artAcc
+  const tokens: Token[] = [[article, 'art']]
   if (c.adjective) {
-    // Weak declension after the definite article: -e everywhere we reach,
-    // except masculine accusative -en.
-    tokens.push([c.adjective.de + (kase === 'acc' && o.gender === 'm' ? 'en' : 'e'), 'adj'])
+    tokens.push([c.adjective.de + adjectiveEnding(o.gender, kase, c.indef), 'adj'])
   }
   tokens.push([o.noun, 'obj'])
   return tokens
@@ -357,6 +378,7 @@ export function compose(sel: Selection): SentenceVariant {
     adjective: toggles.adjective && !toggles.objectPronoun ? ADJECTIVES[sel.indices[DIAL.adjective]] : null,
     subjPron: toggles.subjectPronoun,
     objPron: toggles.objectPronoun,
+    indef: toggles.indefinite,
   }
   // Disabled dimensions pin to their first value even if the index is stale.
   const tense = TENSES[toggles.tenses ? sel.indices[DIAL.tense] : 0]
