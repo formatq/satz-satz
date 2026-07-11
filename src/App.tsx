@@ -1,27 +1,12 @@
 import { useEffect, useReducer } from 'react'
-import { Dial } from './components/Dial'
 import { HistoryFeed } from './components/HistoryFeed'
+import { Selector } from './components/Selector'
 import { Sentence } from './components/Sentence'
-import { keyFromIndices } from './lib/navigation'
-import { makeInitialState, makeReducer } from './lib/reducer'
-import { validateTemplate } from './lib/validate'
-import type { Template } from './lib/types'
-import tuer from './de/data/tuer.json'
-
-// JSON imports widen tuples to string[][]; the dataset invariants are enforced
-// by tests and the dev-mode validator below.
-const template = tuer as unknown as Template
-
-if (import.meta.env.DEV) {
-  for (const violation of validateTemplate(template)) {
-    console.error(`dataset invariant violated: ${violation}`)
-  }
-}
-
-const reduce = makeReducer(template)
+import { compose, DIALS, isDialDisabled, isValueAvailable } from './de/grammar'
+import { makeInitialState, reduce } from './lib/reducer'
 
 export default function App() {
-  const [state, dispatch] = useReducer(reduce, template, makeInitialState)
+  const [state, dispatch] = useReducer(reduce, undefined, makeInitialState)
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -33,15 +18,15 @@ export default function App() {
           dispatch({ type: 'move-active', direction: 1 })
           break
         case 'ArrowUp':
-          dispatch({ type: 'spin', dim: 'active', direction: -1 })
+          dispatch({ type: 'spin', dial: 'active', direction: -1 })
           break
         case 'ArrowDown':
-          dispatch({ type: 'spin', dim: 'active', direction: 1 })
+          dispatch({ type: 'spin', dial: 'active', direction: 1 })
           break
         default: {
           const digit = Number(event.key)
-          if (digit >= 1 && digit <= template.dimensions.length) {
-            dispatch({ type: 'activate', dim: digit - 1 })
+          if (digit >= 1 && digit <= DIALS.length) {
+            dispatch({ type: 'activate', dial: digit - 1 })
           }
           return
         }
@@ -52,7 +37,8 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
 
-  const variant = template.variants[keyFromIndices(template, state.indices)]
+  const { toggles } = state.selection
+  const variant = compose(state.selection)
 
   return (
     <main className="app">
@@ -62,16 +48,39 @@ export default function App() {
         generation={state.generation}
         ru={variant.ru}
       />
-      <div className="dials">
-        {template.dimensions.map((dim, i) => (
-          <Dial
-            key={dim.id}
-            label={dim.label}
-            values={dim.values}
-            index={state.indices[i]}
+      <div className="selectors">
+        {DIALS.map((dial, i) => (
+          <Selector
+            key={dial.id}
+            label={dial.label}
+            values={dial.values}
+            index={state.selection.indices[i]}
             active={state.active === i}
-            onSpin={(direction) => dispatch({ type: 'spin', dim: i, direction })}
-            onActivate={() => dispatch({ type: 'activate', dim: i })}
+            disabled={isDialDisabled(i, toggles)}
+            available={dial.values.map((_, v) => isValueAvailable(i, v, toggles))}
+            enableToggle={
+              dial.enable
+                ? {
+                    checked: toggles[dial.enable],
+                    // The adjective checkbox locks while the object is a pronoun:
+                    // a pronoun object cannot carry an adjective.
+                    disabled: dial.id === 'adjective' && toggles.objectPronoun,
+                    onChange: () => dispatch({ type: 'toggle', key: dial.enable! }),
+                  }
+                : undefined
+            }
+            featureToggle={
+              dial.feature
+                ? {
+                    label: dial.feature.label,
+                    checked: toggles[dial.feature.key],
+                    onChange: () => dispatch({ type: 'toggle', key: dial.feature!.key }),
+                  }
+                : undefined
+            }
+            onSelect={(index) => dispatch({ type: 'select', dial: i, index })}
+            onSpin={(direction) => dispatch({ type: 'spin', dial: i, direction })}
+            onActivate={() => dispatch({ type: 'activate', dial: i })}
           />
         ))}
       </div>

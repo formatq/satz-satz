@@ -5,6 +5,7 @@
   --dial-bg: #f1ece4;
   --dial-active-border: #c96f2e;
   --dial-current: #1d1d1f;
+  --option-current-bg: #ffffff;
   --highlight: #ffd88a;
   --rule: #d8d2c8;
   font-family: 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
@@ -18,6 +19,7 @@
     --dial-bg: #242220;
     --dial-active-border: #e08b45;
     --dial-current: #f5f0e8;
+    --option-current-bg: #3a352f;
     --highlight: #7a521a;
     --rule: #3a3733;
   }
@@ -34,23 +36,27 @@ body {
   overflow: hidden; /* one screen, no page scroll; also stops touch scroll leakage */
 }
 
+/* Sentence and selectors are pinned; only the history scrolls, inside its
+   own block, so changing anything never shifts the sentence. */
 .app {
   height: 100vh;
-  max-width: 64rem;
+  max-width: 72rem;
   margin: 0 auto;
-  padding: 1.5rem 2rem;
+  padding: 2rem 2rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2rem;
+  gap: 1.75rem;
 }
 
 /* Sentence ------------------------------------------------------------- */
 
 .sentence-block {
+  flex: none;
   text-align: center;
-  min-height: 7rem;
+  /* Two sentence lines + translation: the tallest variant must not push the
+     selectors around. */
+  min-height: 9.5rem;
 }
 
 .sentence {
@@ -85,9 +91,10 @@ body {
   }
 }
 
-/* Dials ---------------------------------------------------------------- */
+/* Selectors ------------------------------------------------------------ */
 
-.dials {
+.selectors {
+  flex: none;
   display: flex;
   gap: 1.25rem;
   align-items: flex-start;
@@ -95,85 +102,100 @@ body {
   flex-wrap: wrap;
 }
 
-.dial-block {
+.selector-block {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
 }
 
-.dial {
-  background: var(--dial-bg);
-  border: 2px solid transparent;
-  border-radius: 0.75rem;
-  padding: 0.4rem 0.6rem;
-  cursor: pointer;
-  overflow: hidden;
-  touch-action: none;
-  user-select: none;
-  text-align: center;
-}
-
-.dial-active {
-  border-color: var(--dial-active-border);
-}
-
-.dial-strip {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.dial-neighbor {
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.4;
-  white-space: pre;
-}
-
-.dial-current {
-  color: var(--dial-current);
-  font-weight: 700;
-  font-size: 1.05rem;
-  line-height: 1.5;
-  white-space: pre;
-}
-
-.slide-from-below {
-  animation: slide-from-below 0.12s ease-out;
-}
-
-.slide-from-above {
-  animation: slide-from-above 0.12s ease-out;
-}
-
-@keyframes slide-from-below {
-  from {
-    transform: translateY(35%);
-    opacity: 0.3;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slide-from-above {
-  from {
-    transform: translateY(-35%);
-    opacity: 0.3;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.dial-label {
+.selector-head {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 1.2rem;
+}
+
+.selector-enable {
+  cursor: pointer;
+}
+
+.selector {
+  background: var(--dial-bg);
+  border: 2px solid transparent;
+  border-radius: 0.75rem;
+  padding: 0.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.selector-active {
+  border-color: var(--dial-active-border);
+}
+
+.option {
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  padding: 0.1rem 0.4rem;
+  text-align: center;
+  white-space: pre;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.option:hover:not(:disabled):not(.option-current) {
+  color: var(--fg);
+}
+
+.option-current {
+  background: var(--option-current-bg);
+  color: var(--dial-current);
+  font-weight: 700;
+}
+
+.option-unavailable {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* A disabled dial greys out but keeps its footprint: no layout jump. */
+.selector-disabled .selector {
+  opacity: 0.4;
+}
+
+.selector-disabled .option {
+  cursor: default;
+}
+
+.selector-feature {
+  font-size: 0.8rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+input[type='checkbox'] {
+  accent-color: var(--dial-active-border);
+  margin: 0;
+  cursor: pointer;
+}
+
+input[type='checkbox']:disabled {
+  cursor: default;
 }
 
 /* History -------------------------------------------------------------- */
@@ -181,12 +203,15 @@ body {
 .history {
   width: 100%;
   max-width: 46rem;
-  flex: 0 1 auto;
-  min-height: 9rem;
-  overflow: hidden;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .history-rule {
+  position: sticky;
+  top: 0;
+  background: var(--bg);
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -194,7 +219,7 @@ body {
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .history-rule::before,
