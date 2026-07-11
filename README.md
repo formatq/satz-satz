@@ -1,4 +1,4 @@
-# satz-satz — German sentence modulator
+# [satz-satz](https://github.com/formatq/satz-satz)— German sentence modulator
 
 One German sentence, eight fixed-position selectors: **Subjekt · Person · Verb · Objekt · Adjektiv · Zeitform · Genus Verbi · Satzart**. Pick a value, the sentence recomposes instantly, and the words that changed flash with a fading highlight — watch the article agree (`die Tür / den Schrank`), the adjective ending flip (`der alte / ein alter`), the separable prefix jump to the end (and fuse back in the Nebensatz), the object become the subject in Passiv.
 
@@ -10,7 +10,11 @@ Features are **toggleable**, so a learner can start with plain Präsens Aktiv an
 - **Pronomen** (on Subjekt and Objekt) — replaces the noun with the matching pronoun to study declension: `er → von ihm`, `der Schrank → ihn → er`.
 - **unbestimmt** — indefinite article for the object, switching the adjective to mixed declension (`der alte → ein alter`).
 
-Sibling of [words-words](https://github.com/formatq/words-words) (English phrasal verbs). See `SPEC-DE.md` for the original v1 design and `IMPLEMENTATION-NOTES.md` for the engineering notes.
+
+![img.png](img.png)
+
+
+Sibling of [words-words](https://github.com/formatq/words-words) (English phrasal verbs). 
 
 ## Controls
 
