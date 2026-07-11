@@ -340,13 +340,34 @@ input[type='checkbox']:disabled {
     font-size: 0.95rem;
   }
 
+  /* Three columns so Subjekt · Verb · Objekt share the first row
+     (the enabled extras fill the second). Content-sized dials instead of
+     the ch-based width, which overflows an iPhone three-across. */
   .selectors {
-    gap: 0.6rem 0.75rem;
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-content: center;
+    justify-items: center;
+    align-items: start;
+    gap: 0.7rem 0.5rem;
+  }
+
+  .selector {
+    width: auto !important;
+  }
+
+  .selector-head {
+    font-size: 0.7rem;
+  }
+
+  .selector-feature {
+    font-size: 0.75rem;
   }
 
   .option {
-    /* Finger-sized tap targets. */
-    padding: 0.3rem 0.4rem;
+    /* Narrower text, but finger-sized tap targets. */
+    font-size: 0.85rem;
+    padding: 0.3rem 0.35rem;
   }
 
   .history {
