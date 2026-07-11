@@ -110,6 +110,22 @@ describe('reducer', () => {
     expect(off.history[0].de).toBe('Der Mann öffnet die Tür.')
   })
 
+  it('enabling a modal snaps the tense out of Perfekt and blocks it', () => {
+    const state = run(
+      { type: 'select', dial: DIAL.tense, index: 2 }, // Perfekt
+      { type: 'toggle', key: 'modal' },
+    )
+    expect(state.selection.indices[DIAL.tense]).toBe(0)
+    expect(state.history[0].de).toBe('Der Mann kann die Tür öffnen.')
+    // Perfekt/Futur stay unreachable while the modal is on.
+    const blocked = reduce(state, { type: 'select', dial: DIAL.tense, index: 3 })
+    expect(blocked.selection.indices[DIAL.tense]).toBe(0)
+    const spun = reduce(state, { type: 'spin', dial: DIAL.tense, direction: 1 })
+    expect(spun.selection.indices[DIAL.tense]).toBe(1)
+    const clamped = reduce(spun, { type: 'spin', dial: DIAL.tense, direction: 1 })
+    expect(clamped.selection.indices[DIAL.tense]).toBe(1)
+  })
+
   it('enabling Satzart and picking Frage rewrites the sentence with a question mark', () => {
     const state = run(
       { type: 'toggle', key: 'satzart' },

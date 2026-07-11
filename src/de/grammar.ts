@@ -83,6 +83,8 @@ interface Verb {
   praeteritum: string[]
   partizip2: string
   ru: {
+    /** Perfective infinitive, for modal constructions (может открыть). */
+    inf: string
     /** Six forms indexed by Person: я·ты·он·мы·вы·они. */
     pres: string[]
     fut: string[]
@@ -100,6 +102,7 @@ const VERBS: Verb[] = [
     praeteritum: ['öffnete', 'öffnetest', 'öffnete', 'öffneten', 'öffnetet', 'öffneten'],
     partizip2: 'geöffnet',
     ru: {
+      inf: 'открыть',
       pres: ['открываю', 'открываешь', 'открывает', 'открываем', 'открываете', 'открывают'],
       fut: ['открою', 'откроешь', 'откроет', 'откроем', 'откроете', 'откроют'],
       past: { m: 'открыл', f: 'открыла', n: 'открыло', pl: 'открыли' },
@@ -113,6 +116,7 @@ const VERBS: Verb[] = [
     praeteritum: ['reparierte', 'repariertest', 'reparierte', 'reparierten', 'repariertet', 'reparierten'],
     partizip2: 'repariert',
     ru: {
+      inf: 'отремонтировать',
       pres: ['ремонтирую', 'ремонтируешь', 'ремонтирует', 'ремонтируем', 'ремонтируете', 'ремонтируют'],
       fut: ['отремонтирую', 'отремонтируешь', 'отремонтирует', 'отремонтируем', 'отремонтируете', 'отремонтируют'],
       past: { m: 'отремонтировал', f: 'отремонтировала', n: 'отремонтировало', pl: 'отремонтировали' },
@@ -126,6 +130,7 @@ const VERBS: Verb[] = [
     praeteritum: ['machte', 'machtest', 'machte', 'machten', 'machtet', 'machten'],
     partizip2: 'aufgemacht',
     ru: {
+      inf: 'открыть',
       pres: ['открываю', 'открываешь', 'открывает', 'открываем', 'открываете', 'открывают'],
       fut: ['открою', 'откроешь', 'откроет', 'откроем', 'откроете', 'откроют'],
       past: { m: 'открыл', f: 'открыла', n: 'открыло', pl: 'открыли' },
@@ -139,6 +144,7 @@ const VERBS: Verb[] = [
     praeteritum: ['machte', 'machtest', 'machte', 'machten', 'machtet', 'machten'],
     partizip2: 'zugemacht',
     ru: {
+      inf: 'закрыть',
       pres: ['закрываю', 'закрываешь', 'закрывает', 'закрываем', 'закрываете', 'закрывают'],
       fut: ['закрою', 'закроешь', 'закроет', 'закроем', 'закроете', 'закроют'],
       past: { m: 'закрыл', f: 'закрыла', n: 'закрыло', pl: 'закрыли' },
@@ -151,6 +157,51 @@ const VERBS: Verb[] = [
 /** Auxiliary paradigms, indexed by Person. */
 const HABEN = ['habe', 'hast', 'hat', 'haben', 'habt', 'haben']
 const WERDEN = ['werde', 'wirst', 'wird', 'werden', 'werdet', 'werden']
+
+interface Modal {
+  lemma: string
+  /** Six finite forms each, indexed by Person (note the irregular singular: kann/muss/will). */
+  praesens: string[]
+  praeteritum: string[]
+  ru: {
+    /** By person: могу·можешь·может·… */
+    pres: string[]
+    /** Overrides `pres` when the Russian form agrees in gender instead (должен/должна). */
+    presGender?: Record<RuGender, string>
+    past: Record<RuGender, string>
+  }
+}
+
+const MODALS: Modal[] = [
+  {
+    lemma: 'können',
+    praesens: ['kann', 'kannst', 'kann', 'können', 'könnt', 'können'],
+    praeteritum: ['konnte', 'konntest', 'konnte', 'konnten', 'konntet', 'konnten'],
+    ru: {
+      pres: ['могу', 'можешь', 'может', 'можем', 'можете', 'могут'],
+      past: { m: 'мог', f: 'могла', n: 'могло', pl: 'могли' },
+    },
+  },
+  {
+    lemma: 'müssen',
+    praesens: ['muss', 'musst', 'muss', 'müssen', 'müsst', 'müssen'],
+    praeteritum: ['musste', 'musstest', 'musste', 'mussten', 'musstet', 'mussten'],
+    ru: {
+      pres: ['должен', 'должен', 'должен', 'должны', 'должны', 'должны'],
+      presGender: { m: 'должен', f: 'должна', n: 'должно', pl: 'должны' },
+      past: { m: 'должен был', f: 'должна была', n: 'должно было', pl: 'должны были' },
+    },
+  },
+  {
+    lemma: 'wollen',
+    praesens: ['will', 'willst', 'will', 'wollen', 'wollt', 'wollen'],
+    praeteritum: ['wollte', 'wolltest', 'wollte', 'wollten', 'wolltet', 'wollten'],
+    ru: {
+      pres: ['хочу', 'хочешь', 'хочет', 'хотим', 'хотите', 'хотят'],
+      past: { m: 'хотел', f: 'хотела', n: 'хотело', pl: 'хотели' },
+    },
+  },
+]
 
 interface Obj {
   de: string
@@ -213,10 +264,10 @@ type Satzart = (typeof SATZARTEN)[number]
 // ---------------------------------------------------------------------------
 // Dial configuration (consumed by the UI and the reducer)
 
-export const DIAL = { subject: 0, person: 1, verb: 2, object: 3, adjective: 4, tense: 5, voice: 6, satzart: 7 } as const
+export const DIAL = { subject: 0, person: 1, verb: 2, modal: 3, object: 4, adjective: 5, tense: 6, voice: 7, satzart: 8 } as const
 
 export interface DialSpec {
-  id: 'subject' | 'person' | 'verb' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart'
+  id: 'subject' | 'person' | 'verb' | 'modal' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart'
   label: string
   values: string[]
   /** Toggle that enables/disables the whole dial (checkbox inline with the label). */
@@ -238,6 +289,7 @@ export const DIALS: DialSpec[] = [
       { key: 'negation', label: 'Negation' },
     ],
   },
+  { id: 'modal', label: 'Modalverb', values: MODALS.map((m) => m.lemma), enable: 'modal' },
   {
     id: 'object', label: 'Objekt', values: OBJECTS.map((o) => o.de),
     features: [
@@ -261,6 +313,7 @@ export function initialSelection(): Selection {
       voice: true,
       satzart: false,
       person: false,
+      modal: false,
       adjective: false,
       separable: true,
       indefinite: false,
@@ -278,6 +331,8 @@ export function isDialDisabled(dial: number, toggles: Toggles): boolean {
       return toggles.person
     case 'person':
       return !toggles.person
+    case 'modal':
+      return !toggles.modal
     case 'adjective':
       // A pronoun object cannot carry an adjective ("die alte sie" is not a thing).
       return !toggles.adjective || toggles.objectPronoun
@@ -293,7 +348,16 @@ export function isDialDisabled(dial: number, toggles: Toggles): boolean {
 }
 
 export function isValueAvailable(dial: number, index: number, toggles: Toggles): boolean {
-  return DIALS[dial].id !== 'verb' || !VERBS[index].sep || toggles.separable
+  switch (DIALS[dial].id) {
+    case 'verb':
+      return !VERBS[index].sep || toggles.separable
+    case 'tense':
+      // With a modal the app stays out of double-infinitive territory
+      // (hat aufmachen können): Präsens and Präteritum only.
+      return !toggles.modal || index < 2
+    default:
+      return true
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -302,6 +366,7 @@ export function isValueAvailable(dial: number, index: number, toggles: Toggles):
 interface Ctx {
   subject: Subject
   verb: Verb
+  modal: Modal | null
   object: Obj
   adjective: Adjective | null
   subjPron: boolean
@@ -389,6 +454,11 @@ const wurdeSg: Slot = () => [['wurde', 'aux']]
 const istSg: Slot = () => [['ist', 'aux']]
 const worden: Slot = () => [['worden', 'aux']]
 const werdenInf: Slot = () => [['werden', 'aux']]
+// The modal takes the finite slot; in Passiv it agrees with the (singular) object.
+const modalPraesens: Slot = (c) => [[c.modal!.praesens[c.subject.person], 'aux']]
+const modalPraeteritum: Slot = (c) => [[c.modal!.praeteritum[c.subject.person], 'aux']]
+const modalPraesensSg: Slot = (c) => [[c.modal!.praesens[2], 'aux']]
+const modalPraeteritumSg: Slot = (c) => [[c.modal!.praeteritum[2], 'aux']]
 
 const FRAMES: Record<`${Satzart}|${Tense}|${Voice}`, Slot[]> = {
   // Hauptsatz: verb-second declarative.
@@ -421,6 +491,26 @@ const FRAMES: Record<`${Satzart}|${Tense}|${Voice}`, Slot[]> = {
   'Nebensatz|Futur I|Passiv': [weil, objAsSubject, vonPhrase, partizip2, werdenInf, wirdSg],
 }
 
+// With a modal the finite slot holds the modal and the main verb becomes a
+// final infinitive; Passiv adds the Infinitiv Passiv (partizip2 + werden).
+// Tense is restricted to Präsens/Präteritum (see isValueAvailable).
+type ModalTense = 'Präsens' | 'Präteritum'
+
+const MODAL_FRAMES: Record<`${Satzart}|${ModalTense}|${Voice}`, Slot[]> = {
+  'Hauptsatz|Präsens|Aktiv': [subjPhrase, modalPraesens, objPhrase, infinitiv],
+  'Hauptsatz|Präteritum|Aktiv': [subjPhrase, modalPraeteritum, objPhrase, infinitiv],
+  'Frage|Präsens|Aktiv': [modalPraesens, subjPhrase, objPhrase, infinitiv],
+  'Frage|Präteritum|Aktiv': [modalPraeteritum, subjPhrase, objPhrase, infinitiv],
+  'Nebensatz|Präsens|Aktiv': [weil, subjPhrase, objPhrase, infinitiv, modalPraesens],
+  'Nebensatz|Präteritum|Aktiv': [weil, subjPhrase, objPhrase, infinitiv, modalPraeteritum],
+  'Hauptsatz|Präsens|Passiv': [objAsSubject, modalPraesensSg, vonPhrase, partizip2, werdenInf],
+  'Hauptsatz|Präteritum|Passiv': [objAsSubject, modalPraeteritumSg, vonPhrase, partizip2, werdenInf],
+  'Frage|Präsens|Passiv': [modalPraesensSg, objAsSubject, vonPhrase, partizip2, werdenInf],
+  'Frage|Präteritum|Passiv': [modalPraeteritumSg, objAsSubject, vonPhrase, partizip2, werdenInf],
+  'Nebensatz|Präsens|Passiv': [weil, objAsSubject, vonPhrase, partizip2, werdenInf, modalPraesensSg],
+  'Nebensatz|Präteritum|Passiv': [weil, objAsSubject, vonPhrase, partizip2, werdenInf, modalPraeteritumSg],
+}
+
 // ---------------------------------------------------------------------------
 // Russian composition (approximate by design; good enough for "see the difference").
 
@@ -428,9 +518,14 @@ function ruAdjective(adjective: Adjective, gender: 'm' | 'f' | 'n', kase: 'nom' 
   return kase === 'acc' && gender === 'f' ? adjective.ru.fAcc : adjective.ru[gender]
 }
 
+/** Modal present: должен agrees in gender, могу/хочу conjugate by person. */
+function ruModalPres(modal: Modal, person: Person, gender: RuGender): string {
+  return modal.ru.presGender?.[gender] ?? modal.ru.pres[person]
+}
+
 /** Clause body without final punctuation or leading capital. */
 function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
-  const { subject, verb, object, adjective } = c
+  const { subject, verb, modal, object, adjective } = c
   // Russian negates with "не" before the (finite) verb, for nicht and kein alike.
   const ne = c.neg ? 'не ' : ''
   if (voice === 'Aktiv') {
@@ -438,6 +533,13 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
     const obj = c.objPron
       ? object.ruAccPron
       : `${adjective ? ruAdjective(adjective, object.ruGender, 'acc') + ' ' : ''}${object.ruAcc}`
+    if (modal) {
+      const form =
+        tense === 'Präteritum'
+          ? modal.ru.past[subject.ruGender]
+          : ruModalPres(modal, subject.person, subject.ruGender)
+      return `${subj} ${ne}${form} ${verb.ru.inf} ${obj}`
+    }
     switch (tense) {
       case 'Präsens':
         return `${subj} ${ne}${verb.ru.pres[subject.person]} ${obj}`
@@ -453,6 +555,14 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
     : `${adjective ? ruAdjective(adjective, object.ruGender, 'nom') + ' ' : ''}${object.ru}`
   const agent = c.subjPron ? subject.ruInstrPronoun : subject.ruInstr
   const part = verb.ru.passivPart[object.ruGender]
+  if (modal) {
+    // The modal agrees with the passive subject: дверь может/должна быть открыта.
+    const form =
+      tense === 'Präteritum'
+        ? modal.ru.past[object.ruGender]
+        : ruModalPres(modal, 2, object.ruGender)
+    return `${objSubj} ${ne}${form} быть ${part} ${agent}`
+  }
   switch (tense) {
     case 'Präsens':
       return `${objSubj} ${ne}${verb.ru.passivPres} ${agent}`
@@ -488,6 +598,7 @@ export function compose(sel: Selection): SentenceVariant {
   const ctx: Ctx = {
     subject: toggles.person ? PERSONS[sel.indices[DIAL.person]] : SUBJECTS[sel.indices[DIAL.subject]],
     verb: VERBS[sel.indices[DIAL.verb]],
+    modal: toggles.modal ? MODALS[sel.indices[DIAL.modal]] : null,
     object: OBJECTS[sel.indices[DIAL.object]],
     adjective: toggles.adjective && !toggles.objectPronoun ? ADJECTIVES[sel.indices[DIAL.adjective]] : null,
     subjPron: toggles.subjectPronoun,
@@ -499,7 +610,12 @@ export function compose(sel: Selection): SentenceVariant {
   const tense = TENSES[toggles.tenses ? sel.indices[DIAL.tense] : 0]
   const voice = VOICES[toggles.voice ? sel.indices[DIAL.voice] : 0]
   const satzart = SATZARTEN[toggles.satzart ? sel.indices[DIAL.satzart] : 0]
-  const tokens = FRAMES[`${satzart}|${tense}|${voice}`].flatMap((slot) => slot(ctx))
+  // Modal frames only exist for Präsens/Präteritum; the reducer keeps the
+  // tense in range, this clamp is just a safety net for stale selections.
+  const frame = ctx.modal
+    ? MODAL_FRAMES[`${satzart}|${tense === 'Präsens' || tense === 'Präteritum' ? tense : 'Präsens'}|${voice}`]
+    : FRAMES[`${satzart}|${tense}|${voice}`]
+  const tokens = frame.flatMap((slot) => slot(ctx))
   // Capitalize the first word; the Nebensatz opener "…," has no letter to raise.
   tokens[0] = [capitalize(tokens[0][0]), tokens[0][1]]
   return {

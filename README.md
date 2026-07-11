@@ -10,6 +10,7 @@ Features are **toggleable**, so a learner can start with plain Präsens Aktiv an
 - **Pronomen** (on Subjekt and Objekt) — replaces the noun with the matching pronoun to study declension: `er → von ihm`, `der Schrank → ihn → er`.
 - **unbestimmt** — indefinite article for the object, switching the adjective to mixed declension (`der alte → ein alter`).
 - **Negation** — `nicht` before the verb cluster (`öffnet die Tür nicht`), switching to `kein-` when the object is indefinite (`öffnet keine Tür`).
+- **Modalverb** — `können / müssen / wollen` take the finite slot and send the main verb to the end as an infinitive (`kann die Tür aufmachen`, Passiv: `muss geöffnet werden`); tense is limited to Präsens/Präteritum to stay out of double-infinitive territory.
 
 
 ![img.png](img.png)
@@ -21,7 +22,7 @@ Sibling of [words-words](https://github.com/formatq/words-words) (English phrasa
 
 - Click any value to select it; mouse wheel over a selector steps through it (clamped, no wrap)
 - `←` / `→` — move between selectors (skips disabled ones), `↑` / `↓` — step the active one
-- `1`–`8` — jump straight to a selector
+- `1`–`9` — jump straight to a selector
 
 The sentence and selectors stay pinned; the history feed fills the rest of the screen and scrolls on its own.
 

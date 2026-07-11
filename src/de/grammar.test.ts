@@ -11,11 +11,13 @@ import { compose, DIAL, initialSelection } from './grammar'
 // voice:   0 Aktiv · 1 Passiv
 // satzart: 0 Hauptsatz · 1 Frage · 2 Nebensatz
 // person:  0 ich · 1 du · 2 er · 3 wir · 4 ihr · 5 sie
+// modal:   0 können · 1 müssen · 2 wollen
 
 interface Setup {
   subject?: number
   person?: number
   verb?: number
+  modal?: number
   object?: number
   adjective?: number
   tense?: number
@@ -29,6 +31,7 @@ function make(setup: Setup): Selection {
   selection.indices[DIAL.subject] = setup.subject ?? 0
   selection.indices[DIAL.person] = setup.person ?? 0
   selection.indices[DIAL.verb] = setup.verb ?? 0
+  selection.indices[DIAL.modal] = setup.modal ?? 0
   selection.indices[DIAL.object] = setup.object ?? 0
   selection.indices[DIAL.adjective] = setup.adjective ?? 0
   selection.indices[DIAL.tense] = setup.tense ?? 0
@@ -166,6 +169,62 @@ describe('pronouns', () => {
 
   it('suppresses the adjective while the object is a pronoun', () => {
     expect(de({ toggles: { adjective: true, objectPronoun: true } })).toBe('Der Mann öffnet sie.')
+  })
+})
+
+describe('modal verbs', () => {
+  const on = { toggles: { modal: true } }
+
+  it('puts the modal in the finite slot and the main verb at the end as infinitive', () => {
+    expect(de({ ...on, verb: 2 })).toBe('Der Mann kann die Tür aufmachen.')
+    expect(de({ ...on, modal: 1, subject: 1 })).toBe('Die Frau muss die Tür öffnen.')
+    expect(de({ ...on, modal: 2, subject: 3 })).toBe('Die Kinder wollen die Tür öffnen.')
+    expect(ru({ ...on, verb: 2 })).toBe('Мужчина может открыть дверь.')
+    expect(ru({ ...on, modal: 1, subject: 1 })).toBe('Женщина должна открыть дверь.')
+  })
+
+  it('conjugates the irregular modal Präsens by person', () => {
+    const person = { toggles: { modal: true, person: true } }
+    expect(de({ ...person, person: 0 })).toBe('Ich kann die Tür öffnen.')
+    expect(de({ ...person, person: 1, modal: 2 })).toBe('Du willst die Tür öffnen.')
+    expect(de({ ...person, person: 4, modal: 1 })).toBe('Ihr müsst die Tür öffnen.')
+    expect(ru({ ...person, person: 0 })).toBe('Я могу открыть дверь.')
+  })
+
+  it('uses the Präteritum modal forms', () => {
+    expect(de({ ...on, tense: 1 })).toBe('Der Mann konnte die Tür öffnen.')
+    expect(de({ ...on, tense: 1, modal: 1, subject: 1 })).toBe('Die Frau musste die Tür öffnen.')
+    expect(ru({ ...on, tense: 1 })).toBe('Мужчина мог открыть дверь.')
+    expect(ru({ ...on, tense: 1, modal: 1, subject: 1 })).toBe('Женщина должна была открыть дверь.')
+  })
+
+  it('builds the Infinitiv Passiv: modal + partizip + werden', () => {
+    expect(de({ ...on, voice: 1, verb: 2 })).toBe('Die Tür kann vom Mann aufgemacht werden.')
+    expect(de({ ...on, voice: 1, modal: 1 })).toBe('Die Tür muss vom Mann geöffnet werden.')
+    expect(de({ ...on, voice: 1, tense: 1 })).toBe('Die Tür konnte vom Mann geöffnet werden.')
+    expect(ru({ ...on, voice: 1 })).toBe('Дверь может быть открыта мужчиной.')
+    expect(ru({ ...on, voice: 1, modal: 1 })).toBe('Дверь должна быть открыта мужчиной.')
+  })
+
+  it('moves the modal in Frage and Nebensatz', () => {
+    const satz = { toggles: { modal: true, satzart: true } }
+    expect(de({ ...satz, satzart: 1, verb: 2 })).toBe('Kann der Mann die Tür aufmachen?')
+    expect(de({ ...satz, satzart: 2, verb: 2 })).toBe('…, weil der Mann die Tür aufmachen kann.')
+    expect(de({ ...satz, satzart: 2, voice: 1 })).toBe('…, weil die Tür vom Mann geöffnet werden kann.')
+  })
+
+  it('combines with negation', () => {
+    expect(de({ ...on, toggles: { ...on.toggles, negation: true } })).toBe(
+      'Der Mann kann die Tür nicht öffnen.',
+    )
+    expect(ru({ ...on, toggles: { ...on.toggles, negation: true } })).toBe(
+      'Мужчина не может открыть дверь.',
+    )
+  })
+
+  it('clamps Perfekt/Futur to Präsens while a modal is active', () => {
+    expect(de({ ...on, tense: 2 })).toBe('Der Mann kann die Tür öffnen.')
+    expect(de({ ...on, tense: 3 })).toBe('Der Mann kann die Tür öffnen.')
   })
 })
 

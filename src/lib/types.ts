@@ -19,6 +19,8 @@ export interface Toggles {
   satzart: boolean
   /** On → the Person dial (ich/du/er/…) drives the subject; the Subjekt dial is disabled. */
   person: boolean
+  /** On → a modal verb carries the finite slot; the main verb becomes a final infinitive. Restricts tense to Präsens/Präteritum. */
+  modal: boolean
   /** Off → no adjective in the object phrase, adjective dial disabled. */
   adjective: boolean
   /** Off → separable verbs unavailable in the verb dial. */
