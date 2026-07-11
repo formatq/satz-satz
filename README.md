@@ -9,6 +9,7 @@ Features are **toggleable**, so a learner can start with plain Präsens Aktiv an
 - **trennbar** — adds separable verbs (`aufmachen`, `zumachen`) to the verb list.
 - **Pronomen** (on Subjekt and Objekt) — replaces the noun with the matching pronoun to study declension: `er → von ihm`, `der Schrank → ihn → er`.
 - **unbestimmt** — indefinite article for the object, switching the adjective to mixed declension (`der alte → ein alter`).
+- **Negation** — `nicht` before the verb cluster (`öffnet die Tür nicht`), switching to `kein-` when the object is indefinite (`öffnet keine Tür`).
 
 
 ![img.png](img.png)

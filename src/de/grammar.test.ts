@@ -169,6 +169,49 @@ describe('pronouns', () => {
   })
 })
 
+describe('negation', () => {
+  const neg = { toggles: { negation: true } }
+
+  it('places nicht before the final verb cluster', () => {
+    expect(de({ ...neg })).toBe('Der Mann öffnet die Tür nicht.')
+    expect(de({ ...neg, verb: 2 })).toBe('Der Mann macht die Tür nicht auf.')
+    expect(de({ ...neg, verb: 2, tense: 2 })).toBe('Der Mann hat die Tür nicht aufgemacht.')
+    expect(de({ ...neg, tense: 3 })).toBe('Der Mann wird die Tür nicht öffnen.')
+    expect(ru({ ...neg })).toBe('Мужчина не открывает дверь.')
+    expect(ru({ ...neg, tense: 2 })).toBe('Мужчина не открыл дверь.')
+  })
+
+  it('places nicht after the agent in Passiv', () => {
+    expect(de({ ...neg, voice: 1 })).toBe('Die Tür wird vom Mann nicht geöffnet.')
+    expect(de({ ...neg, voice: 1, tense: 2, verb: 2 })).toBe('Die Tür ist vom Mann nicht aufgemacht worden.')
+    expect(ru({ ...neg, voice: 1 })).toBe('Дверь не открывается мужчиной.')
+    expect(ru({ ...neg, voice: 1, tense: 2 })).toBe('Дверь не была открыта мужчиной.')
+  })
+
+  it('switches to kein- when the object is indefinite', () => {
+    const kein = { toggles: { negation: true, indefinite: true } }
+    expect(de({ ...kein })).toBe('Der Mann öffnet keine Tür.')
+    expect(de({ ...kein, object: 1 })).toBe('Der Mann öffnet keinen Schrank.')
+    expect(de({ ...kein, object: 2 })).toBe('Der Mann öffnet kein Fenster.')
+    expect(de({ ...kein, object: 1, toggles: { ...kein.toggles, adjective: true } })).toBe(
+      'Der Mann öffnet keinen alten Schrank.',
+    )
+    expect(de({ ...kein, voice: 1 })).toBe('Keine Tür wird vom Mann geöffnet.')
+  })
+
+  it('keeps nicht for pronoun objects even with unbestimmt on', () => {
+    expect(de({ toggles: { negation: true, indefinite: true, objectPronoun: true } })).toBe(
+      'Der Mann öffnet sie nicht.',
+    )
+  })
+
+  it('works inside Frage and Nebensatz', () => {
+    const satz = { toggles: { negation: true, satzart: true } }
+    expect(de({ ...satz, satzart: 1, verb: 2 })).toBe('Macht der Mann die Tür nicht auf?')
+    expect(de({ ...satz, satzart: 2, verb: 2 })).toBe('…, weil der Mann die Tür nicht aufmacht.')
+  })
+})
+
 describe('person', () => {
   const on = { toggles: { person: true } }
 

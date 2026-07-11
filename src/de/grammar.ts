@@ -233,7 +233,10 @@ export const DIALS: DialSpec[] = [
   { id: 'person', label: 'Person', values: PERSONS.map((p) => p.de), enable: 'person' },
   {
     id: 'verb', label: 'Verb', values: VERBS.map((v) => v.lemma),
-    features: [{ key: 'separable', label: 'trennbar' }],
+    features: [
+      { key: 'separable', label: 'trennbar' },
+      { key: 'negation', label: 'Negation' },
+    ],
   },
   {
     id: 'object', label: 'Objekt', values: OBJECTS.map((o) => o.de),
@@ -261,6 +264,7 @@ export function initialSelection(): Selection {
       adjective: false,
       separable: true,
       indefinite: false,
+      negation: false,
       subjectPronoun: false,
       objectPronoun: false,
     },
@@ -303,6 +307,17 @@ interface Ctx {
   subjPron: boolean
   objPron: boolean
   indef: boolean
+  neg: boolean
+}
+
+// German negates an indefinite noun phrase in its article (kein-) and
+// everything else with `nicht` before the final verb cluster.
+function usesKein(c: Ctx): boolean {
+  return c.neg && c.indef && !c.objPron
+}
+
+function nichtTokens(c: Ctx): Token[] {
+  return c.neg && !usesKein(c) ? [['nicht', 'other']] : []
 }
 
 // A multi-word noun phrase: last word is the noun/pronoun, everything before
@@ -325,9 +340,11 @@ function adjectiveEnding(gender: 'm' | 'f' | 'n', kase: 'nom' | 'acc', indef: bo
 function objectTokens(c: Ctx, kase: 'nom' | 'acc'): Token[] {
   const o = c.object
   if (c.objPron) return [[kase === 'nom' ? o.pronNom : o.pronAcc, 'obj']]
-  const article = c.indef
+  let article = c.indef
     ? kase === 'nom' ? o.einNom : o.einAcc
     : kase === 'nom' ? o.artNom : o.artAcc
+  // kein- declines exactly like ein-: eine → keine, einen → keinen.
+  if (usesKein(c)) article = `k${article}`
   const tokens: Token[] = [[article, 'art']]
   if (c.adjective) {
     tokens.push([c.adjective.de + adjectiveEnding(o.gender, kase, c.indef), 'adj'])
@@ -339,9 +356,14 @@ function objectTokens(c: Ctx, kase: 'nom' | 'acc'): Token[] {
 type Slot = (c: Ctx) => Token[]
 
 const subjPhrase: Slot = (c) => (c.subjPron ? [[c.subject.pronoun, 'subj']] : nounPhrase(c.subject.de, 'subj'))
-const objPhrase: Slot = (c) => objectTokens(c, 'acc')
+// `nicht` negates the predicate, so in every frame it lands right after the
+// object (Aktiv) / the agent (Passiv), just before the final verb cluster.
+const objPhrase: Slot = (c) => [...objectTokens(c, 'acc'), ...nichtTokens(c)]
 const objAsSubject: Slot = (c) => objectTokens(c, 'nom')
-const vonPhrase: Slot = (c) => nounPhrase(c.subjPron ? c.subject.vonPronoun : c.subject.von, 'subj')
+const vonPhrase: Slot = (c) => [
+  ...nounPhrase(c.subjPron ? c.subject.vonPronoun : c.subject.von, 'subj'),
+  ...nichtTokens(c),
+]
 const finPraesens: Slot = (c) => [[c.verb.praesens[c.subject.person], 'verb']]
 const finPraeteritum: Slot = (c) => [[c.verb.praeteritum[c.subject.person], 'verb']]
 // Verb-final position (Nebensatz): a separable verb fuses back onto its
@@ -409,6 +431,8 @@ function ruAdjective(adjective: Adjective, gender: 'm' | 'f' | 'n', kase: 'nom' 
 /** Clause body without final punctuation or leading capital. */
 function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
   const { subject, verb, object, adjective } = c
+  // Russian negates with "не" before the (finite) verb, for nicht and kein alike.
+  const ne = c.neg ? 'не ' : ''
   if (voice === 'Aktiv') {
     const subj = c.subjPron ? subject.ruPronoun : subject.ru
     const obj = c.objPron
@@ -416,12 +440,12 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
       : `${adjective ? ruAdjective(adjective, object.ruGender, 'acc') + ' ' : ''}${object.ruAcc}`
     switch (tense) {
       case 'Präsens':
-        return `${subj} ${verb.ru.pres[subject.person]} ${obj}`
+        return `${subj} ${ne}${verb.ru.pres[subject.person]} ${obj}`
       case 'Präteritum':
       case 'Perfekt':
-        return `${subj} ${verb.ru.past[subject.ruGender]} ${obj}`
+        return `${subj} ${ne}${verb.ru.past[subject.ruGender]} ${obj}`
       case 'Futur I':
-        return `${subj} ${verb.ru.fut[subject.person]} ${obj}`
+        return `${subj} ${ne}${verb.ru.fut[subject.person]} ${obj}`
     }
   }
   const objSubj = c.objPron
@@ -431,12 +455,12 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
   const part = verb.ru.passivPart[object.ruGender]
   switch (tense) {
     case 'Präsens':
-      return `${objSubj} ${verb.ru.passivPres} ${agent}`
+      return `${objSubj} ${ne}${verb.ru.passivPres} ${agent}`
     case 'Präteritum':
     case 'Perfekt':
-      return `${objSubj} ${object.ruWas} ${part} ${agent}`
+      return `${objSubj} ${ne}${object.ruWas} ${part} ${agent}`
     case 'Futur I':
-      return `${objSubj} ${object.ruWillBe} ${part} ${agent}`
+      return `${objSubj} ${ne}${object.ruWillBe} ${part} ${agent}`
   }
 }
 
@@ -469,6 +493,7 @@ export function compose(sel: Selection): SentenceVariant {
     subjPron: toggles.subjectPronoun,
     objPron: toggles.objectPronoun,
     indef: toggles.indefinite,
+    neg: toggles.negation,
   }
   // Disabled dimensions pin to their first value even if the index is stale.
   const tense = TENSES[toggles.tenses ? sel.indices[DIAL.tense] : 0]

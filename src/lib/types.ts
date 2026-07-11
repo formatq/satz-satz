@@ -25,6 +25,8 @@ export interface Toggles {
   separable: boolean
   /** On → indefinite article for the object (ein/eine), mixed adjective declension. */
   indefinite: boolean
+  /** On → negated sentence: `nicht` before the verb cluster, or `kein-` when the object is indefinite. */
+  negation: boolean
   /** On → the subject renders as a pronoun (er/sie/es/sie, von ihm/ihr/ihnen). */
   subjectPronoun: boolean
   /** On → the object renders as a pronoun (ihn/sie/es); suppresses the adjective. */
