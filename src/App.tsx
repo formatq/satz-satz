@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { HistoryFeed } from './components/HistoryFeed'
 import { Selector } from './components/Selector'
 import { Sentence } from './components/Sentence'
@@ -7,6 +7,7 @@ import { makeInitialState, reduce } from './lib/reducer'
 
 export default function App() {
   const [state, dispatch] = useReducer(reduce, undefined, makeInitialState)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -85,6 +86,36 @@ export default function App() {
         ))}
       </div>
       <HistoryFeed entries={state.history} />
+      {/* Mobile-only hamburger: disabled dials are hidden there instead of
+          greyed, so their enable-toggles live in this menu. */}
+      <div className="settings">
+        <button
+          type="button"
+          className="settings-button"
+          aria-label="Features"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          ☰
+        </button>
+        {menuOpen && (
+          <>
+            <div className="settings-backdrop" onClick={() => setMenuOpen(false)} />
+            <div className="settings-menu">
+              {DIALS.filter((dial) => dial.enable).map((dial) => (
+                <label key={dial.id}>
+                  <input
+                    type="checkbox"
+                    checked={toggles[dial.enable!]}
+                    disabled={dial.id === 'adjective' && toggles.objectPronoun}
+                    onChange={() => dispatch({ type: 'toggle', key: dial.enable! })}
+                  />
+                  <span>{dial.label}</span>
+                </label>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </main>
   )
 }
