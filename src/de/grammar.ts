@@ -20,20 +20,22 @@ interface Subject {
   ru: string
   ruGender: RuGender
   ruInstr: string
+  en: string
+  enBy: string
 }
 
 const SUBJECTS: Subject[] = [
   {
-    de: 'der Mann', von: 'vom Mann', person: 2, ru: 'мужчина', ruGender: 'm', ruInstr: 'мужчиной',
+    de: 'der Mann', von: 'vom Mann', person: 2, ru: 'мужчина', ruGender: 'm', ruInstr: 'мужчиной', en: 'the man', enBy: 'by the man',
   },
   {
-    de: 'die Frau', von: 'von der Frau', person: 2, ru: 'женщина', ruGender: 'f', ruInstr: 'женщиной',
+    de: 'die Frau', von: 'von der Frau', person: 2, ru: 'женщина', ruGender: 'f', ruInstr: 'женщиной', en: 'the woman', enBy: 'by the woman',
   },
   {
-    de: 'das Kind', von: 'vom Kind', person: 2, ru: 'ребёнок', ruGender: 'm', ruInstr: 'ребёнком',
+    de: 'das Kind', von: 'vom Kind', person: 2, ru: 'ребёнок', ruGender: 'm', ruInstr: 'ребёнком', en: 'the child', enBy: 'by the child',
   },
   {
-    de: 'die Kinder', von: 'von den Kindern', person: 5, ru: 'дети', ruGender: 'pl', ruInstr: 'детьми',
+    de: 'die Kinder', von: 'von den Kindern', person: 5, ru: 'дети', ruGender: 'pl', ruInstr: 'детьми', en: 'the children', enBy: 'by the children',
   },
 ]
 
@@ -41,22 +43,22 @@ const SUBJECTS: Subject[] = [
 // (agreement, von-phrase, Russian) works unchanged.
 const PERSONS: Subject[] = [
   {
-    de: 'ich', von: 'von mir', person: 0, ru: 'я', ruGender: 'm', ruInstr: 'мной',
+    de: 'ich', von: 'von mir', person: 0, ru: 'я', ruGender: 'm', ruInstr: 'мной', en: 'I', enBy: 'by me',
   },
   {
-    de: 'du', von: 'von dir', person: 1, ru: 'ты', ruGender: 'm', ruInstr: 'тобой',
+    de: 'du', von: 'von dir', person: 1, ru: 'ты', ruGender: 'm', ruInstr: 'тобой', en: 'you', enBy: 'by you',
   },
   {
-    de: 'er', von: 'von ihm', person: 2, ru: 'он', ruGender: 'm', ruInstr: 'им',
+    de: 'er', von: 'von ihm', person: 2, ru: 'он', ruGender: 'm', ruInstr: 'им', en: 'he', enBy: 'by him',
   },
   {
-    de: 'wir', von: 'von uns', person: 3, ru: 'мы', ruGender: 'pl', ruInstr: 'нами',
+    de: 'wir', von: 'von uns', person: 3, ru: 'мы', ruGender: 'pl', ruInstr: 'нами', en: 'we', enBy: 'by us',
   },
   {
-    de: 'ihr', von: 'von euch', person: 4, ru: 'вы', ruGender: 'pl', ruInstr: 'вами',
+    de: 'ihr', von: 'von euch', person: 4, ru: 'вы', ruGender: 'pl', ruInstr: 'вами', en: 'you', enBy: 'by you',
   },
   {
-    de: 'sie', von: 'von ihnen', person: 5, ru: 'они', ruGender: 'pl', ruInstr: 'ими',
+    de: 'sie', von: 'von ihnen', person: 5, ru: 'они', ruGender: 'pl', ruInstr: 'ими', en: 'they', enBy: 'by them',
   },
 ]
 
@@ -67,6 +69,7 @@ interface Verb {
   praesens: string[]
   praeteritum: string[]
   partizip2: string
+  en: { base: string; s3: string; past: string; part: string }
   ru: {
     /** Perfective infinitive, for modal constructions (может открыть). */
     inf: string
@@ -82,6 +85,7 @@ interface Verb {
 const VERBS: Verb[] = [
   {
     lemma: 'öffnen', sep: null,
+    en: { base: 'open', s3: 'opens', past: 'opened', part: 'opened' },
     praesens: ['öffne', 'öffnest', 'öffnet', 'öffnen', 'öffnet', 'öffnen'],
     praeteritum: ['öffnete', 'öffnetest', 'öffnete', 'öffneten', 'öffnetet', 'öffneten'],
     partizip2: 'geöffnet',
@@ -96,6 +100,7 @@ const VERBS: Verb[] = [
   },
   {
     lemma: 'reparieren', sep: null,
+    en: { base: 'repair', s3: 'repairs', past: 'repaired', part: 'repaired' },
     praesens: ['repariere', 'reparierst', 'repariert', 'reparieren', 'repariert', 'reparieren'],
     praeteritum: ['reparierte', 'repariertest', 'reparierte', 'reparierten', 'repariertet', 'reparierten'],
     partizip2: 'repariert',
@@ -110,6 +115,7 @@ const VERBS: Verb[] = [
   },
   {
     lemma: 'aufmachen', sep: 'auf',
+    en: { base: 'open', s3: 'opens', past: 'opened', part: 'opened' },
     praesens: ['mache', 'machst', 'macht', 'machen', 'macht', 'machen'],
     praeteritum: ['machte', 'machtest', 'machte', 'machten', 'machtet', 'machten'],
     partizip2: 'aufgemacht',
@@ -124,6 +130,7 @@ const VERBS: Verb[] = [
   },
   {
     lemma: 'zumachen', sep: 'zu',
+    en: { base: 'close', s3: 'closes', past: 'closed', part: 'closed' },
     praesens: ['mache', 'machst', 'macht', 'machen', 'macht', 'machen'],
     praeteritum: ['machte', 'machtest', 'machte', 'machten', 'machtet', 'machten'],
     partizip2: 'zugemacht',
@@ -147,6 +154,8 @@ interface Modal {
   /** Six finite forms each, indexed by Person (note the irregular singular: kann/muss/will). */
   praesens: string[]
   praeteritum: string[]
+  /** English: `can` is a true modal; müssen/wollen go periphrastic (have to / want to) with do-support. */
+  en: { can: true; past: string } | { can?: undefined; base: string; s3: string; past: string }
   ru: {
     /** By person: могу·можешь·может·… */
     pres: string[]
@@ -159,6 +168,7 @@ interface Modal {
 const MODALS: Modal[] = [
   {
     lemma: 'können',
+    en: { can: true, past: 'could' },
     praesens: ['kann', 'kannst', 'kann', 'können', 'könnt', 'können'],
     praeteritum: ['konnte', 'konntest', 'konnte', 'konnten', 'konntet', 'konnten'],
     ru: {
@@ -168,6 +178,7 @@ const MODALS: Modal[] = [
   },
   {
     lemma: 'müssen',
+    en: { base: 'have to', s3: 'has to', past: 'had to' },
     praesens: ['muss', 'musst', 'muss', 'müssen', 'müsst', 'müssen'],
     praeteritum: ['musste', 'musstest', 'musste', 'mussten', 'musstet', 'mussten'],
     ru: {
@@ -178,6 +189,7 @@ const MODALS: Modal[] = [
   },
   {
     lemma: 'wollen',
+    en: { base: 'want to', s3: 'wants to', past: 'wanted to' },
     praesens: ['will', 'willst', 'will', 'wollen', 'wollt', 'wollen'],
     praeteritum: ['wollte', 'wolltest', 'wollte', 'wollten', 'wolltet', 'wollten'],
     ru: {
@@ -204,6 +216,7 @@ interface Obj {
   ruGender: 'm' | 'f' | 'n'
   ruWas: string
   ruWillBe: string
+  en: string
 }
 
 // Three genders — all three can be opened, closed and repaired, so every
@@ -212,29 +225,30 @@ const OBJECTS: Obj[] = [
   {
     de: 'die Tür', noun: 'Tür', gender: 'f', artNom: 'die', artAcc: 'die', einNom: 'eine', einAcc: 'eine',
     pronNom: 'sie', pronAcc: 'sie',
-    ru: 'дверь', ruAcc: 'дверь', ruNomPron: 'она', ruAccPron: 'её', ruGender: 'f', ruWas: 'была', ruWillBe: 'будет',
+    ru: 'дверь', ruAcc: 'дверь', ruNomPron: 'она', ruAccPron: 'её', ruGender: 'f', ruWas: 'была', ruWillBe: 'будет', en: 'door',
   },
   {
     de: 'der Schrank', noun: 'Schrank', gender: 'm', artNom: 'der', artAcc: 'den', einNom: 'ein', einAcc: 'einen',
     pronNom: 'er', pronAcc: 'ihn',
-    ru: 'шкаф', ruAcc: 'шкаф', ruNomPron: 'он', ruAccPron: 'его', ruGender: 'm', ruWas: 'был', ruWillBe: 'будет',
+    ru: 'шкаф', ruAcc: 'шкаф', ruNomPron: 'он', ruAccPron: 'его', ruGender: 'm', ruWas: 'был', ruWillBe: 'будет', en: 'cupboard',
   },
   {
     de: 'das Fenster', noun: 'Fenster', gender: 'n', artNom: 'das', artAcc: 'das', einNom: 'ein', einAcc: 'ein',
     pronNom: 'es', pronAcc: 'es',
-    ru: 'окно', ruAcc: 'окно', ruNomPron: 'оно', ruAccPron: 'его', ruGender: 'n', ruWas: 'было', ruWillBe: 'будет',
+    ru: 'окно', ruAcc: 'окно', ruNomPron: 'оно', ruAccPron: 'его', ruGender: 'n', ruWas: 'было', ruWillBe: 'будет', en: 'window',
   },
 ]
 
 interface Adjective {
   de: string
+  en: string
   ru: { m: string; f: string; n: string; fAcc: string }
 }
 
 const ADJECTIVES: Adjective[] = [
-  { de: 'alt', ru: { m: 'старый', f: 'старая', n: 'старое', fAcc: 'старую' } },
-  { de: 'neu', ru: { m: 'новый', f: 'новая', n: 'новое', fAcc: 'новую' } },
-  { de: 'kaputt', ru: { m: 'сломанный', f: 'сломанная', n: 'сломанное', fAcc: 'сломанную' } },
+  { de: 'alt', en: 'old', ru: { m: 'старый', f: 'старая', n: 'старое', fAcc: 'старую' } },
+  { de: 'neu', en: 'new', ru: { m: 'новый', f: 'новая', n: 'новое', fAcc: 'новую' } },
+  { de: 'kaputt', en: 'broken', ru: { m: 'сломанный', f: 'сломанная', n: 'сломанное', fAcc: 'сломанную' } },
 ]
 
 export const TENSES = ['Präsens', 'Präteritum', 'Perfekt', 'Futur I'] as const
@@ -557,6 +571,126 @@ function composeRussian(c: Ctx, tense: Tense, voice: Voice, satzart: Satzart): s
 }
 
 // ---------------------------------------------------------------------------
+// English composition. Deliberately more informative than Russian in places:
+// Präteritum/Perfekt stay distinct (opened / has opened) and questions get
+// their do-support (Does the man open …?).
+
+function enObjPhrase(c: Ctx): string {
+  if (c.objPron) return 'it'
+  const adjective = c.adjective?.en
+  const first = adjective ?? c.object.en
+  const article = c.indef ? (/^[aeiou]/.test(first) ? 'an' : 'a') : 'the'
+  return [article, adjective, c.object.en].filter(Boolean).join(' ')
+}
+
+/** Präsens/Präteritum simple clause with do-support for negation and questions. */
+function enSimple(
+  subj: string,
+  is3: boolean,
+  verb: { base: string; s3: string; past: string },
+  rest: string,
+  past: boolean,
+  not: boolean,
+  question: boolean,
+): string {
+  if (question || not) {
+    const doAux = past ? 'did' : is3 ? 'does' : 'do'
+    return question
+      ? `${doAux} ${subj}${not ? ' not' : ''} ${verb.base} ${rest}`
+      : `${subj} ${doAux} not ${verb.base} ${rest}`
+  }
+  return `${subj} ${past ? verb.past : is3 ? verb.s3 : verb.base} ${rest}`
+}
+
+function enActive(c: Ctx, tense: Tense, question: boolean): string {
+  const verb = c.verb.en
+  const is3 = c.subject.person === 2
+  const subj = c.subject.en
+  const obj = enObjPhrase(c)
+  const not = c.neg
+  const past = tense === 'Präteritum'
+  if (c.modal) {
+    const modal = c.modal.en
+    if (modal.can) {
+      const aux = past ? 'could' : 'can'
+      if (question) return `${aux} ${subj}${not ? ' not' : ''} ${verb.base} ${obj}`
+      return `${subj} ${not ? (past ? 'could not' : 'cannot') : aux} ${verb.base} ${obj}`
+    }
+    // Periphrastic modal (have to / want to) behaves like a simple verb.
+    const composite = {
+      base: `${modal.base} ${verb.base}`,
+      s3: `${modal.s3} ${verb.base}`,
+      past: `${modal.past} ${verb.base}`,
+    }
+    return enSimple(subj, is3, composite, obj, past, not, question)
+  }
+  switch (tense) {
+    case 'Präsens':
+    case 'Präteritum':
+      return enSimple(subj, is3, verb, obj, past, not, question)
+    case 'Perfekt': {
+      const aux = is3 ? 'has' : 'have'
+      return question
+        ? `${aux} ${subj}${not ? ' not' : ''} ${verb.part} ${obj}`
+        : `${subj} ${aux}${not ? ' not' : ''} ${verb.part} ${obj}`
+    }
+    case 'Futur I':
+      return question
+        ? `will ${subj}${not ? ' not' : ''} ${verb.base} ${obj}`
+        : `${subj} will${not ? ' not' : ''} ${verb.base} ${obj}`
+  }
+}
+
+function enPassive(c: Ctx, tense: Tense, question: boolean): string {
+  const verb = c.verb.en
+  const objSubj = enObjPhrase(c)
+  const by = c.subject.enBy
+  const not = c.neg
+  const past = tense === 'Präteritum'
+  if (c.modal) {
+    const modal = c.modal.en
+    if (modal.can) {
+      const aux = past ? 'could' : 'can'
+      if (question) return `${aux} ${objSubj}${not ? ' not' : ''} be ${verb.part} ${by}`
+      return `${objSubj} ${not ? (past ? 'could not' : 'cannot') : aux} be ${verb.part} ${by}`
+    }
+    // The passive subject is always 3sg here.
+    const composite = { base: `${modal.base} be`, s3: `${modal.s3} be`, past: `${modal.past} be` }
+    return enSimple(objSubj, true, composite, `${verb.part} ${by}`, past, not, question)
+  }
+  switch (tense) {
+    case 'Präsens':
+    case 'Präteritum': {
+      const be = past ? 'was' : 'is'
+      return question
+        ? `${be} ${objSubj}${not ? ' not' : ''} ${verb.part} ${by}`
+        : `${objSubj} ${be}${not ? ' not' : ''} ${verb.part} ${by}`
+    }
+    case 'Perfekt':
+      return question
+        ? `has ${objSubj}${not ? ' not' : ''} been ${verb.part} ${by}`
+        : `${objSubj} has${not ? ' not' : ''} been ${verb.part} ${by}`
+    case 'Futur I':
+      return question
+        ? `will ${objSubj}${not ? ' not' : ''} be ${verb.part} ${by}`
+        : `${objSubj} will${not ? ' not' : ''} be ${verb.part} ${by}`
+  }
+}
+
+function composeEnglish(c: Ctx, tense: Tense, voice: Voice, satzart: Satzart): string {
+  const clause = (question: boolean) =>
+    voice === 'Aktiv' ? enActive(c, tense, question) : enPassive(c, tense, question)
+  switch (satzart) {
+    case 'Hauptsatz':
+      return `${capitalize(clause(false))}.`
+    case 'Frage':
+      return `${capitalize(clause(true))}?`
+    case 'Nebensatz':
+      return `…, because ${clause(false)}.`
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Assembly
 
 function capitalize(text: string): string {
@@ -591,5 +725,6 @@ export function compose(sel: Selection): SentenceVariant {
     de: tokens,
     end: satzart === 'Frage' ? '?' : '.',
     ru: composeRussian(ctx, tense, voice, satzart),
+    en: composeEnglish(ctx, tense, voice, satzart),
   }
 }

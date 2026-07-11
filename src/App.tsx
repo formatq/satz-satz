@@ -11,10 +11,32 @@ import {
   MENU_TOGGLES,
 } from './de/grammar'
 import { makeInitialState, reduce } from './lib/reducer'
+import type { Lang } from './lib/types'
+
+const LANG_KEY = 'satz-satz-lang'
+
+const LANGS: { id: Lang; label: string }[] = [
+  { id: 'ru', label: 'Русский' },
+  { id: 'en', label: 'English' },
+]
+
+function initialLang(): Lang {
+  const saved = localStorage.getItem(LANG_KEY)
+  if (saved === 'ru' || saved === 'en') return saved
+  return navigator.language.startsWith('ru') ? 'ru' : 'en'
+}
 
 export default function App() {
   const [state, dispatch] = useReducer(reduce, undefined, makeInitialState)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [lang, setLang] = useState<Lang>(initialLang)
+  const [langOpen, setLangOpen] = useState(false)
+
+  const chooseLang = (next: Lang) => {
+    setLang(next)
+    localStorage.setItem(LANG_KEY, next)
+    setLangOpen(false)
+  }
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -55,7 +77,8 @@ export default function App() {
         changed={state.changed}
         generation={state.generation}
         end={variant.end}
-        ru={variant.ru}
+        translation={variant[lang]}
+        lang={lang}
       />
       <div className="selectors">
         {DIALS.map((dial, i) =>
@@ -74,7 +97,7 @@ export default function App() {
           ),
         )}
       </div>
-      <HistoryFeed entries={state.history} />
+      <HistoryFeed entries={state.history} lang={lang} />
       {/* All configuration lives here: hidden dials and features are opened
           up one by one, so the first impression stays simple. */}
       <div className="settings">
@@ -100,6 +123,34 @@ export default function App() {
                   />
                   <span>{label}</span>
                 </label>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+      {/* Translation language, top-right. */}
+      <div className="lang">
+        <button
+          type="button"
+          className="settings-button"
+          aria-label="Translation language"
+          onClick={() => setLangOpen((open) => !open)}
+        >
+          {lang.toUpperCase()}
+        </button>
+        {langOpen && (
+          <>
+            <div className="settings-backdrop" onClick={() => setLangOpen(false)} />
+            <div className="settings-menu lang-menu">
+              {LANGS.map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`lang-option${id === lang ? ' lang-current' : ''}`}
+                  onClick={() => chooseLang(id)}
+                >
+                  {label}
+                </button>
               ))}
             </div>
           </>

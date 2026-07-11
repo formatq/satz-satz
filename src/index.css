@@ -275,6 +275,50 @@ input[type='checkbox']:disabled {
   -webkit-user-select: none;
 }
 
+/* Translation language picker, mirroring the hamburger in the top-right. */
+
+.lang {
+  position: fixed;
+  top: 0.75rem;
+  right: 0.75rem;
+  z-index: 3;
+}
+
+.lang .settings-button {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.65rem 0.6rem;
+}
+
+.lang .settings-menu {
+  left: auto;
+  right: 0;
+  padding: 0.4rem;
+}
+
+.lang-option {
+  background: transparent;
+  border: none;
+  border-radius: 0.5rem;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.3rem 0.75rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lang-option:hover {
+  color: var(--fg);
+}
+
+.lang-current {
+  background: var(--dial-bg);
+  color: var(--fg);
+  font-weight: 700;
+}
+
 /* Mobile ----------------------------------------------------------------
    Minimal adaptation: the page scrolls, but the sentence sticks to the top
    so it stays pinned while you reach wrapped selectors and the history. */

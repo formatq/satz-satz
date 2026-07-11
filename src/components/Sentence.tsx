@@ -1,4 +1,4 @@
-import type { Token } from '../lib/types'
+import type { Lang, Token } from '../lib/types'
 
 interface SentenceProps {
   tokens: Token[]
@@ -7,7 +7,8 @@ interface SentenceProps {
   generation: number
   /** End mark: '.' or '?'. */
   end: string
-  ru: string
+  translation: string
+  lang: Lang
 }
 
 /**
@@ -15,7 +16,7 @@ interface SentenceProps {
  * fades over ~600 ms; the fade is replayed by remounting via a
  * generation-scoped key, so fresh input interrupts it cleanly.
  */
-export function Sentence({ tokens, changed, generation, end, ru }: SentenceProps) {
+export function Sentence({ tokens, changed, generation, end, translation, lang }: SentenceProps) {
   return (
     <div className="sentence-block">
       <p className="sentence" lang="de">
@@ -26,8 +27,8 @@ export function Sentence({ tokens, changed, generation, end, ru }: SentenceProps
           </span>
         ))}
       </p>
-      <p className="translation" lang="ru">
-        {ru}
+      <p className="translation" lang={lang}>
+        {translation}
       </p>
     </div>
   )

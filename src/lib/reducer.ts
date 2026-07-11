@@ -6,6 +6,7 @@ import type { Selection, SentenceVariant, Toggles } from './types'
 export interface HistoryEntry {
   de: string
   ru: string
+  en: string
 }
 
 export interface AppState {
@@ -39,7 +40,7 @@ export function makeInitialState(): AppState {
     active: 0,
     generation: 0,
     changed: diffTokens(null, variant.de),
-    history: [{ de: sentenceText(variant), ru: variant.ru }],
+    history: [{ de: sentenceText(variant), ru: variant.ru, en: variant.en }],
   }
 }
 
@@ -53,7 +54,7 @@ function withSelection(state: AppState, selection: Selection, active: number): A
   const next = compose(selection)
   const de = sentenceText(next)
   if (de === sentenceText(prev)) return { ...state, selection, active }
-  const entry = { de, ru: next.ru }
+  const entry = { de, ru: next.ru, en: next.en }
   const history =
     state.history[0]?.de === de ? state.history : [entry, ...state.history].slice(0, HISTORY_CAP)
   return {

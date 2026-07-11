@@ -11,6 +11,8 @@ The first impression is deliberately simple — just **Subjekt · Verb · Objekt
 - **Negation** — `nicht` before the verb cluster (`öffnet die Tür nicht`), switching to `kein-` when the object is indefinite (`öffnet keine Tür`).
 - **Pronomen (Objekt)** — replaces the object with the matching pronoun to study declension: `der Schrank → ihn → er`.
 
+The translation line is available in **Russian and English** (picker in the top-right, defaults to the browser language). English keeps Präteritum/Perfekt distinct (`opened / has opened`) and gives questions their do-support (`Does the man open …?`).
+
 
 ![img.png](img.png)
 

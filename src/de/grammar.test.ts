@@ -60,6 +60,10 @@ function ru(setup: Setup): string {
   return compose(make(setup)).ru
 }
 
+function en(setup: Setup): string {
+  return compose(make(setup)).en
+}
+
 describe('German composition', () => {
   it('composes the initial sentence with the default indefinite article', () => {
     const variant = compose(initialSelection())
@@ -348,6 +352,69 @@ describe('Satzart', () => {
 
   it('pins to Hauptsatz while the toggle is off', () => {
     expect(de({ satzart: 1, toggles: { satzart: false } })).toBe('Der Mann öffnet die Tür.')
+  })
+})
+
+describe('English translation', () => {
+  it('translates the tenses, keeping Präteritum and Perfekt distinct', () => {
+    expect(en({})).toBe('The man opens the door.')
+    expect(en({ subject: 3 })).toBe('The children open the door.')
+    expect(en({ tense: 1 })).toBe('The man opened the door.')
+    expect(en({ tense: 2 })).toBe('The man has opened the door.')
+    expect(en({ tense: 3 })).toBe('The man will open the door.')
+    expect(en({ person: 0, toggles: { person: true } })).toBe('I open the door.')
+    expect(en({ person: 1, tense: 2, toggles: { person: true } })).toBe('You have opened the door.')
+  })
+
+  it('translates the passive', () => {
+    expect(en({ voice: 1 })).toBe('The door is opened by the man.')
+    expect(en({ voice: 1, tense: 1, subject: 1 })).toBe('The door was opened by the woman.')
+    expect(en({ voice: 1, tense: 2 })).toBe('The door has been opened by the man.')
+    expect(en({ voice: 1, tense: 3 })).toBe('The door will be opened by the man.')
+  })
+
+  it('picks a/an for the indefinite article', () => {
+    expect(en({ toggles: { indefinite: true } })).toBe('The man opens a door.')
+    expect(en({ adjective: 0, toggles: { indefinite: true, adjective: true } })).toBe(
+      'The man opens an old door.',
+    )
+    expect(en({ object: 1, adjective: 2, toggles: { indefinite: true, adjective: true } })).toBe(
+      'The man opens a broken cupboard.',
+    )
+  })
+
+  it('uses do-support for questions and negation', () => {
+    expect(en({ satzart: 1 })).toBe('Does the man open the door?')
+    expect(en({ satzart: 1, subject: 3, tense: 1 })).toBe('Did the children open the door?')
+    expect(en({ satzart: 1, tense: 2 })).toBe('Has the man opened the door?')
+    expect(en({ satzart: 1, voice: 1 })).toBe('Is the door opened by the man?')
+    expect(en({ toggles: { negation: true } })).toBe('The man does not open the door.')
+    expect(en({ tense: 1, toggles: { negation: true } })).toBe('The man did not open the door.')
+    expect(en({ voice: 1, toggles: { negation: true } })).toBe('The door is not opened by the man.')
+  })
+
+  it('translates the Nebensatz with because', () => {
+    expect(en({ satzart: 2, verb: 2 })).toBe('…, because the man opens the door.')
+  })
+
+  it('translates modals: can stays modal, müssen/wollen go periphrastic', () => {
+    expect(en({ toggles: { modal: true } })).toBe('The man can open the door.')
+    expect(en({ modal: 1, subject: 1, toggles: { modal: true } })).toBe('The woman has to open the door.')
+    expect(en({ modal: 2, subject: 3, toggles: { modal: true } })).toBe('The children want to open the door.')
+    expect(en({ tense: 1, toggles: { modal: true } })).toBe('The man could open the door.')
+    expect(en({ satzart: 1, toggles: { modal: true } })).toBe('Can the man open the door?')
+    expect(en({ modal: 1, satzart: 1, toggles: { modal: true } })).toBe('Does the man have to open the door?')
+    expect(en({ toggles: { modal: true, negation: true } })).toBe('The man cannot open the door.')
+    expect(en({ modal: 1, toggles: { modal: true, negation: true } })).toBe(
+      'The man does not have to open the door.',
+    )
+    expect(en({ voice: 1, toggles: { modal: true } })).toBe('The door can be opened by the man.')
+    expect(en({ modal: 1, voice: 1, toggles: { modal: true } })).toBe('The door has to be opened by the man.')
+  })
+
+  it('translates object pronouns as it', () => {
+    expect(en({ toggles: { objectPronoun: true } })).toBe('The man opens it.')
+    expect(en({ voice: 1, toggles: { objectPronoun: true } })).toBe('It is opened by the man.')
   })
 })
 

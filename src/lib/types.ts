@@ -2,11 +2,15 @@ export type TokenRole = 'subj' | 'verb' | 'prefix' | 'aux' | 'art' | 'adj' | 'ob
 
 export type Token = [text: string, role: TokenRole]
 
+/** Translation language for the line under the sentence and the history feed. */
+export type Lang = 'ru' | 'en'
+
 export interface SentenceVariant {
   de: Token[]
-  /** End mark for the German sentence ('.' or '?'); ru carries its own. */
+  /** End mark for the German sentence ('.' or '?'); translations carry their own. */
   end: string
   ru: string
+  en: string
 }
 
 /**
