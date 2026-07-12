@@ -1,398 +1,244 @@
 :root {
-  --bg: #fdfbf7;
-  --fg: #1d1d1f;
-  --muted: #9a938a;
-  --dial-bg: #f1ece4;
-  --dial-active-border: #c96f2e;
-  --dial-current: #1d1d1f;
-  --option-current-bg: #ffffff;
-  --highlight: #ffd88a;
-  --rule: #d8d2c8;
-  font-family: 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #191919;
-    --fg: #ececec;
-    --muted: #7a756e;
-    --dial-bg: #242220;
-    --dial-active-border: #e08b45;
-    --dial-current: #f5f0e8;
-    --option-current-bg: #3a352f;
-    --highlight: #7a521a;
-    --rule: #3a3733;
-  }
-}
-
-* {
-  box-sizing: border-box;
-  /* The app paints its own tap feedback; the default mobile blue flash
-     reads as a glitch on top of it. */
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
+  --bg: #191711;
+  --panel: #221e16;
+  --panel-hover: #292319;
+  --fg: #f2ede3;
+  --soft: #c7bda8;
+  --muted: #8d836d;
+  --dim: #625a49;
+  --rule: #302b21;
+  --accent: #e8a05c;
+  --accent-wash: rgba(232, 160, 92, 0.16);
   color: var(--fg);
-  overflow: hidden; /* one screen, no page scroll; also stops touch scroll leakage */
+  background: var(--bg);
+  font-family: "Nunito Sans", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  font-synthesis: none;
 }
 
-/* Sentence and selectors are pinned; only the history scrolls, inside its
-   own block, so changing anything never shifts the sentence. */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body { margin: 0; min-width: 320px; overflow: hidden; background: var(--bg); }
+button, input { font: inherit; }
+button { -webkit-appearance: none; }
+/* A mouse click should not leave the browser's blue focus ring behind while
+   arrow keys move the app-level active selector. Keep a deliberate, subtle
+   indicator for keyboard Tab navigation instead. */
+button:focus { outline: none; }
+button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
 .app {
   height: 100vh;
-  max-width: 72rem;
+  max-width: 86rem;
   margin: 0 auto;
-  padding: 2rem 2rem 1rem;
+  padding: 5.25rem 2rem 1.4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.75rem;
+  gap: 0;
 }
 
 /* Sentence ------------------------------------------------------------- */
-
 .sentence-block {
   flex: none;
+  width: 100%;
+  min-height: 8.9rem;
+  padding: 0 4rem;
   text-align: center;
-  /* Two sentence lines + translation: the tallest variant must not push the
-     selectors around. */
-  min-height: 9.5rem;
 }
-
 .sentence {
-  font-size: 2.4rem;
+  max-width: 68rem;
+  margin: 0 auto 0.9rem;
+  font-size: clamp(2rem, 3.7vw, 3.35rem);
   font-weight: 600;
-  margin: 0 0 0.75rem;
-  line-height: 1.3;
+  letter-spacing: -0.035em;
+  line-height: 1.16;
 }
-
-.translation {
-  font-size: 1.15rem;
-  color: var(--muted);
-  margin: 0;
-}
-
-.token {
-  border-radius: 0.3em;
-  padding: 0 0.08em;
-  margin: 0 -0.08em;
-}
-
-.token-changed {
-  animation: fade-highlight 0.6s ease-out forwards;
-}
-
-@keyframes fade-highlight {
-  from {
-    background-color: var(--highlight);
-  }
-  to {
-    background-color: transparent;
-  }
-}
+.translation { margin: 0; font-size: 1.15rem; color: var(--muted); }
+.token { border-radius: 0.24em; padding: 0 0.09em; margin: 0 -0.09em; }
+.token-changed { animation: fade-highlight 0.65s ease-out forwards; }
+@keyframes fade-highlight { from { background: rgba(232, 160, 92, 0.34); } to { background: transparent; } }
 
 /* Selectors ------------------------------------------------------------ */
-
 .selectors {
   flex: none;
-  display: flex;
-  gap: 1.25rem;
-  align-items: flex-start;
+  width: 100%;
+  margin-top: 2.8rem;
+  display: grid;
+  grid-template-columns: repeat(var(--dial-columns), 148px);
   justify-content: center;
-  flex-wrap: wrap;
+  align-items: start;
+  gap: 1rem 0.875rem;
 }
-
-.selector-block {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-}
-
+.selector-block { width: 148px; min-width: 0; display: flex; flex-direction: column; align-items: stretch; }
 .selector-head {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  height: 2.15rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0 0 0.55rem;
+  margin: 0 0 0.45rem;
+  border: 0;
+  border-bottom: 2px solid var(--rule);
+  background: transparent;
   color: var(--muted);
-  user-select: none;
-  -webkit-user-select: none;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: border-color .18s, color .18s;
 }
-
+.selector-head:hover { color: var(--soft); }
+.selector-head-active { border-color: var(--accent); color: var(--accent); }
+.selector-key { color: var(--dim); font-size: .65rem; }
+.selector-head-active .selector-key { color: var(--accent); }
 .selector {
-  background: var(--dial-bg);
-  border: 2px solid transparent;
-  border-radius: 0.75rem;
-  padding: 0.3rem;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  touch-action: manipulation;
+  padding: 0;
   user-select: none;
+  touch-action: manipulation;
 }
-
-.selector-active {
-  border-color: var(--dial-active-border);
-}
-
 .option {
+  width: 100%;
+  height: 37px;
+  overflow: hidden;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 10px;
   background: transparent;
-  border: none;
-  border-radius: 0.5rem;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  padding: 0.1rem 0.4rem;
+  color: #aaa08b;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 37px;
   text-align: center;
-  white-space: pre;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background-color .15s, color .15s;
+}
+.option:hover:not(:disabled):not(.option-current) { color: var(--fg); background: var(--panel-hover); }
+.option-current { background: var(--accent-wash); color: var(--fg); font-weight: 600; }
+.option-unavailable { color: #4f493a; cursor: default; }
+.selector-more {
+  height: 30px;
+  margin-top: 1px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--dim);
   cursor: pointer;
-  transition: background-color 0.15s, color 0.15s;
+  font-size: .76rem;
+  letter-spacing: .025em;
+  text-align: center;
+  transition: color .15s;
 }
-
-.option:hover:not(:disabled):not(.option-current) {
-  color: var(--fg);
-}
-
-.option-current {
-  background: var(--option-current-bg);
-  color: var(--dial-current);
-  font-weight: 700;
-}
-
-.option-unavailable {
-  opacity: 0.35;
-  cursor: default;
-}
-
-input[type='checkbox'] {
-  accent-color: var(--dial-active-border);
-  margin: 0;
-  cursor: pointer;
-}
-
-input[type='checkbox']:disabled {
-  cursor: default;
-}
+.selector-more:hover:not(:disabled) { color: var(--soft); }
+.selector-more-empty { cursor: default; }
 
 /* History -------------------------------------------------------------- */
-
 .history {
-  width: 100%;
-  max-width: 46rem;
-  flex: 1 1 0;
+  width: min(56.25rem, 100%);
   min-height: 0;
+  flex: 1 1 0;
+  margin-top: 3rem;
   overflow-y: auto;
+  padding-right: .45rem;
+  scrollbar-color: #413827 transparent;
+  scrollbar-width: thin;
 }
-
+.history::-webkit-scrollbar { width: 7px; }
+.history::-webkit-scrollbar-thumb { background: #413827; border-radius: 8px; }
 .history-rule {
   position: sticky;
   top: 0;
-  background: var(--bg);
+  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  color: var(--muted);
-  font-size: 0.8rem;
+  gap: 1rem;
+  padding-bottom: .9rem;
+  background: var(--bg);
+  color: var(--dim);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .26em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding-bottom: 0.5rem;
 }
+.history-rule::before, .history-rule::after { content: ''; flex: 1; border-top: 1px solid var(--rule); }
+.history ul { margin: 0; padding: 0; list-style: none; color: var(--muted); font-size: 1rem; line-height: 1.62; }
+.history li { opacity: .67; }
+.history li:nth-child(2) { opacity: .78; }
+.history li.history-newest { color: var(--soft); opacity: 1; }
 
-.history-rule::before,
-.history-rule::after {
-  content: '';
-  flex: 1;
-  border-top: 1px solid var(--rule);
-}
-
-.history ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-.history li.history-newest {
-  color: var(--fg);
-}
-
-/* Hamburger menu --------------------------------------------------------
-   All configuration lives here; hidden dials don't render at all, so the
-   first impression stays simple. */
-
-.settings {
-  position: fixed;
-  top: 0.75rem;
-  left: 0.75rem;
-  z-index: 3;
-}
-
+/* Fixed controls and menu --------------------------------------------- */
+.settings, .lang { position: fixed; top: 1.15rem; z-index: 3; }
+.settings { left: 1.15rem; }
+.lang { right: 1.4rem; }
 .settings-button {
-  background: var(--dial-bg);
-  border: 1px solid var(--rule);
-  border-radius: 0.75rem;
-  color: var(--fg);
-  font: inherit;
-  font-size: 1.2rem;
-  line-height: 1;
-  padding: 0.55rem 0.65rem;
+  border: 1px solid #383121;
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--soft);
   cursor: pointer;
-  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.15);
+  box-shadow: 0 0.75rem 2.5rem rgba(0,0,0,.2);
+  transition: border-color .15s, background .15s, color .15s;
 }
-
-.settings-backdrop {
-  position: fixed;
-  inset: 0;
-}
-
+.settings-button:hover { border-color: #504530; background: #282218; color: var(--fg); }
+.menu-button { width: 42px; height: 42px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0; }
+.menu-button span { width: 16px; height: 2px; border-radius: 2px; background: currentColor; }
+.lang .settings-button { padding: .58rem 1rem; border-radius: 999px; font-size: .77rem; font-weight: 700; letter-spacing: .11em; }
+.settings-backdrop { position: fixed; inset: 0; z-index: -1; }
 .settings-menu {
   position: absolute;
-  left: 0;
-  top: calc(100% + 0.5rem);
-  background: var(--bg);
-  border: 1px solid var(--rule);
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.2);
-  white-space: nowrap;
+  top: calc(100% + .7rem);
+  min-width: 17rem;
+  padding: .75rem 1rem 1rem;
+  border: 1px solid #3a3223;
+  border-radius: 16px;
+  background: var(--panel);
+  box-shadow: 0 1.25rem 3.5rem rgba(0,0,0,.55);
 }
+.feature-menu { display: flex; flex-direction: column; gap: .55rem; }
+.menu-group { display: flex; flex-direction: column; }
+.menu-group-title { padding: .42rem .1rem .32rem; color: var(--dim); font-size: .66rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; }
+.menu-toggle { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 2.18rem; padding: 0 .1rem; border-radius: 8px; color: #d8d0c0; cursor: pointer; font-size: .94rem; font-weight: 400; user-select: none; }
+.menu-toggle:hover { background: #292319; }
+.menu-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.menu-toggle:has(input:disabled) { color: #6d6452; cursor: default; }
+.toggle-track { width: 34px; height: 20px; flex: none; padding: 3px; border-radius: 999px; background: #3b352a; transition: background .18s; }
+.toggle-track span { display: block; width: 14px; height: 14px; border-radius: 50%; background: #968d7a; transition: transform .18s, background .18s; }
+.menu-toggle input:checked + .toggle-track { background: var(--accent); }
+.menu-toggle input:checked + .toggle-track span { transform: translateX(14px); background: #fff7e9; }
+.menu-toggle input:focus-visible + .toggle-track { outline: 2px solid #fff7e9; outline-offset: 2px; }
+.lang .settings-menu { left: auto; right: 0; min-width: 9rem; padding: .4rem; }
+.lang-option { width: 100%; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; padding: .48rem .7rem; font-size: .9rem; text-align: left; }
+.lang-option:hover, .lang-current { background: var(--panel-hover); color: var(--fg); }
 
-.settings-menu label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.95rem;
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
+@media (max-width: 1370px) {
+  .app { max-width: 43rem; }
+  .selectors { grid-template-columns: repeat(var(--dial-columns-mid), 148px); }
 }
-
-/* Translation language picker, mirroring the hamburger in the top-right. */
-
-.lang {
-  position: fixed;
-  top: 0.75rem;
-  right: 0.75rem;
-  z-index: 3;
-}
-
-.lang .settings-button {
-  font-size: 0.85rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  padding: 0.65rem 0.6rem;
-}
-
-.lang .settings-menu {
-  left: auto;
-  right: 0;
-  padding: 0.4rem;
-}
-
-.lang-option {
-  background: transparent;
-  border: none;
-  border-radius: 0.5rem;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.95rem;
-  padding: 0.3rem 0.75rem;
-  text-align: left;
-  cursor: pointer;
-}
-
-.lang-option:hover {
-  color: var(--fg);
-}
-
-.lang-current {
-  background: var(--dial-bg);
-  color: var(--fg);
-  font-weight: 700;
-}
-
-/* Mobile ----------------------------------------------------------------
-   Minimal adaptation: the page scrolls, but the sentence sticks to the top
-   so it stays pinned while you reach wrapped selectors and the history. */
 
 @media (max-width: 700px) {
-  body {
-    overflow: auto;
-  }
+  body { overflow: auto; }
+  .app { height: auto; min-height: 100dvh; max-width: 100%; padding: 0 0.7rem 1rem; }
+  /* Keep the sentence below the fixed corner controls. It may wrap there,
+     but is never obscured by the language picker. */
+  .sentence-block { position: sticky; top: 0; z-index: 2; width: calc(100% + 1.4rem); min-height: 0; padding: 4.15rem 1rem .65rem; border-bottom: 1px solid var(--rule); background: var(--bg); }
+  .sentence { margin-bottom: .45rem; font-size: clamp(1.35rem, 6.3vw, 1.85rem); }
+  .translation { font-size: .92rem; }
+  .selectors { margin-top: 1.2rem; grid-template-columns: repeat(var(--dial-columns-mobile-wide), 148px); gap: 1rem .55rem; }
+  .history { flex: none; margin-top: 2rem; overflow: visible; }
+  .history-rule { position: static; }
+  .settings, .lang { top: .8rem; }
+  .settings { left: .75rem; }
+  .lang { right: .75rem; }
+  .settings-menu { max-width: calc(100vw - 1.5rem); }
+}
 
-  .app {
-    height: auto;
-    min-height: 100dvh;
-    padding: 0 0.75rem 1rem;
-    gap: 1rem;
-  }
-
-  .sentence-block {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-    width: calc(100% + 1.5rem); /* cover the .app side padding */
-    background: var(--bg);
-    min-height: 0;
-    /* Symmetric side padding keeps the centered text clear of the fixed
-       hamburger button in the top-left corner. */
-    padding: 0.9rem 3.75rem 0.6rem;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .sentence {
-    font-size: 1.4rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .translation {
-    font-size: 0.95rem;
-  }
-
-  /* Three columns so Subjekt · Verb · Objekt share the first row
-     (the enabled extras fill the second). Content-sized dials instead of
-     the ch-based width, which overflows an iPhone three-across. */
-  .selectors {
-    display: grid;
-    grid-template-columns: repeat(3, auto);
-    justify-content: center;
-    justify-items: center;
-    align-items: start;
-    gap: 0.7rem 0.5rem;
-  }
-
-  .selector {
-    width: auto !important;
-  }
-
-  .selector-head {
-    font-size: 0.7rem;
-  }
-
-  .selector-feature {
-    font-size: 0.75rem;
-  }
-
-  .option {
-    /* Narrower text, but finger-sized tap targets. */
-    font-size: 0.85rem;
-    padding: 0.3rem 0.35rem;
-  }
-
-  .history {
-    flex: none;
-    overflow: visible;
-  }
-
-  .history-rule {
-    position: static;
-  }
+@media (max-width: 500px) {
+  .selectors { grid-template-columns: repeat(var(--dial-columns-small), 148px); }
 }

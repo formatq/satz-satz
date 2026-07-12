@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer, useState, type CSSProperties } from 'react'
 import { HistoryFeed } from './components/HistoryFeed'
 import { Selector } from './components/Selector'
 import { Sentence } from './components/Sentence'
@@ -69,6 +69,28 @@ export default function App() {
 
   const { toggles } = state.selection
   const variant = compose(state.selection)
+  const visibleDialCount = DIALS.filter((_, i) => !isDialDisabled(i, toggles)).length
+  const dialGridStyle = {
+    '--dial-columns': String(Math.min(visibleDialCount, 8)),
+    '--dial-columns-mid': String(Math.min(visibleDialCount, 4)),
+    '--dial-columns-mobile-wide': String(Math.min(visibleDialCount, 3)),
+    '--dial-columns-small': String(Math.min(visibleDialCount, 2)),
+  } as CSSProperties
+  const dimensionToggles = MENU_TOGGLES.slice(0, 6)
+  const optionToggles = MENU_TOGGLES.slice(6)
+
+  const renderToggle = ({ key, label }: (typeof MENU_TOGGLES)[number]) => (
+    <label key={key} className="menu-toggle">
+      <span>{label}</span>
+      <input
+        type="checkbox"
+        checked={toggles[key]}
+        disabled={isToggleLocked(key, toggles)}
+        onChange={() => dispatch({ type: 'toggle', key })}
+      />
+      <span className="toggle-track" aria-hidden="true"><span /></span>
+    </label>
+  )
 
   return (
     <main className="app">
@@ -80,7 +102,7 @@ export default function App() {
         translation={variant[lang]}
         lang={lang}
       />
-      <div className="selectors">
+      <div className="selectors" style={dialGridStyle}>
         {DIALS.map((dial, i) =>
           isDialDisabled(i, toggles) ? null : (
             <Selector
@@ -93,6 +115,7 @@ export default function App() {
               onSelect={(index) => dispatch({ type: 'select', dial: i, index })}
               onSpin={(direction) => dispatch({ type: 'spin', dial: i, direction })}
               onActivate={() => dispatch({ type: 'activate', dial: i })}
+              dialNumber={i + 1}
             />
           ),
         )}
@@ -103,27 +126,26 @@ export default function App() {
       <div className="settings">
         <button
           type="button"
-          className="settings-button"
+          className="settings-button menu-button"
           aria-label="Features"
           onClick={() => setMenuOpen((open) => !open)}
         >
-          ☰
+          <span />
+          <span />
+          <span />
         </button>
         {menuOpen && (
           <>
             <div className="settings-backdrop" onClick={() => setMenuOpen(false)} />
-            <div className="settings-menu">
-              {MENU_TOGGLES.map(({ key, label }) => (
-                <label key={key}>
-                  <input
-                    type="checkbox"
-                    checked={toggles[key]}
-                    disabled={isToggleLocked(key, toggles)}
-                    onChange={() => dispatch({ type: 'toggle', key })}
-                  />
-                  <span>{label}</span>
-                </label>
-              ))}
+            <div className="settings-menu feature-menu">
+              <div className="menu-group">
+                <div className="menu-group-title">Dimensionen</div>
+                {dimensionToggles.map(renderToggle)}
+              </div>
+              <div className="menu-group">
+                <div className="menu-group-title">Optionen</div>
+                {optionToggles.map(renderToggle)}
+              </div>
             </div>
           </>
         )}
@@ -136,7 +158,7 @@ export default function App() {
           aria-label="Translation language"
           onClick={() => setLangOpen((open) => !open)}
         >
-          {lang.toUpperCase()}
+          DE → {lang.toUpperCase()}
         </button>
         {langOpen && (
           <>

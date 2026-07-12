@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface SelectorProps {
   label: string
@@ -10,6 +10,8 @@ interface SelectorProps {
   onSelect: (index: number) => void
   onSpin: (direction: 1 | -1) => void
   onActivate: () => void
+  /** Original dial number, shown as the keyboard shortcut in the heading. */
+  dialNumber: number
 }
 
 const WHEEL_STEP_PX = 40
@@ -28,6 +30,7 @@ export function Selector({
   onSelect,
   onSpin,
   onActivate,
+  dialNumber,
 }: SelectorProps) {
   // Mouse wheel: rates differ wildly between trackpads and discrete wheels —
   // accumulate deltaY and consume it in fixed steps, never once per event.
@@ -57,18 +60,25 @@ export function Selector({
     return () => list.removeEventListener('wheel', onWheel)
   }, [])
 
-  const width = Math.max(...values.map((v) => v.length), label.length) + 3
+  const [expanded, setExpanded] = useState(false)
+  const canCollapse = values.length > 3
+  // Keep exactly three rows in the regular view. As the selection moves past
+  // the edge, this is a viewport over the values rather than an expanding card.
+  const start = Math.max(0, Math.min(index - 1, values.length - 3))
+  const shown = expanded ? values.map((value, i) => ({ value, i })) : values.slice(start, start + 3).map((value, offset) => ({ value, i: start + offset }))
 
   return (
     <div className="selector-block">
-      <div className="selector-head">{label}</div>
+      <button type="button" className={`selector-head${active ? ' selector-head-active' : ''}`} onClick={onActivate}>
+        <span className="selector-key">{dialNumber}</span>
+        <span>{label}</span>
+      </button>
       <div
         ref={listRef}
         className={`selector${active ? ' selector-active' : ''}`}
-        style={{ width: `${width}ch` }}
         onClick={onActivate}
       >
-        {values.map((value, i) => (
+        {shown.map(({ value, i }) => (
           <button
             key={value}
             type="button"
@@ -82,6 +92,15 @@ export function Selector({
           </button>
         ))}
       </div>
+      <button
+        type="button"
+        className={`selector-more${canCollapse ? '' : ' selector-more-empty'}`}
+        aria-expanded={expanded}
+        disabled={!canCollapse}
+        onClick={() => setExpanded((open) => !open)}
+      >
+        {canCollapse ? (expanded ? 'weniger' : `alle ${values.length} zeigen`) : '\u00a0'}
+      </button>
     </div>
   )
 }
