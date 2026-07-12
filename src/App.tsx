@@ -4,6 +4,7 @@ import { Selector } from './components/Selector'
 import { Sentence } from './components/Sentence'
 import {
   compose,
+  DIAL,
   DIALS,
   isDialDisabled,
   isToggleLocked,
@@ -38,6 +39,21 @@ export default function App() {
     setLangOpen(false)
   }
 
+  const { toggles } = state.selection
+  // Person and Subjekt are two ways to fill the same grammatical slot. The
+  // UI deliberately gives that slot one permanent home and one shortcut.
+  const dialSlots = [
+    { key: 'subject', number: 1, dial: toggles.person ? DIAL.person : DIAL.subject, label: 'Subjekt' },
+    { key: 'verb', number: 2, dial: DIAL.verb, label: DIALS[DIAL.verb].label },
+    { key: 'modal', number: 3, dial: DIAL.modal, label: DIALS[DIAL.modal].label },
+    { key: 'object', number: 4, dial: DIAL.object, label: DIALS[DIAL.object].label },
+    { key: 'adjective', number: 5, dial: DIAL.adjective, label: DIALS[DIAL.adjective].label },
+    { key: 'tense', number: 6, dial: DIAL.tense, label: DIALS[DIAL.tense].label },
+    { key: 'voice', number: 7, dial: DIAL.voice, label: DIALS[DIAL.voice].label },
+    { key: 'satzart', number: 8, dial: DIAL.satzart, label: DIALS[DIAL.satzart].label },
+  ].filter(({ dial }) => !isDialDisabled(dial, toggles))
+  const dialSlotsSignature = dialSlots.map(({ number, dial }) => `${number}:${dial}`).join(',')
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
@@ -55,8 +71,9 @@ export default function App() {
           break
         default: {
           const digit = Number(event.key)
-          if (digit >= 1 && digit <= DIALS.length) {
-            dispatch({ type: 'activate', dial: digit - 1 })
+          const slot = dialSlots.find(({ number }) => number === digit)
+          if (slot) {
+            dispatch({ type: 'activate', dial: slot.dial })
           }
           return
         }
@@ -65,11 +82,10 @@ export default function App() {
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [])
+  }, [dialSlotsSignature])
 
-  const { toggles } = state.selection
   const variant = compose(state.selection)
-  const visibleDialCount = DIALS.filter((_, i) => !isDialDisabled(i, toggles)).length
+  const visibleDialCount = dialSlots.length
   const dialGridStyle = {
     '--dial-columns': String(Math.min(visibleDialCount, 8)),
     '--dial-columns-mid': String(Math.min(visibleDialCount, 4)),
@@ -103,22 +119,23 @@ export default function App() {
         lang={lang}
       />
       <div className="selectors" style={dialGridStyle}>
-        {DIALS.map((dial, i) =>
-          isDialDisabled(i, toggles) ? null : (
+        {dialSlots.map(({ key, number, dial: dialIndex, label }) => {
+          const dial = DIALS[dialIndex]
+          return (
             <Selector
-              key={dial.id}
-              label={dial.label}
+              key={key}
+              label={label}
               values={dial.values}
-              index={state.selection.indices[i]}
-              active={state.active === i}
-              available={dial.values.map((_, v) => isValueAvailable(i, v, toggles))}
-              onSelect={(index) => dispatch({ type: 'select', dial: i, index })}
-              onSpin={(direction) => dispatch({ type: 'spin', dial: i, direction })}
-              onActivate={() => dispatch({ type: 'activate', dial: i })}
-              dialNumber={i + 1}
+              index={state.selection.indices[dialIndex]}
+              active={state.active === dialIndex}
+              available={dial.values.map((_, valueIndex) => isValueAvailable(dialIndex, valueIndex, toggles))}
+              onSelect={(index) => dispatch({ type: 'select', dial: dialIndex, index })}
+              onSpin={(direction) => dispatch({ type: 'spin', dial: dialIndex, direction })}
+              onActivate={() => dispatch({ type: 'activate', dial: dialIndex })}
+              dialNumber={number}
             />
-          ),
-        )}
+          )
+        })}
       </div>
       <HistoryFeed entries={state.history} lang={lang} />
       {/* All configuration lives here: hidden dials and features are opened

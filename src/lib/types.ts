@@ -25,7 +25,7 @@ export interface Toggles {
   voice: boolean
   /** Off → Hauptsatz only, sentence-type dial hidden. */
   satzart: boolean
-  /** On → the Person dial (ich/du/er/…) drives the subject; the Subjekt dial hides. */
+  /** On → personal pronouns (ich/du/er/…) fill the same Subjekt UI slot. */
   person: boolean
   /** On → a modal verb carries the finite slot; the main verb becomes a final infinitive. Restricts tense to Präsens/Präteritum. */
   modal: boolean

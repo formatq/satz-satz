@@ -10,7 +10,7 @@ interface SelectorProps {
   onSelect: (index: number) => void
   onSpin: (direction: 1 | -1) => void
   onActivate: () => void
-  /** Original dial number, shown as the keyboard shortcut in the heading. */
+  /** Stable UI position, shown as the keyboard shortcut in the heading. */
   dialNumber: number
 }
 

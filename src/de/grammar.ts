@@ -284,7 +284,7 @@ export const DIALS: DialSpec[] = [
 
 /** Everything configurable, in hamburger-menu order: dials first, then features. */
 export const MENU_TOGGLES: { key: keyof Toggles; label: string }[] = [
-  { key: 'person', label: 'Person' },
+  { key: 'person', label: 'Subjekt als Pronomen' },
   { key: 'modal', label: 'Modalverb' },
   { key: 'adjective', label: 'Adjektiv' },
   { key: 'tenses', label: 'Zeitform' },
