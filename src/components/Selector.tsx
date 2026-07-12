@@ -12,6 +12,8 @@ interface SelectorProps {
   onActivate: () => void
   /** Stable UI position, shown as the keyboard shortcut in the heading. */
   dialNumber: number
+  showAllLabel: (count: number) => string
+  lessLabel: string
 }
 
 const WHEEL_STEP_PX = 40
@@ -31,6 +33,8 @@ export function Selector({
   onSpin,
   onActivate,
   dialNumber,
+  showAllLabel,
+  lessLabel,
 }: SelectorProps) {
   // Mouse wheel: rates differ wildly between trackpads and discrete wheels —
   // accumulate deltaY and consume it in fixed steps, never once per event.
@@ -69,7 +73,7 @@ export function Selector({
 
   return (
     <div className="selector-block">
-      <button type="button" className={`selector-head${active ? ' selector-head-active' : ''}`} onClick={onActivate}>
+      <button type="button" className={`selector-head${active ? ' selector-head-active' : ''}`} title={label} onClick={onActivate}>
         <span className="selector-key">{dialNumber}</span>
         <span>{label}</span>
       </button>
@@ -99,7 +103,7 @@ export function Selector({
         disabled={!canCollapse}
         onClick={() => setExpanded((open) => !open)}
       >
-        {canCollapse ? (expanded ? 'weniger' : `alle ${values.length} zeigen`) : '\u00a0'}
+        {canCollapse ? (expanded ? lessLabel : showAllLabel(values.length)) : '\u00a0'}
       </button>
     </div>
   )

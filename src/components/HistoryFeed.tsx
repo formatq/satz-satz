@@ -5,7 +5,7 @@ import type { Lang } from '../lib/types'
 const TYPE_INTERVAL_MS = 18
 
 /** Newest entry types itself out; older entries render as plain text. */
-export function HistoryFeed({ entries, lang }: { entries: HistoryEntry[]; lang: Lang }) {
+export function HistoryFeed({ entries, lang, title }: { entries: HistoryEntry[]; lang: Lang; title: string }) {
   const newest = entries[0]
   const fullText = newest ? `${newest.de} — ${newest[lang]}` : ''
   const [typed, setTyped] = useState(fullText.length)
@@ -26,7 +26,7 @@ export function HistoryFeed({ entries, lang }: { entries: HistoryEntry[]; lang: 
 
   return (
     <div className="history">
-      <div className="history-rule">history</div>
+      <div className="history-rule">{title}</div>
       <ul>
         {entries.map((entry, i) => (
           <li key={`${entries.length - i}`} className={i === 0 ? 'history-newest' : ''}>
