@@ -15,6 +15,9 @@ import { makeInitialState, reduce } from './lib/reducer'
 import type { Lang } from './lib/types'
 
 const LANG_KEY = 'satz-satz-lang'
+const THEME_KEY = 'satz-satz-theme'
+
+type Theme = 'dark' | 'light'
 
 const LANGS: { id: Lang; label: string }[] = [
   { id: 'ru', label: 'Русский' },
@@ -27,17 +30,33 @@ function initialLang(): Lang {
   return navigator.language.startsWith('ru') ? 'ru' : 'en'
 }
 
+function initialTheme(): Theme {
+  const saved = localStorage.getItem(THEME_KEY)
+  if (saved === 'dark' || saved === 'light') return saved
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
+}
+
 export default function App() {
   const [state, dispatch] = useReducer(reduce, undefined, makeInitialState)
   const [menuOpen, setMenuOpen] = useState(false)
   const [lang, setLang] = useState<Lang>(initialLang)
   const [langOpen, setLangOpen] = useState(false)
+  const [theme, setTheme] = useState<Theme>(initialTheme)
 
   const chooseLang = (next: Lang) => {
     setLang(next)
     localStorage.setItem(LANG_KEY, next)
     setLangOpen(false)
   }
+
+  const chooseTheme = (next: Theme) => {
+    setTheme(next)
+    localStorage.setItem(THEME_KEY, next)
+  }
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+  }, [theme])
 
   const { toggles } = state.selection
   // Person and Subjekt are two ways to fill the same grammatical slot. The
@@ -162,6 +181,27 @@ export default function App() {
               <div className="menu-group">
                 <div className="menu-group-title">Optionen</div>
                 {optionToggles.map(renderToggle)}
+              </div>
+              <div className="menu-group">
+                <div className="menu-group-title">Darstellung</div>
+                <div className="theme-choice" role="group" aria-label="Farbschema">
+                  <button
+                    type="button"
+                    className={theme === 'light' ? 'theme-current' : ''}
+                    aria-pressed={theme === 'light'}
+                    onClick={() => chooseTheme('light')}
+                  >
+                    Hell
+                  </button>
+                  <button
+                    type="button"
+                    className={theme === 'dark' ? 'theme-current' : ''}
+                    aria-pressed={theme === 'dark'}
+                    onClick={() => chooseTheme('dark')}
+                  >
+                    Dunkel
+                  </button>
+                </div>
               </div>
             </div>
           </>
