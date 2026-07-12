@@ -1,151 +1,136 @@
 # satz-satz — German sentence modulator
 
+> Living spec, kept in sync with the shipped app (https://formatq.github.io/satz-satz/).
+> The original v1 spec described four scroll-wheel dials over pregenerated JSON;
+> the app has since moved to nine fixed-position selectors composed at runtime.
+> `IMPLEMENTATION-NOTES.md` covers the "how".
+
 ## Idea
 
-The phrasal-verb trainer showed the pattern: spin a dial, instantly see what changes. This spec applies it to whole **German sentences**.
+The phrasal-verb trainer (words-words) showed the pattern: spin a dial, instantly see what changes. satz-satz applies it to whole **German sentences**.
 
-The screen shows one German sentence. Below it — a row of **dials** (scrollable pickers, same interaction as the words-words wheels). Each dial controls one grammatical dimension of the sentence: the subject (and thus its gender), the verb (separable or inseparable), the tense, the voice. Spinning any dial regenerates the sentence instantly, and the app **highlights exactly which words changed**.
+The screen shows one German sentence with a translation under it. Below — a row of **fixed-position selectors**, one per grammatical dimension. Picking any value recomposes the sentence instantly, and the app **highlights exactly which words changed**.
 
-That last part is the whole point. German grammar is a web of agreements: change the subject's gender and the article changes (`der → die`); switch to Perfekt and the verb splits into auxiliary + participle at the end (`macht auf → hat aufgemacht`); switch to Passiv and the object becomes the subject while the agent moves into a `von`-phrase with dative (`vom Mann → von der Frau`). Reading rules about this is slow; flipping a dial and *watching the sentence rearrange itself* is fast. The user should be able to rattle `↑↓↑↓` and compare variants within seconds.
+That last part is the whole point. German grammar is a web of agreements: change the subject's gender and the article changes (`der → die`); switch to Perfekt and the verb splits into auxiliary + participle at the end (`macht auf → hat aufgemacht`); switch to Passiv and the object becomes the subject while the agent moves into a `von`-phrase with dative (`vom Mann → von der Frau`); wrap the sentence in `weil …` and the finite verb walks to the end, fusing with its separable prefix. Reading rules about this is slow; flipping a dial and *watching the sentence rearrange itself* is fast.
 
-Primary platform: **desktop** (keyboard + mouse wheel). Touch support comes for free from the existing components but is not the focus.
+The second design idea is **progressive disclosure**: the first impression is deliberately simple — just Subjekt · Verb · Objekt and a Präsens sentence. Every further dimension and feature lives in a hamburger menu and is opened up one toggle at a time; hidden dimensions don't render at all. A learner grows the app as they progress.
 
-## Example of one template under all four dials
+Primary platform: desktop (keyboard + mouse wheel). Mobile is a first-class minimal adaptation (it is actually used on a phone), not an afterthought.
 
-Template "the door" — subject × verb × tense × voice:
+## Example ripples
 
-| Dials | Sentence |.ы
+| Change | Sentence |
 |---|---|
-| der Mann · aufmachen · Präsens · Aktiv | **Der Mann** **macht** die Tür **auf**. |
-| die Frau · aufmachen · Präsens · Aktiv | **Die Frau** macht die Tür auf. |
-| der Mann · öffnen · Präsens · Aktiv | Der Mann **öffnet** die Tür. |
-| der Mann · aufmachen · Perfekt · Aktiv | Der Mann **hat** die Tür **aufgemacht**. |
-| der Mann · aufmachen · Futur I · Aktiv | Der Mann **wird** die Tür **aufmachen**. |
-| der Mann · aufmachen · Präsens · Passiv | **Die Tür wird vom Mann aufgemacht.** |
-| die Kinder · aufmachen · Perfekt · Passiv | Die Tür ist **von den Kindern** aufgemacht **worden**. |
+| baseline | Der Mann **öffnet** eine Tür. |
+| Verb → aufmachen | Der Mann **macht** eine Tür **auf**. |
+| Zeitform → Perfekt | Der Mann **hat** eine Tür **aufgemacht**. |
+| Genus Verbi → Passiv | **Eine Tür wird vom Mann aufgemacht.** |
+| Subjekt → die Kinder (still Passiv) | Eine Tür wird **von den Kindern** aufgemacht. |
+| Zeitform → Perfekt (still Passiv) | Eine Tür **ist** von den Kindern aufgemacht **worden**. |
+| Satzart → Nebensatz | …, weil die Kinder eine Tür **aufmachen**. |
+| Negation on (indefinite object) | Der Mann öffnet **keine** Tür. |
+| Modalverb → müssen | Der Mann **muss** eine Tür **öffnen**. |
 
-Bold marks what the diff highlight would flash. Note the pedagogically rich ripples: separable prefix jumping to the end and back, `haben` appearing in Perfekt, subject↔object swap in Passiv, `von + Dativ` agreeing with the chosen subject's gender and number.
+Bold marks what the diff highlight flashes.
 
-## Dimensions (v1 dials)
+## Dimensions (nine dials)
 
-1. **Subjekt** — `der Mann`, `die Frau`, `das Kind`, `die Kinder`. Covers all three genders plus plural (which also flips verb agreement: `macht → machen`). In Passiv this dial controls the `von`-phrase instead (`vom Mann / von der Frau / vom Kind / von den Kindern`) — dative ripple.
-2. **Verb** — a curated set mixing separable and inseparable verbs that all fit the template's object, e.g. for "die Tür": `aufmachen` (sep.), `zumachen` (sep.), `öffnen` (insep.), `schließen` (insep.), `reparieren` (insep.).
-3. **Zeitform** — `Präsens`, `Präteritum`, `Perfekt`, `Futur I`.
-4. **Genus Verbi** — `Aktiv`, `Passiv` (Vorgangspassiv only in v1).
+In `DIALS` order (keys `1`–`9` jump to them):
 
-Not every combination has to exist (e.g., a future template may include an intransitive verb with no Passiv). The navigation reuses the words-words rule: **spinning a dial skips values that don't form a valid variant** with the other dials' current values.
+1. **Subjekt** — `der Mann · die Frau · das Kind · die Kinder`: three genders plus plural (verb agreement flips). In Passiv this dial drives the `von`-phrase (`vom Mann / von der Frau / vom Kind / von den Kindern`).
+2. **Person** — `ich · du · er · wir · ihr · sie`: the full conjugation paradigm. Replaces the Subjekt dial when enabled (exactly one of the two drives the sentence).
+3. **Verb** — `öffnen · reparieren · aufmachen · zumachen`: two inseparable, two separable, all transitive and compatible with every object.
+4. **Modalverb** — `können · müssen · wollen`: takes the finite slot, sends the main verb to the end as an infinitive (`kann die Tür aufmachen`; Passiv: `muss geöffnet werden`).
+5. **Objekt** — `die Tür (f) · der Schrank (m) · das Fenster (n)`: Akkusativ ripple (`der → den` for the masculine), and the Passiv subject.
+6. **Adjektiv** — `alt · neu · kaputt`: attributive adjective in the object phrase, weak vs mixed declension depending on the article (`die alte Tür / eine alte Tür / der alte Schrank / ein alter Schrank`).
+7. **Zeitform** — `Präsens · Präteritum · Perfekt · Futur I`.
+8. **Genus Verbi** — `Aktiv · Passiv` (Vorgangspassiv).
+9. **Satzart** — `Hauptsatz · Frage · Nebensatz`: verb-first question, verb-final `…, weil`-clause — the verb-position ripple.
 
-## Interface (one screen, desktop-first)
+Every combination of enabled values composes into a valid sentence; there is no variant lookup to miss. The only availability restriction: with a modal verb, Zeitform is limited to Präsens/Präteritum (unavailable values render dimmed) — this deliberately stays out of C1 double-infinitive territory (`hat aufmachen können`).
+
+## Feature toggles (hamburger menu, top-left)
+
+All configuration lives in one menu; a toggle either reveals a dial or switches a feature. Everything starts **off** except the indefinite article:
+
+- **Person** — swaps the Subjekt dial for the Person dial.
+- **Modalverb / Adjektiv / Zeitform / Genus Verbi / Satzart** — reveal their dials (otherwise pinned to no modal / no adjective / Präsens / Aktiv / Hauptsatz).
+- **unbestimmter Artikel** (on by default) — `eine Tür / einen Schrank / ein Fenster`; off restores `die / den / das`. Also switches the adjective between mixed and weak declension.
+- **Negation** — `nicht` after the object/agent phrase (`öffnet die Tür nicht`), switching to `kein-` when the object is indefinite (`öffnet keine Tür`).
+- **Pronomen (Objekt)** — the object renders as a pronoun to study case: `der Schrank → ihn` (and `→ er` as Passiv subject). While on, the Adjektiv and unbestimmter-Artikel entries are locked (a pronoun takes neither).
+
+Turning a dimension off pins its dial back to the default value, so the hidden dial and the sentence always agree; values made unavailable snap to the first available one.
+
+## Interface
 
 ```
+ ☰                                                 RU ▾   ← hamburger / language picker
 ┌───────────────────────────────────────────────────────┐
+│         Der Mann hat eine Tür aufgemacht.              │  ← sentence pinned on top;
+│                  ~~~          ~~~~~~~~~~               │    changed words flash with
+│         Мужчина открыл дверь.                          │    a fading highlight (600 ms)
 │                                                       │
-│         Der Mann hat die Tür aufgemacht.              │  ← the sentence, large;
-│                  ~~~         ~~~~~~~~~~               │    changed words flash
-│                                                       │    with a fading highlight
-│         Мужчина открыл дверь.                         │  ← Russian translation
-│                                                       │
-│  ┌──────────┐ ┌───────────┐ ┌───────────┐ ┌────────┐  │
-│  │ die Frau │ │ zumachen  │ │  Präsens  │ │ Passiv │  │  ← neighbors, dimmed
-│  │ DER MANN │ │ AUFMACHEN │ │ ▸PERFEKT◂ │ │ AKTIV  │  │  ← active dial highlighted
-│  │ das Kind │ │  öffnen   │ │  Futur I  │ │        │  │
-│  └──────────┘ └───────────┘ └───────────┘ └────────┘  │
-│    Subjekt        Verb        Zeitform   Genus Verbi  │  ← dial labels
-│                                                       │
-│  ──────────────────── history ──────────────────────  │
-│  Der Mann hat die Tür aufgemacht. — Мужчина открыл…   │  ← same typewriter feed
-│  Der Mann macht die Tür auf. — Мужчина открывает…     │    as words-words
-│                                                       │
+│  ┌──────────┐ ┌────────────┐ ┌─────────────┐ ┌──────┐ │
+│  │ DER MANN │ │  öffnen    │ │  DIE TÜR    │ │ ...  │ │  ← fixed-position selectors:
+│  │ die Frau │ │ reparieren │ │ der Schrank │ │      │ │    all values visible, current
+│  │ das Kind │ │ AUFMACHEN  │ │ das Fenster │ │      │ │    one highlighted; disabled
+│  │ d. Kinder│ │  zumachen  │ │             │ │      │ │    dials don't render at all
+│  └──────────┘ └────────────┘ └─────────────┘ └──────┘ │
+│    Subjekt        Verb           Objekt                │
+│  ──────────────────── history ───────────────────────  │
+│  Der Mann hat eine Tür aufgemacht. — Мужчина открыл…   │  ← typewriter feed, dedup,
+│  Der Mann macht eine Tür auf. — Мужчина открывает…     │    cap 50, scrolls on its own
 └───────────────────────────────────────────────────────┘
 ```
 
-- **Controls** — identical to words-words, generalized to N dials: `←`/`→` move the active dial, `↑`/`↓` spin it (auto-repeat works), mouse wheel over any dial spins that dial, click activates. Keys `1`–`4` jump straight to a dial (nice on desktop).
-- **Diff highlight** — on every change, tokenize the previous and current sentence, compute a word-level diff (LCS), and give changed/inserted words a colored background that fades out over ~600 ms. The two parts of a separable verb (`macht … auf`) share one color so they read as one lexeme.
-- **History feed** — reused as-is: newest entry typed out, consecutive duplicates dropped, capped at 50.
-- Layout is wider than words-words (sentence needs room); everything still fits one screen without page scroll.
+- **Controls** — click any value to select it; mouse wheel over a selector steps it (accumulated deltaY, ~40 px per step). `←`/`→` move the active selector (cyclic, skips hidden ones), `↑`/`↓` step it (**clamped, no wrap** — the selector has fixed positions), `1`–`9` jump straight to a dial.
+- **Diff highlight** — token-level LCS between the previous and current token arrays; changed tokens get a background fading over ~600 ms (replayed by keyed remount, interrupted cleanly by fresh input). The two parts of a separable verb (`macht … auf`) are paired via role tags.
+- **Sentence pinned** — the sentence and selectors never move; only the history feed scrolls, inside its own block.
+- **History feed** — newest entry typed out (18 ms/char), consecutive duplicates dropped, capped at 50; each entry stores both translations.
 
-## Data: generated, not hand-written
+## Translations (Russian + English)
 
-Unlike phrasal verbs (a flat list you can curate by hand), sentence variants are a cross product: template "die Tür" alone is 4 subjects × 5 verbs × 4 tenses × 2 voices = **160 sentences**. Writing them manually doesn't scale and invites inconsistency. Instead:
+A picker in the top-right corner (RU/EN) switches the translation line and the entire history feed. The choice persists in `localStorage` (`satz-satz-lang`) and defaults from `navigator.language` (Russian browsers → RU, everything else → EN).
 
-**A deterministic generator script** (`scripts/generate-de.mjs`, run manually, output committed) composes every variant from small hand-encoded tables:
+Both translations are composed at runtime from per-word fields in the same tables:
 
-```js
-// per verb: stem forms, participle, separable prefix, aux, Russian forms
-{ lemma: "aufmachen", sep: "auf", stem: "mach",
-  praesens3: "macht", praet3: "machte", partizip2: "aufgemacht", aux: "haben",
-  ru: { inf: "открывать", past: "открыл", pres3: "открывает", passivPres: "открывается", ... } }
+- **Russian** — gender/person agreement in past tense, «не» for negation, «…, потому что …» for the Nebensatz, modal «должен/должна/должно/должны» by gender.
+- **English** — Präteritum and Perfekt stay distinct (`opened / has opened`); questions and negation get do-support (`Does the man open …? / does not open`); `können` maps to the true modal `can/cannot/could` while `müssen/wollen` become periphrastic (`has to / wants to` — so `muss nicht` correctly yields `does not have to`); the indefinite article picks `a/an` by the following word (`a door / an old door`).
 
-// per subject: article forms per case, noun, number
-{ de: "der Mann", von: "vom Mann", plural: false, ru: "мужчина", ruInstr: "мужчиной" }
-```
+Translations are approximate by design — good enough to anchor meaning while the German does the teaching.
 
-plus one word-order frame per (tense × voice) cell — 8 frames, each a token pattern like `Perfekt/Aktiv: [subj] [aux-präsens] [obj] [partizip2] .` The Russian translation is composed the same way from the per-verb Russian forms (approximate by design; good enough for "see the difference", flagged for later proofreading).
+## Mobile (≤ 700 px)
 
-The generator emits one static JSON per template, in the app's consumption format:
+- The page scrolls, but the sentence block is `position: sticky` at the top — always visible while reaching wrapped selectors and the history.
+- Selectors form a 3-column grid so Subjekt · Verb · Objekt share the first row on an iPhone; enabled extras fill following rows.
+- Corner buttons (☰ and RU/EN) are `position: fixed`; the sentence block's side padding keeps the text clear of both.
+- Tap targets are finger-sized; the default blue tap flash is suppressed (`-webkit-tap-highlight-color: transparent`).
 
-```json
-{
-  "id": "tuer",
-  "label": "die Tür",
-  "dimensions": [
-    { "id": "subject", "label": "Subjekt",     "values": ["der Mann", "die Frau", "das Kind", "die Kinder"] },
-    { "id": "verb",    "label": "Verb",        "values": ["aufmachen", "zumachen", "öffnen", "schließen", "reparieren"] },
-    { "id": "tense",   "label": "Zeitform",    "values": ["Präsens", "Präteritum", "Perfekt", "Futur I"] },
-    { "id": "voice",   "label": "Genus Verbi", "values": ["Aktiv", "Passiv"] }
-  ],
-  "variants": {
-    "der Mann|aufmachen|Perfekt|Aktiv": {
-      "de": [["Der", "art"], ["Mann", "subj"], ["hat", "aux"], ["die", "art"], ["Tür", "obj"], ["aufgemacht", "verb"]],
-      "ru": "Мужчина открыл дверь."
-    }
-  }
-}
-```
+## Engine
 
-`de` is a token array with role tags (`subj`, `verb`, `prefix`, `aux`, `art`, `obj`, `other`) — this powers both the separable-verb pairing in the diff highlight and an optional role-coloring mode later. The app renders tokens joined by spaces plus a final period.
+No pregenerated data. Sentences are composed at runtime by `src/de/grammar.ts` from small hand-encoded morphology tables (subjects, persons, verbs with six-form paradigms, modals, objects with per-case article/pronoun forms, adjectives) and **declarative word-order frames** — one slot-function array per `(Satzart × Zeitform × Genus Verbi)` cell: 24 plain frames plus 12 modal frames. `compose(selection)` returns role-tagged German tokens (`subj · verb · prefix · aux · art · adj · obj · other`) plus both translations. Zero network requests after page load.
 
-Correctness lives in the tables and frames — reviewing ~10 table rows and 8 frames is tractable, unlike proofreading 160 sentences. Generated output is still committed (the app never generates at runtime; everything stays a static instant lookup, zero network requests after load).
+The v1 pregenerated-JSON approach (generator script, committed variants, connectivity validator) was retired when object, adjective, pronoun and person modes multiplied the variant space into the thousands; with runtime composition, correctness lives in the tables and frames, and validity is structural rather than a lookup.
 
-## Engine changes (generalize words-words from 2 wheels to N dials)
+State is a pure `useReducer`: `indices: number[]` (one per dial) + `toggles`, with actions `spin / select / activate / move-active / toggle`.
 
-The words-words core almost fits; it needs three generalizations, all in the logic layer:
+## Acceptance criteria (all shipped and verified)
 
-1. **State** — `verbIndex`/`particleIndex` becomes `indices: number[]` (one per dimension), `active: number`.
-2. **`nextValidIndex(dim, state, direction)`** — same cyclic skip-invalid search, but validity = "key built from `indices` with dimension `dim` replaced exists in `variants`". `findNextValid` (the pure function) is reused unchanged.
-3. **Connectivity invariant** — new, and important with N dimensions: skip-invalid navigation can strand the user on an "island" of variants unreachable from other variants by single-dial moves. The validator must BFS the variant graph (edges = single-dimension valid moves) from the initial variant and fail if any valid variant is unreachable. Checked by a unit test and at startup in dev mode, like the existing invariants (plus the old ones: every key well-formed, every dimension value used by ≥1 variant, no empty translations).
+- Fresh load shows only Subjekt · Verb · Objekt and a valid Präsens sentence with an indefinite article; every further dimension appears only via the hamburger.
+- Stepping Zeitform cycles through all four tenses; each stop is a grammatical German sentence with a translation in the chosen language.
+- Switching Subjekt in Passiv changes the `von`-phrase with correct dative forms; switching Objekt in Passiv changes the sentence subject.
+- Separable verbs split in Präsens/Präteritum, fuse in Perfekt/Futur and in the Nebensatz; the diff highlight marks both parts.
+- Passiv Perfekt uses `worden` (not `geworden`); adjective endings follow weak/mixed declension per article; `kein-` replaces `nicht` exactly when the object is indefinite.
+- Every change highlights exactly the words that differ, without blocking further spinning (logic never waits for animation).
+- Language switch re-renders the translation line and the whole history; the choice survives a reload.
+- On a 393 px viewport, Subjekt · Verb · Objekt share one row and the corner buttons don't overlap the sentence.
+- Zero network requests after page load; no console errors; 75 unit tests green.
 
-`Wheel.tsx` is reused as the dial component (values are longer strings — width/font tweaks only, plus a label under it). `HistoryFeed`, keyboard/wheel/touch controls carry over with the N-dial extension of `←`/`→`.
+## Future ideas (not built)
 
-## Where it lives
-
-A **standalone repo** (`satz-satz`), started from scratch with the same stack. Do not import words-words as a dependency — copy the patterns (and freely crib from the code at https://github.com/formatq/words-words), but keep the projects independent: the shared logic is ~100 lines and will diverge once N-dimensional. See `IMPLEMENTATION-NOTES.md` for everything the words-words iteration already learned the hard way.
-
-## Work plan (first iteration)
-
-1. **Generalize the core**: N-dimensional state + `nextValidIndex`, connectivity validator, unit tests (including a synthetic island fixture that must fail validation). Extract shared components/lib so both entry points use them.
-2. **Generator script** for template "die Tür": tables for 5 verbs / 4 subjects, 8 tense×voice frames, Russian composition; emit `src/de/data/tuer.json`; invariant + connectivity tests run against the committed output.
-3. **UI**: sentence view with role-tagged tokens, 4 dials with labels, translation, history feed. Keyboard (`←→↑↓`, `1`–`4`), mouse wheel.
-4. **Diff highlight**: token-level LCS against the previous variant, fading background on changed tokens, separable-verb pairing via role tags.
-5. **Deploy**: GitHub Pages via Actions, same workflow as words-words (see the deploy recipe in `IMPLEMENTATION-NOTES.md`).
-6. Polish: wide desktop layout, dark theme parity, verify touch still works.
-
-## Acceptance criteria
-
-- Holding `↓` on the Zeitform dial cycles the sentence through all four tenses fluidly; each stop is a grammatical German sentence with a translation.
-- Switching Subjekt in Passiv changes the `von`-phrase with correct dative forms (`vom Mann`, `von der Frau`, `vom Kind`, `von den Kindern`).
-- Separable verbs split in Präsens/Präteritum (`macht … auf`) and fuse in Perfekt/Futur (`aufgemacht`, `aufmachen`); the diff highlight marks both parts.
-- Every dial change highlights exactly the words that differ, and the highlight fades without blocking further spinning (logic never waits for animation).
-- Connectivity test proves every variant of the template is reachable from the initial one by single-dial moves.
-- Zero network requests after page load; no console errors.
-
-## Future ideas (not in v1)
-
-- **More templates**: dative + accusative objects (`X gibt dem Nachbarn einen Schlüssel` — two case ripples), adjective before the noun (adjective-ending dial: `der alte Mann / ein alter Mann`), Wechselpräpositionen (`in den / im`).
-- **Person dial**: `ich / du / er / wir / ihr / sie` — full conjugation ripple.
-- **Satzart dial**: Hauptsatz / Nebensatz (`…, weil der Mann die Tür aufmacht`) / Frage — the verb-position ripple, arguably the most German thing there is.
-- **Negation toggle**: `nicht` / `kein-` placement.
-- **Zustandspassiv** vs Vorgangspassiv (`ist geöffnet` vs `wird geöffnet`), Konjunktiv II, modal verbs (`kann die Tür aufmachen`).
-- **Role coloring mode**: persistent color per grammatical role instead of diff-only highlighting.
-- **Runtime morphology engine**: replace pre-generated variants with in-browser composition from the same tables — enables free noun/verb substitution beyond curated sets.
-- **Audio** (Web Speech API has decent German voices), quiz mode ("dial in the sentence matching this translation"), spaced repetition — same list as the English side.
+- **Audio** — Web Speech API has decent German voices; speak the sentence on demand.
+- **Quiz mode** — "dial in the sentence matching this translation"; spaced repetition.
+- **Role coloring mode** — persistent color per grammatical role instead of diff-only highlighting.
+- **State in the URL** — shareable links to a specific sentence/configuration.
+- **PWA manifest** — installable, offline-first (the app already needs no network).
+- **More vocabulary / templates** — dative objects (`gibt dem Nachbarn einen Schlüssel`), Wechselpräpositionen (`in den / im`), Zustandspassiv (`ist geöffnet`), Konjunktiv II.
