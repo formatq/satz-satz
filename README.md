@@ -1,43 +1,56 @@
-# [satz-satz](https://github.com/formatq/satz-satz)— German sentence modulator
+# [satz-satz](https://github.com/formatq/satz-satz) — German sentence modulator
 
-One German sentence, eight fixed-position selectors: **Subjekt · Person · Verb · Objekt · Adjektiv · Zeitform · Genus Verbi · Satzart**. Pick a value, the sentence recomposes instantly, and the words that changed flash with a fading highlight — watch the article agree (`die Tür / den Schrank`), the adjective ending flip (`der alte / ein alter`), the separable prefix jump to the end (and fuse back in the Nebensatz), the object become the subject in Passiv.
+An interactive German grammar trainer for English- and Russian-speaking beginners. Change one part of a German sentence and immediately see the grammatical ripples: articles agree, separable prefixes move, passive voice promotes the object, and subordinate clauses move the finite verb to the end.
 
-The first impression is deliberately simple — just **Subjekt · Verb · Objekt** and a Präsens sentence. Everything else lives in the **hamburger menu** (top-left) and is opened up one toggle at a time; hidden dimensions don't render at all:
+The app starts with just **Subject · Verb · Object**. More grammar appears progressively from the hamburger menu, so learners can grow into the full trainer without meeting every concept at once.
 
-- **Person** — swaps the Subjekt dial for the full conjugation paradigm `ich · du · er · wir · ihr · sie` (`öffne / öffnest / öffnet …`, `von mir / von dir …` in Passiv).
-- **Modalverb** — `können / müssen / wollen` take the finite slot and send the main verb to the end as an infinitive (`kann die Tür aufmachen`, Passiv: `muss geöffnet werden`); tense is limited to Präsens/Präteritum to stay out of double-infinitive territory.
-- **Adjektiv / Zeitform / Genus Verbi / Satzart** — enable whole dimensions (otherwise pinned to no adjective / Präsens / Aktiv / Hauptsatz).
-- **unbestimmter Artikel** (on by default) — `eine Tür / einen Schrank / ein Fenster`; off restores `die / den / das`. Switches the adjective between mixed and weak declension (`ein alter ↔ der alte`).
-- **Negation** — `nicht` before the verb cluster (`öffnet die Tür nicht`), switching to `kein-` when the object is indefinite (`öffnet keine Tür`).
-- **Pronomen (Objekt)** — replaces the object with the matching pronoun to study declension: `der Schrank → ihn → er`.
+![satz-satz screenshot](img.png)
 
-The translation line is available in **Russian and English** (picker in the top-right, defaults to the browser language). English keeps Präteritum/Perfekt distinct (`opened / has opened`) and gives questions their do-support (`Does the man open …?`).
+## What it teaches
 
+There are eight stable UI positions and keyboard shortcuts:
 
-![img.png](img.png)
+1. **Subject** — a noun subject (`der Mann`, `die Frau` …), or personal pronouns (`ich`, `du`, `er` …) when **Subject as pronoun** is enabled.
+2. **Verb** — `öffnen`, `reparieren`, `aufmachen`, `zumachen`.
+3. **Modal verb** — `können`, `müssen`, `wollen`.
+4. **Object** — `die Tür`, `der Schrank`, `das Fenster`.
+5. **Adjective** — `alt`, `neu`, `kaputt`.
+6. **Tense** — Präsens, Präteritum, Perfekt, Futur I.
+7. **Voice** — Aktiv or Vorgangspassiv.
+8. **Sentence type** — statement, question, or `weil` subordinate clause.
 
+The selected values always form a grammatical sentence. With a modal verb, Perfekt and Futur I are unavailable on purpose: the app stops before double-infinitive constructions.
 
-Sibling of [words-words](https://github.com/formatq/words-words) (English phrasal verbs). 
+The menu also offers an indefinite article (on by default), negation, object pronouns, light/dark themes, and an About panel. Object pronouns lock adjective and article settings because a pronoun cannot take either.
 
-## Controls
+## Interface and controls
 
-- Click any value to select it; mouse wheel over a selector steps through it (clamped, no wrap)
-- `←` / `→` — move between selectors (skips disabled ones), `↑` / `↓` — step the active one
-- `1`–`9` — jump straight to a selector
+- Click a value to select it. Scroll over a selector, or use `↑` / `↓`, to step through values without wrapping.
+- `←` / `→` move the active selector, skipping hidden dimensions. `1`–`8` jump to the corresponding visible logical position.
+- A selector normally shows a three-value sliding window; **show all** expands it when needed.
+- A token-level diff highlights exactly the German words changed by the latest action. The history keeps the latest 50 distinct consecutive sentences and types the newest entry.
+- The top-right `DE → EN/RU` picker changes both the translations and the interface copy. Its choice is saved in `localStorage` (`satz-satz-lang`).
+- The theme picker in the menu saves `satz-satz-theme`; the system colour preference is used until a choice is saved.
 
-The sentence and selectors stay pinned; the history feed fills the rest of the screen and scrolls on its own.
+On wide screens up to eight 148 px selector blocks fit in one row. The layout changes to four columns at 1370 px, three at 700 px, and two at 500 px. On mobile the sentence stays sticky below the fixed corner controls while the page scrolls.
 
 ## Development
 
 ```sh
 npm install
-npm run dev        # local dev server
-npm test           # grammar golden files, reducer, navigation, diff tests
-npm run build      # production build
+npm run dev
+npm test
+npm run build
 ```
 
-Sentences are composed at runtime by `src/de/grammar.ts` from small hand-encoded morphology tables and one declarative word-order frame per (tense × voice) cell — the v1 pregenerated-JSON approach stopped scaling once object, adjective and pronoun modes multiplied the variant space into the thousands. Still zero network requests after page load. Golden-file tests pin down the pedagogically tricky forms (Passiv Perfekt `… ist … aufgemacht worden`, weak adjective declension, pronoun case ripples).
+Sentences are composed at runtime by `src/de/grammar.ts` from hand-encoded morphology tables and declarative word-order frames. No variant JSON is fetched or generated at runtime, and there are no network requests after page load. The suite contains 75 unit tests for grammar, reducer behavior, navigation, and token diffs.
+
+## Release notes
+
+See [CHANGELOG.md](CHANGELOG.md) for notable changes. The project follows [Semantic Versioning](https://semver.org/).
 
 ## Deploy
 
-Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml`. One-time setup: **Settings → Pages → Source: GitHub Actions** (the first run fails at `configure-pages` until this is set — re-run it after).
+Pushes to `main` deploy to GitHub Pages via `.github/workflows/deploy.yml`. The workflow builds with the `/satz-satz/` base path; local development stays at `/`.
+
+Sibling of [words-words](https://github.com/formatq/words-words), an English phrasal-verb trainer.
