@@ -1,6 +1,6 @@
 # satz-satz — German sentence modulator
 
-> Release specification for 1.1.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
+> Release specification for 1.2.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
 
 ## Purpose
 
@@ -17,14 +17,16 @@ The UI has nine stable numbered positions. A hidden optional position retains it
 1. **Subject** — `der Mann`, `die Frau`, `das Kind`, `die Kinder`; with **Subject as pronoun**, the same slot instead contains `ich`, `du`, `er`, `wir`, `ihr`, `sie`.
 2. **Verb** — `öffnen`, `reparieren`, `aufmachen`, `zumachen`.
 3. **Modal verb** — `können`, `müssen`, `wollen`.
-4. **Object** — `die Tür`, `der Schrank`, `das Fenster`.
-5. **Dative object** — `der Frau`, `dem Kind`, `dem Mann`, `den Kindern`. A benefactive dative recipient; the nouns repeat the Subject dial so the learner sees the same words change case.
+4. **Accusative** (the direct object) — `die Tür`, `der Schrank`, `das Fenster`. The short case label carries a full hover explanation.
+5. **Dative** — `der Frau`, `dem Kind`, `dem Mann`, `den Kindern`. A benefactive dative recipient; the nouns repeat the Subject dial so the learner sees the same words change case.
 6. **Adjective** — `alt`, `neu`, `kaputt`.
 7. **Tense** — Präsens, Präteritum, Perfekt, Futur I.
 8. **Voice** — Aktiv and Vorgangspassiv.
 9. **Sentence type** — Hauptsatz, Frage, Nebensatz.
 
 All enabled combinations compose to a valid sentence. Modal verbs restrict tense to Präsens and Präteritum, intentionally avoiding double infinitives such as `hat aufmachen können`.
+
+Each of the three noun phrases — Subject, Accusative, Dative — has a **der/ein switch** to the right of its selector label, choosing the definite or indefinite article independently per phrase. The plural takes the bare noun (`Kinder öffnen …`, `von Kindern`, `Kindern`). The switch hides when the phrase carries no article (pronoun subject, pronoun object). The accusative object defaults to the indefinite article; the other two default to definite.
 
 ### Example ripples
 
@@ -41,6 +43,8 @@ All enabled combinations compose to a valid sentence. Modal verbs restrict tense
 | Modal verb → müssen | Der Mann **muss** eine Tür **öffnen**. |
 | Dative object → dem Kind | Der Mann öffnet **dem Kind** eine Tür. |
 | Object pronoun with a dative object | Der Mann öffnet **sie dem Kind**. |
+| Subject article → ein | **Ein** Mann öffnet eine Tür. |
+| Plural subject with ein | **Kinder** öffnen eine Tür. |
 
 ## Menu features
 
@@ -48,9 +52,9 @@ All configuration is in the top-left hamburger menu.
 
 - **Subject as pronoun**, Modal verb, Dative object, Adjective, Tense, Voice, and Sentence type reveal their corresponding selector.
 - **Dative object** adds a recipient in the Mittelfeld: before an accusative noun, after an accusative pronoun, and before the `von` agent in Passiv. Translations render it as a Russian dative (active) or «для …» (passive) and as an English for-phrase.
-- **Indefinite article** is on by default. Turning it off restores definite articles and changes adjective endings from mixed to weak declension.
+- Articles are not in the menu: each noun phrase has its own der/ein switch in the selector header. The accusative switch drives adjective endings (weak after der-words, mixed after ein-words) and negation (`kein-` for an indefinite object, `nicht` otherwise).
 - **Negation** uses `nicht` after the object or agent phrase, but uses `kein-` for an indefinite object.
-- **Object pronoun** changes `der Schrank → ihn` in active voice and `→ er` in passive voice. It locks Article and Adjective.
+- **Object pronoun** changes `der Schrank → ihn` in active voice and `→ er` in passive voice. It locks Adjective and hides the accusative article switch.
 - **Appearance** switches between light and dark themes.
 - **About** explains the trainer in the selected interface language.
 
@@ -81,13 +85,13 @@ The internal grammar model retains separate Subject and Person data sources, but
 
 ## Acceptance criteria
 
-- A fresh load shows a grammatical Präsens sentence with an indefinite article and only Subject, Verb, and Object selectors.
+- A fresh load shows a grammatical Präsens sentence with an indefinite object article and only Subject, Verb, and Accusative selectors.
 - All German grammar combinations produced by enabled controls are valid; Passiv Perfekt uses `worden`, and adjective/article/pronoun agreement is correct.
 - Changing a value highlights the changed German tokens without blocking further input.
 - Language and theme selections persist across reloads; English and Russian localise the surrounding interface and About content.
 - Keyboard, click, and wheel controls work with the stable 1–9 UI positions.
 - The responsive selector grid and sticky sentence do not let corner controls cover sentence text.
-- The app makes no network requests after it loads, builds successfully, and has 85 passing unit tests.
+- The app makes no network requests after it loads, builds successfully, and has 92 passing unit tests.
 
 ## Future ideas
 

@@ -174,6 +174,19 @@ describe('reducer', () => {
     expect(off.history[0].de).toBe('Der Mann öffnet eine Tür.')
   })
 
+  it('article switches recompose the sentence; the dative switch resets with its dimension', () => {
+    const state = run(
+      { type: 'toggle', key: 'subjectIndefinite' },
+      { type: 'toggle', key: 'dative' },
+      { type: 'toggle', key: 'recipientIndefinite' },
+    )
+    expect(state.history[0].de).toBe('Ein Mann öffnet einer Frau eine Tür.')
+    const off = reduce(state, { type: 'toggle', key: 'dative' })
+    expect(off.selection.toggles.recipientIndefinite).toBe(false)
+    expect(off.selection.toggles.subjectIndefinite).toBe(true)
+    expect(off.history[0].de).toBe('Ein Mann öffnet eine Tür.')
+  })
+
   it('enabling the adjective adds it to the sentence and enables the dial', () => {
     const state = run(
       { type: 'toggle', key: 'adjective' },

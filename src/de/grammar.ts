@@ -16,6 +16,11 @@ type Person = 0 | 1 | 2 | 3 | 4 | 5
 interface Subject {
   de: string
   von: string
+  /** Indefinite variants; the plural takes the bare noun (Kinder, von Kindern). Pronouns carry no article and omit all four. */
+  ein?: string
+  vonEin?: string
+  enA?: string
+  enByA?: string
   person: Person
   ru: string
   ruGender: RuGender
@@ -26,16 +31,16 @@ interface Subject {
 
 const SUBJECTS: Subject[] = [
   {
-    de: 'der Mann', von: 'vom Mann', person: 2, ru: 'мужчина', ruGender: 'm', ruInstr: 'мужчиной', en: 'the man', enBy: 'by the man',
+    de: 'der Mann', von: 'vom Mann', ein: 'ein Mann', vonEin: 'von einem Mann', person: 2, ru: 'мужчина', ruGender: 'm', ruInstr: 'мужчиной', en: 'the man', enBy: 'by the man', enA: 'a man', enByA: 'by a man',
   },
   {
-    de: 'die Frau', von: 'von der Frau', person: 2, ru: 'женщина', ruGender: 'f', ruInstr: 'женщиной', en: 'the woman', enBy: 'by the woman',
+    de: 'die Frau', von: 'von der Frau', ein: 'eine Frau', vonEin: 'von einer Frau', person: 2, ru: 'женщина', ruGender: 'f', ruInstr: 'женщиной', en: 'the woman', enBy: 'by the woman', enA: 'a woman', enByA: 'by a woman',
   },
   {
-    de: 'das Kind', von: 'vom Kind', person: 2, ru: 'ребёнок', ruGender: 'm', ruInstr: 'ребёнком', en: 'the child', enBy: 'by the child',
+    de: 'das Kind', von: 'vom Kind', ein: 'ein Kind', vonEin: 'von einem Kind', person: 2, ru: 'ребёнок', ruGender: 'm', ruInstr: 'ребёнком', en: 'the child', enBy: 'by the child', enA: 'a child', enByA: 'by a child',
   },
   {
-    de: 'die Kinder', von: 'von den Kindern', person: 5, ru: 'дети', ruGender: 'pl', ruInstr: 'детьми', en: 'the children', enBy: 'by the children',
+    de: 'die Kinder', von: 'von den Kindern', ein: 'Kinder', vonEin: 'von Kindern', person: 5, ru: 'дети', ruGender: 'pl', ruInstr: 'детьми', en: 'the children', enBy: 'by the children', enA: 'children', enByA: 'by children',
   },
 ]
 
@@ -253,11 +258,14 @@ const ADJECTIVES: Adjective[] = [
 
 interface Recipient {
   de: string
+  /** Indefinite dative (einer Frau); the plural takes the bare noun (Kindern). */
+  ein: string
   /** Russian dative, for the active clause (открывает женщине дверь). */
   ru: string
   /** для + genitive, for the passive clause (открывается мужчиной для женщины). */
   ruFor: string
   en: string
+  enA: string
 }
 
 // The benefactive dative combines with every verb × object pair (öffnet der
@@ -267,10 +275,10 @@ interface Recipient {
 // die → der, die → den on words they already know. die Frau leads so the
 // default doesn't collide with the default subject der Mann.
 const RECIPIENTS: Recipient[] = [
-  { de: 'der Frau', ru: 'женщине', ruFor: 'для женщины', en: 'for the woman' },
-  { de: 'dem Kind', ru: 'ребёнку', ruFor: 'для ребёнка', en: 'for the child' },
-  { de: 'dem Mann', ru: 'мужчине', ruFor: 'для мужчины', en: 'for the man' },
-  { de: 'den Kindern', ru: 'детям', ruFor: 'для детей', en: 'for the children' },
+  { de: 'der Frau', ein: 'einer Frau', ru: 'женщине', ruFor: 'для женщины', en: 'for the woman', enA: 'for a woman' },
+  { de: 'dem Kind', ein: 'einem Kind', ru: 'ребёнку', ruFor: 'для ребёнка', en: 'for the child', enA: 'for a child' },
+  { de: 'dem Mann', ein: 'einem Mann', ru: 'мужчине', ruFor: 'для мужчины', en: 'for the man', enA: 'for a man' },
+  { de: 'den Kindern', ein: 'Kindern', ru: 'детям', ruFor: 'для детей', en: 'for the children', enA: 'for children' },
 ]
 
 export const TENSES = ['Präsens', 'Präteritum', 'Perfekt', 'Futur I'] as const
@@ -315,14 +323,14 @@ export const MENU_TOGGLES: { key: keyof Toggles; label: string }[] = [
   { key: 'tenses', label: 'Zeitform' },
   { key: 'voice', label: 'Genus Verbi' },
   { key: 'satzart', label: 'Satzart' },
-  { key: 'indefinite', label: 'unbestimmter Artikel' },
   { key: 'negation', label: 'Negation' },
   { key: 'objectPronoun', label: 'Pronomen (Objekt)' },
 ]
 
-/** Menu entries locked in the current state: a pronoun object takes no article and no adjective. */
+/** Menu entries locked in the current state: a pronoun object takes no adjective.
+ *  (Articles moved out of the menu into per-selector der/ein switches.) */
 export function isToggleLocked(key: keyof Toggles, toggles: Toggles): boolean {
-  return (key === 'adjective' || key === 'indefinite') && toggles.objectPronoun
+  return key === 'adjective' && toggles.objectPronoun
 }
 
 export function initialSelection(): Selection {
@@ -338,6 +346,8 @@ export function initialSelection(): Selection {
       modal: false,
       adjective: false,
       indefinite: true,
+      subjectIndefinite: false,
+      recipientIndefinite: false,
       negation: false,
       objectPronoun: false,
       dative: false,
@@ -388,6 +398,8 @@ interface Ctx {
   recipient: Recipient | null
   objPron: boolean
   indef: boolean
+  subjIndef: boolean
+  recIndef: boolean
   neg: boolean
 }
 
@@ -436,8 +448,9 @@ function objectTokens(c: Ctx, kase: 'nom' | 'acc'): Token[] {
 
 type Slot = (c: Ctx) => Token[]
 
-const subjPhrase: Slot = (c) => nounPhrase(c.subject.de, 'subj')
-const recipientTokens = (c: Ctx): Token[] => (c.recipient ? nounPhrase(c.recipient.de, 'obj') : [])
+const subjPhrase: Slot = (c) => nounPhrase(c.subjIndef ? c.subject.ein ?? c.subject.de : c.subject.de, 'subj')
+const recipientTokens = (c: Ctx): Token[] =>
+  c.recipient ? nounPhrase(c.recIndef ? c.recipient.ein : c.recipient.de, 'obj') : []
 // `nicht` negates the predicate, so in every frame it lands right after the
 // object (Aktiv) / the agent (Passiv), just before the final verb cluster.
 // Mittelfeld order: the dative precedes an accusative noun (öffnet der Frau
@@ -452,7 +465,7 @@ const objAsSubject: Slot = (c) => objectTokens(c, 'nom')
 // Die Tür wird der Frau vom Mann geöffnet.
 const vonPhrase: Slot = (c) => [
   ...recipientTokens(c),
-  ...nounPhrase(c.subject.von, 'subj'),
+  ...nounPhrase(c.subjIndef ? c.subject.vonEin ?? c.subject.von : c.subject.von, 'subj'),
   ...nichtTokens(c),
 ]
 const finPraesens: Slot = (c) => [[c.verb.praesens[c.subject.person], 'verb']]
@@ -655,9 +668,9 @@ function enSimple(
 function enActive(c: Ctx, tense: Tense, question: boolean): string {
   const verb = c.verb.en
   const is3 = c.subject.person === 2
-  const subj = c.subject.en
+  const subj = c.subjIndef ? c.subject.enA ?? c.subject.en : c.subject.en
   // English renders the beneficiary as a for-phrase: opens the door for the woman.
-  const obj = enObjPhrase(c) + (c.recipient ? ` ${c.recipient.en}` : '')
+  const obj = enObjPhrase(c) + (c.recipient ? ` ${c.recIndef ? c.recipient.enA : c.recipient.en}` : '')
   const not = c.neg
   const past = tense === 'Präteritum'
   if (c.modal) {
@@ -696,7 +709,9 @@ function enPassive(c: Ctx, tense: Tense, question: boolean): string {
   const verb = c.verb.en
   const objSubj = enObjPhrase(c)
   // The for-phrase precedes the by-agent: opened for the woman by the man.
-  const by = (c.recipient ? `${c.recipient.en} ` : '') + c.subject.enBy
+  const by =
+    (c.recipient ? `${c.recIndef ? c.recipient.enA : c.recipient.en} ` : '') +
+    (c.subjIndef ? c.subject.enByA ?? c.subject.enBy : c.subject.enBy)
   const not = c.neg
   const past = tense === 'Präteritum'
   if (c.modal) {
@@ -760,6 +775,9 @@ export function compose(sel: Selection): SentenceVariant {
     recipient: toggles.dative ? RECIPIENTS[sel.indices[DIAL.recipient]] : null,
     objPron: toggles.objectPronoun,
     indef: toggles.indefinite,
+    // Pronoun subjects carry no article, so the switch state is ignored while Person drives.
+    subjIndef: toggles.subjectIndefinite && !toggles.person,
+    recIndef: toggles.recipientIndefinite,
     neg: toggles.negation,
   }
   // Disabled dimensions pin to their first value even if the index is stale.

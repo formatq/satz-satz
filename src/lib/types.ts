@@ -33,6 +33,10 @@ export interface Toggles {
   adjective: boolean
   /** On → indefinite article for the object (ein/eine), mixed adjective declension. */
   indefinite: boolean
+  /** On → indefinite article for the subject (ein Mann); bare plural (Kinder). Ignored for pronoun subjects. */
+  subjectIndefinite: boolean
+  /** On → indefinite article for the dative recipient (einer Frau); bare plural (Kindern). */
+  recipientIndefinite: boolean
   /** On → negated sentence: `nicht` before the verb cluster, or `kein-` when the object is indefinite. */
   negation: boolean
   /** On → the object renders as a pronoun (ihn/sie/es); suppresses the adjective. */

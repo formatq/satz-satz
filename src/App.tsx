@@ -26,6 +26,9 @@ const LANGS: { id: Lang; label: string }[] = [
 
 const UI: Record<Lang, {
   dials: Record<'subject' | 'verb' | 'modal' | 'object' | 'recipient' | 'adjective' | 'tense' | 'voice' | 'satzart', string>
+  /** Full hover explanations for the short case labels. */
+  dialTitles: { object: string; recipient: string }
+  articleTitle: string
   toggles: Record<keyof Toggles, string>
   dimensions: string
   options: string
@@ -45,8 +48,10 @@ const UI: Record<Lang, {
   closeAria: string
 }> = {
   en: {
-    dials: { subject: 'Subject', verb: 'Verb', modal: 'Modal verb', object: 'Object', recipient: 'Dative object', adjective: 'Adjective', tense: 'Tense', voice: 'Voice', satzart: 'Sentence type' },
-    toggles: { person: 'Subject as pronoun', modal: 'Modal verb', dative: 'Dative object', adjective: 'Adjective', tenses: 'Tense', voice: 'Voice', satzart: 'Sentence type', indefinite: 'Indefinite article', negation: 'Negation', objectPronoun: 'Object pronoun' },
+    dials: { subject: 'Subject', verb: 'Verb', modal: 'Modal verb', object: 'Accusative', recipient: 'Dative', adjective: 'Adjective', tense: 'Tense', voice: 'Voice', satzart: 'Sentence type' },
+    dialTitles: { object: 'Accusative object — the direct object (wen? was?)', recipient: 'Dative object — the recipient (wem?)' },
+    articleTitle: 'Definite (der) or indefinite (ein) article',
+    toggles: { person: 'Subject as pronoun', modal: 'Modal verb', dative: 'Dative object', adjective: 'Adjective', tenses: 'Tense', voice: 'Voice', satzart: 'Sentence type', indefinite: 'Indefinite article', subjectIndefinite: 'Indefinite subject article', recipientIndefinite: 'Indefinite dative article', negation: 'Negation', objectPronoun: 'Object pronoun' },
     dimensions: 'Dimensions', options: 'Options', appearance: 'Appearance', light: 'Light', dark: 'Dark',
     aboutButton: 'About Satz-Satz', aboutKicker: 'About the project', aboutTitle: 'Satz-Satz',
     about: [
@@ -57,8 +62,10 @@ const UI: Record<Lang, {
     history: 'History', showAll: (count) => `show all ${count}`, less: 'show less', settingsAria: 'Settings', languageAria: 'Translation language', themeAria: 'Colour theme', closeAria: 'Close',
   },
   ru: {
-    dials: { subject: 'Подлежащее', verb: 'Глагол', modal: 'Модальный глагол', object: 'Дополнение', recipient: 'Дополнение (датив)', adjective: 'Прилагательное', tense: 'Время', voice: 'Залог', satzart: 'Тип предложения' },
-    toggles: { person: 'Подлежащее — местоимение', modal: 'Модальный глагол', dative: 'Дательное дополнение', adjective: 'Прилагательное', tenses: 'Время', voice: 'Залог', satzart: 'Тип предложения', indefinite: 'Неопределённый артикль', negation: 'Отрицание', objectPronoun: 'Местоимение-дополнение' },
+    dials: { subject: 'Подлежащее', verb: 'Глагол', modal: 'Модальный глагол', object: 'Аккузатив', recipient: 'Датив', adjective: 'Прилагательное', tense: 'Время', voice: 'Залог', satzart: 'Тип предложения' },
+    dialTitles: { object: 'Дополнение в аккузативе — прямое дополнение (wen? was?)', recipient: 'Дополнение в дативе — получатель (wem?)' },
+    articleTitle: 'Определённый (der) или неопределённый (ein) артикль',
+    toggles: { person: 'Подлежащее — местоимение', modal: 'Модальный глагол', dative: 'Дательное дополнение', adjective: 'Прилагательное', tenses: 'Время', voice: 'Залог', satzart: 'Тип предложения', indefinite: 'Неопределённый артикль', subjectIndefinite: 'Неопределённый артикль подлежащего', recipientIndefinite: 'Неопределённый артикль датива', negation: 'Отрицание', objectPronoun: 'Местоимение-дополнение' },
     dimensions: 'Параметры', options: 'Опции', appearance: 'Оформление', light: 'Светлая', dark: 'Тёмная',
     aboutButton: 'О Satz-Satz', aboutKicker: 'О проекте', aboutTitle: 'Satz-Satz',
     about: [
@@ -109,12 +116,30 @@ export default function App() {
   const { toggles } = state.selection
   // Person and Subjekt are two ways to fill the same grammatical slot. The
   // UI deliberately gives that slot one permanent home and one shortcut.
-  const dialSlots = [
-    { key: 'subject', number: 1, dial: toggles.person ? DIAL.person : DIAL.subject, label: ui.dials.subject },
+  // Noun-phrase slots carry a der/ein switch; it hides when the phrase has no
+  // article (pronoun subject, pronoun object).
+  const articleFor = (key: keyof Toggles, hidden: boolean) =>
+    hidden
+      ? undefined
+      : {
+          indefinite: toggles[key],
+          onToggle: () => dispatch({ type: 'toggle', key }),
+          title: ui.articleTitle,
+        }
+  interface DialSlot {
+    key: string
+    number: number
+    dial: number
+    label: string
+    title?: string
+    article?: ReturnType<typeof articleFor>
+  }
+  const dialSlots: DialSlot[] = [
+    { key: 'subject', number: 1, dial: toggles.person ? DIAL.person : DIAL.subject, label: ui.dials.subject, article: articleFor('subjectIndefinite', toggles.person) },
     { key: 'verb', number: 2, dial: DIAL.verb, label: ui.dials.verb },
     { key: 'modal', number: 3, dial: DIAL.modal, label: ui.dials.modal },
-    { key: 'object', number: 4, dial: DIAL.object, label: ui.dials.object },
-    { key: 'recipient', number: 5, dial: DIAL.recipient, label: ui.dials.recipient },
+    { key: 'object', number: 4, dial: DIAL.object, label: ui.dials.object, title: ui.dialTitles.object, article: articleFor('indefinite', toggles.objectPronoun) },
+    { key: 'recipient', number: 5, dial: DIAL.recipient, label: ui.dials.recipient, title: ui.dialTitles.recipient, article: articleFor('recipientIndefinite', false) },
     { key: 'adjective', number: 6, dial: DIAL.adjective, label: ui.dials.adjective },
     { key: 'tense', number: 7, dial: DIAL.tense, label: ui.dials.tense },
     { key: 'voice', number: 8, dial: DIAL.voice, label: ui.dials.voice },
@@ -187,12 +212,14 @@ export default function App() {
         lang={lang}
       />
       <div className="selectors" style={dialGridStyle}>
-        {dialSlots.map(({ key, number, dial: dialIndex, label }) => {
+        {dialSlots.map(({ key, number, dial: dialIndex, label, title, article }) => {
           const dial = DIALS[dialIndex]
           return (
             <Selector
               key={key}
               label={label}
+              labelTitle={title}
+              article={article}
               values={dial.values}
               index={state.selection.indices[dialIndex]}
               active={state.active === dialIndex}

@@ -119,7 +119,11 @@ export function reduce(state: AppState, action: Action): AppState {
       if (!nextToggles.satzart) indices[DIAL.satzart] = 0
       if (!nextToggles.person) indices[DIAL.person] = 0
       if (!nextToggles.modal) indices[DIAL.modal] = 0
-      if (!nextToggles.dative) indices[DIAL.recipient] = 0
+      if (!nextToggles.dative) {
+        indices[DIAL.recipient] = 0
+        // The recipient's article switch belongs to the dative dimension.
+        nextToggles.recipientIndefinite = false
+      }
       // A value made unavailable (separable verb after "trennbar" goes off)
       // snaps to the first available one.
       for (let dial = 0; dial < DIALS.length; dial++) {

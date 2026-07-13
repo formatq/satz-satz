@@ -189,6 +189,55 @@ describe('object pronoun', () => {
   })
 })
 
+describe('article switches', () => {
+  it('switches the subject to the indefinite article, bare in the plural', () => {
+    expect(de({ toggles: { subjectIndefinite: true } })).toBe('Ein Mann öffnet die Tür.')
+    expect(de({ subject: 1, toggles: { subjectIndefinite: true } })).toBe('Eine Frau öffnet die Tür.')
+    expect(de({ subject: 2, toggles: { subjectIndefinite: true } })).toBe('Ein Kind öffnet die Tür.')
+    expect(de({ subject: 3, toggles: { subjectIndefinite: true } })).toBe('Kinder öffnen die Tür.')
+    expect(en({ toggles: { subjectIndefinite: true } })).toBe('A man opens the door.')
+    expect(en({ subject: 3, toggles: { subjectIndefinite: true } })).toBe('Children open the door.')
+    expect(ru({ toggles: { subjectIndefinite: true } })).toBe('Мужчина открывает дверь.')
+  })
+
+  it('declines the indefinite subject in the Passiv von-phrase', () => {
+    expect(de({ voice: 1, toggles: { subjectIndefinite: true } })).toBe('Die Tür wird von einem Mann geöffnet.')
+    expect(de({ subject: 1, voice: 1, toggles: { subjectIndefinite: true } })).toBe('Die Tür wird von einer Frau geöffnet.')
+    expect(de({ subject: 3, voice: 1, toggles: { subjectIndefinite: true } })).toBe('Die Tür wird von Kindern geöffnet.')
+    expect(en({ voice: 1, toggles: { subjectIndefinite: true } })).toBe('The door is opened by a man.')
+  })
+
+  it('ignores the subject switch while a pronoun drives the sentence', () => {
+    expect(de({ person: 0, toggles: { person: true, subjectIndefinite: true } })).toBe('Ich öffne die Tür.')
+  })
+
+  it('switches the dative recipient to the indefinite article, bare in the plural', () => {
+    expect(de({ recipient: 0, toggles: { recipientIndefinite: true } })).toBe('Der Mann öffnet einer Frau die Tür.')
+    expect(de({ recipient: 1, toggles: { recipientIndefinite: true } })).toBe('Der Mann öffnet einem Kind die Tür.')
+    expect(de({ recipient: 3, toggles: { recipientIndefinite: true } })).toBe('Der Mann öffnet Kindern die Tür.')
+    expect(en({ recipient: 0, toggles: { recipientIndefinite: true } })).toBe('The man opens the door for a woman.')
+    expect(ru({ recipient: 0, toggles: { recipientIndefinite: true } })).toBe('Мужчина открывает женщине дверь.')
+  })
+
+  it('keeps the indefinite dative before the von-agent in Passiv', () => {
+    expect(de({ recipient: 1, voice: 1, toggles: { recipientIndefinite: true } })).toBe(
+      'Die Tür wird einem Kind vom Mann geöffnet.',
+    )
+    expect(en({ recipient: 1, voice: 1, toggles: { recipientIndefinite: true } })).toBe(
+      'The door is opened for a child by the man.',
+    )
+  })
+
+  it('switches all three noun phrases independently', () => {
+    expect(
+      de({ recipient: 0, toggles: { subjectIndefinite: true, recipientIndefinite: true, indefinite: true } }),
+    ).toBe('Ein Mann öffnet einer Frau eine Tür.')
+    expect(
+      de({ recipient: 0, toggles: { subjectIndefinite: true, recipientIndefinite: false, indefinite: false } }),
+    ).toBe('Ein Mann öffnet der Frau die Tür.')
+  })
+})
+
 describe('dative object', () => {
   it('places the dative recipient before the accusative object', () => {
     expect(de({ recipient: 0 })).toBe('Der Mann öffnet der Frau die Tür.')

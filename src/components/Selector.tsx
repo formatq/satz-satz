@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 
 interface SelectorProps {
   label: string
+  /** Full hover explanation; the visible label may be a short case name (Accusative). */
+  labelTitle?: string
   values: string[]
   index: number
   active: boolean
@@ -10,6 +12,8 @@ interface SelectorProps {
   onSelect: (index: number) => void
   onSpin: (direction: 1 | -1) => void
   onActivate: () => void
+  /** der/ein switch in the heading; only noun phrases with an article get one. */
+  article?: { indefinite: boolean; onToggle: () => void; title: string }
   /** Stable UI position, shown as the keyboard shortcut in the heading. */
   dialNumber: number
   showAllLabel: (count: number) => string
@@ -25,6 +29,7 @@ const WHEEL_STEP_PX = 40
  */
 export function Selector({
   label,
+  labelTitle,
   values,
   index,
   active,
@@ -32,6 +37,7 @@ export function Selector({
   onSelect,
   onSpin,
   onActivate,
+  article,
   dialNumber,
   showAllLabel,
   lessLabel,
@@ -73,10 +79,24 @@ export function Selector({
 
   return (
     <div className="selector-block">
-      <button type="button" className={`selector-head${active ? ' selector-head-active' : ''}`} title={label} onClick={onActivate}>
-        <span className="selector-key">{dialNumber}</span>
-        <span>{label}</span>
-      </button>
+      <div className={`selector-head${active ? ' selector-head-active' : ''}`}>
+        <button type="button" className="selector-head-label" title={labelTitle ?? label} onClick={onActivate}>
+          <span className="selector-key">{dialNumber}</span>
+          <span>{label}</span>
+        </button>
+        {article && (
+          <button
+            type="button"
+            className="article-switch"
+            title={article.title}
+            aria-pressed={article.indefinite}
+            onClick={article.onToggle}
+          >
+            <span className={article.indefinite ? '' : 'article-current'}>der</span>
+            <span className={article.indefinite ? 'article-current' : ''}>ein</span>
+          </button>
+        )}
+      </div>
       <div
         ref={listRef}
         className={`selector${active ? ' selector-active' : ''}`}

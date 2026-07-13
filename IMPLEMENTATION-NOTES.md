@@ -1,6 +1,6 @@
 # Implementation notes for satz-satz
 
-Working notes for maintainers of the 1.1.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
+Working notes for maintainers of the 1.2.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
 
 ## Ground rules
 
@@ -31,6 +31,8 @@ Working notes for maintainers of the 1.1.0 app. Read `SPEC-DE.md` for product be
 
 `isDialDisabled` hides feature-gated sources and ensures Subject and Person are mutually exclusive. `isValueAvailable` currently only restricts Tense while a modal is enabled. The reducer resets a turned-off dimension to index zero, snaps unavailable values to the first valid value, and moves the active selector when it disappears.
 
+Article choice is not a dial: three `Toggles` booleans (`subjectIndefinite`, `indefinite`, `recipientIndefinite`) feed the der/ein switches that `App.tsx` places in the selector headers via the Selector `article` prop. A switch is omitted when the phrase has no article (pronoun subject or pronoun object), and `recipientIndefinite` resets together with the dative dimension. The selector value lists keep the definite citation forms regardless of the switch — the sentence is where the article change shows.
+
 ## Sentence composition
 
 `compose(selection)` returns `{ de, end, ru, en }`. German output is a role-tagged token array; the roles support precise visual diffs.
@@ -40,6 +42,7 @@ Word order is data in `FRAMES` and `MODAL_FRAMES`, not a branch per sentence. Th
 - `nicht` follows the object or `von` phrase.
 - An indefinite negated object uses `kein-` and suppresses `nicht`.
 - The dative recipient lives inside `objPhrase`/`vonPhrase`, not in the frames: it precedes an accusative noun, follows an accusative pronoun, and precedes the `von` agent in Passiv.
+- Indefinite subject and recipient forms are data (`ein`, `vonEin` on Subject; `ein` on Recipient); the plural is the bare noun. Pronoun subjects omit the fields and fall back to the definite form.
 - A separable prefix is split in main-clause Präsens/Präteritum and fused in a Nebensatz.
 - Passiv Perfekt uses `worden`, never `geworden`.
 
@@ -72,7 +75,7 @@ At 700 px and below the body scrolls, the sentence is sticky, and its top paddin
 
 ## Tests and verification
 
-There are 85 unit tests: 59 grammar, 17 reducer, 5 diff, and 4 navigation. Run:
+There are 92 unit tests: 65 grammar, 18 reducer, 5 diff, and 4 navigation. Run:
 
 ```sh
 npm test

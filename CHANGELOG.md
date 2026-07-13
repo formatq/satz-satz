@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-07-13
+
+### Added
+
+- der/ein article switches in the selector headers of the three noun phrases — Subject, Accusative, and Dative. Each phrase switches independently (`Ein Mann öffnet einer Frau eine Tür`), the plural takes the bare noun (`Kinder`, `von Kindern`), and the passive declines the indefinite agent (`von einem Mann`).
+- The switch hides when the phrase carries no article: a pronoun subject or a pronoun object.
+- English translations follow the switches (`A man opens a door for a woman`); Russian is unaffected.
+
+### Changed
+
+- Selector labels: **Object** → **Accusative** and **Dative object** → **Dative**, each with a full hover explanation (direct object *wen? was?* / recipient *wem?*).
+- The global **Indefinite article** menu toggle is replaced by the accusative header switch; the object still defaults to the indefinite article.
+- Seven new unit tests (92 total).
+
 ## [1.1.0] - 2026-07-13
 
 ### Added
@@ -37,6 +51,7 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Replaced the original four-dial, pregenerated-variant prototype with runtime sentence composition and progressive feature disclosure.
 - Redesigned the interface around fixed-width selector blocks, stable 1–8 UI positions, and beginner-friendly English/Russian chrome.
 
-[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/formatq/satz-satz/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/formatq/satz-satz/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/formatq/satz-satz/releases/tag/v1.0.0
