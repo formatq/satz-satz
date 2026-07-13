@@ -13,8 +13,8 @@ There are nine stable UI positions and keyboard shortcuts:
 1. **Subject** — a noun subject (`der Mann`, `die Frau` …), or personal pronouns (`ich`, `du`, `er` …) when **Subject as pronoun** is enabled.
 2. **Verb** — `öffnen`, `reparieren`, `aufmachen`, `zumachen`.
 3. **Modal verb** — `können`, `müssen`, `wollen`.
-4. **Accusative** — the direct object: `die Tür`, `der Schrank`, `das Fenster`.
-5. **Dative** — `der Frau`, `dem Kind`, `dem Mann`, `den Kindern`: a recipient that shows the accusative/dative contrast in one sentence (`Der Mann öffnet der Frau die Tür`).
+4. **Accusative** — the direct object: `die Tür`, `der Schrank`, `das Fenster`, or pronouns (`ihn`, `sie`, `es`) when **Accusative as pronoun** is enabled.
+5. **Dative** — `der Frau`, `dem Kind`, `dem Mann`, `den Kindern`, or pronouns (`mir`, `dir` …) when **Dative as pronoun** is enabled: a recipient that shows the accusative/dative contrast in one sentence (`Der Mann öffnet der Frau die Tür`).
 6. **Adjective** — `alt`, `neu`, `kaputt`.
 7. **Tense** — Präsens, Präteritum, Perfekt, Futur I.
 8. **Voice** — Aktiv or Vorgangspassiv.
@@ -24,7 +24,7 @@ The selected values always form a grammatical sentence. With a modal verb, Perfe
 
 The Subject, Accusative, and Dative selectors each carry a small **der/ein** switch in their header: every noun phrase chooses its own definite or indefinite article (`Ein Mann öffnet einer Frau eine Tür`), with bare plurals (`Kinder`, `von Kindern`) and full declension in the passive (`von einem Mann`). The switch hides while the phrase is a pronoun.
 
-The menu also offers negation, object pronouns, light/dark themes, and an About panel. Object pronouns lock the adjective because a pronoun cannot take one.
+The menu also offers negation, pronoun modes for the accusative and dative slots, light/dark themes, and an About panel. An accusative pronoun locks the adjective because a pronoun cannot take one; with two pronouns the accusative precedes the dative (`Der Mann öffnet sie mir`).
 
 ## Interface and controls
 
@@ -46,7 +46,7 @@ npm test
 npm run build
 ```
 
-Sentences are composed at runtime by `src/de/grammar.ts` from hand-encoded morphology tables and declarative word-order frames. No variant JSON is fetched or generated at runtime, and there are no network requests after page load. The suite contains 92 unit tests for grammar, reducer behavior, navigation, and token diffs.
+Sentences are composed at runtime by `src/de/grammar.ts` from hand-encoded morphology tables and declarative word-order frames. No variant JSON is fetched or generated at runtime, and there are no network requests after page load. The suite contains 98 unit tests for grammar, reducer behavior, navigation, and token diffs.
 
 ## Release notes
 

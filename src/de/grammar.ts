@@ -212,12 +212,8 @@ interface Obj {
   artAcc: string
   einNom: string
   einAcc: string
-  pronNom: string
-  pronAcc: string
   ru: string
   ruAcc: string
-  ruNomPron: string
-  ruAccPron: string
   ruGender: 'm' | 'f' | 'n'
   ruWas: string
   ruWillBe: string
@@ -229,19 +225,51 @@ interface Obj {
 const OBJECTS: Obj[] = [
   {
     de: 'die Tür', noun: 'Tür', gender: 'f', artNom: 'die', artAcc: 'die', einNom: 'eine', einAcc: 'eine',
-    pronNom: 'sie', pronAcc: 'sie',
-    ru: 'дверь', ruAcc: 'дверь', ruNomPron: 'она', ruAccPron: 'её', ruGender: 'f', ruWas: 'была', ruWillBe: 'будет', en: 'door',
+    ru: 'дверь', ruAcc: 'дверь', ruGender: 'f', ruWas: 'была', ruWillBe: 'будет', en: 'door',
   },
   {
     de: 'der Schrank', noun: 'Schrank', gender: 'm', artNom: 'der', artAcc: 'den', einNom: 'ein', einAcc: 'einen',
-    pronNom: 'er', pronAcc: 'ihn',
-    ru: 'шкаф', ruAcc: 'шкаф', ruNomPron: 'он', ruAccPron: 'его', ruGender: 'm', ruWas: 'был', ruWillBe: 'будет', en: 'cupboard',
+    ru: 'шкаф', ruAcc: 'шкаф', ruGender: 'm', ruWas: 'был', ruWillBe: 'будет', en: 'cupboard',
   },
   {
     de: 'das Fenster', noun: 'Fenster', gender: 'n', artNom: 'das', artAcc: 'das', einNom: 'ein', einAcc: 'ein',
-    pronNom: 'es', pronAcc: 'es',
-    ru: 'окно', ruAcc: 'окно', ruNomPron: 'оно', ruAccPron: 'его', ruGender: 'n', ruWas: 'было', ruWillBe: 'будет', en: 'window',
+    ru: 'окно', ruAcc: 'окно', ruGender: 'n', ruWas: 'было', ruWillBe: 'будет', en: 'window',
   },
+]
+
+// Personal pronouns filling the Accusative slot, like PERSONS fills Subjekt.
+// Third person only: with öffnen/reparieren an animate object (mich, dich)
+// would be nonsense, while ihn/sie/es refer to the three object nouns.
+interface AccPronoun {
+  acc: string
+  /** Nominative, for when the pronoun becomes the Passiv subject (ihn → er). */
+  nom: string
+  ruAcc: string
+  ruNom: string
+  ruGender: 'm' | 'f' | 'n'
+}
+
+const ACC_PRONOUNS: AccPronoun[] = [
+  { acc: 'ihn', nom: 'er', ruAcc: 'его', ruNom: 'он', ruGender: 'm' },
+  { acc: 'sie', nom: 'sie', ruAcc: 'её', ruNom: 'она', ruGender: 'f' },
+  { acc: 'es', nom: 'es', ruAcc: 'его', ruNom: 'оно', ruGender: 'n' },
+]
+
+/** Russian past copula by gender, for pronoun passive subjects (он был открыт). */
+const RU_WAS: Record<'m' | 'f' | 'n', string> = { m: 'был', f: 'была', n: 'было' }
+
+// Personal pronouns filling the Dative slot. Recipients are people, so the
+// whole paradigm is sensible (öffnet mir/dir/uns die Tür). They reuse the
+// Recipient shape: a pronoun has no article, so `ein` repeats the base form
+// and the der/ein switch is hidden in the UI.
+const DAT_PRONOUNS: Recipient[] = [
+  { de: 'mir', ein: 'mir', ru: 'мне', ruFor: 'для меня', en: 'for me', enA: 'for me' },
+  { de: 'dir', ein: 'dir', ru: 'тебе', ruFor: 'для тебя', en: 'for you', enA: 'for you' },
+  { de: 'ihm', ein: 'ihm', ru: 'ему', ruFor: 'для него', en: 'for him', enA: 'for him' },
+  { de: 'ihr', ein: 'ihr', ru: 'ей', ruFor: 'для неё', en: 'for her', enA: 'for her' },
+  { de: 'uns', ein: 'uns', ru: 'нам', ruFor: 'для нас', en: 'for us', enA: 'for us' },
+  { de: 'euch', ein: 'euch', ru: 'вам', ruFor: 'для вас', en: 'for you', enA: 'for you' },
+  { de: 'ihnen', ein: 'ihnen', ru: 'им', ruFor: 'для них', en: 'for them', enA: 'for them' },
 ]
 
 interface Adjective {
@@ -292,11 +320,11 @@ type Satzart = (typeof SATZARTEN)[number]
 // ---------------------------------------------------------------------------
 // Dial configuration (consumed by the UI and the reducer)
 
-// recipient is appended so the existing dial indices stay stable.
-export const DIAL = { subject: 0, person: 1, verb: 2, modal: 3, object: 4, adjective: 5, tense: 6, voice: 7, satzart: 8, recipient: 9 } as const
+// Later additions are appended so the existing dial indices stay stable.
+export const DIAL = { subject: 0, person: 1, verb: 2, modal: 3, object: 4, adjective: 5, tense: 6, voice: 7, satzart: 8, recipient: 9, accPronoun: 10, datPronoun: 11 } as const
 
 export interface DialSpec {
-  id: 'subject' | 'person' | 'verb' | 'modal' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart' | 'recipient'
+  id: 'subject' | 'person' | 'verb' | 'modal' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart' | 'recipient' | 'accPronoun' | 'datPronoun'
   label: string
   values: string[]
 }
@@ -312,6 +340,8 @@ export const DIALS: DialSpec[] = [
   { id: 'voice', label: 'Genus Verbi', values: [...VOICES] },
   { id: 'satzart', label: 'Satzart', values: [...SATZARTEN] },
   { id: 'recipient', label: 'Dativobjekt', values: RECIPIENTS.map((r) => r.de) },
+  { id: 'accPronoun', label: 'Pronomen (Akkusativ)', values: ACC_PRONOUNS.map((p) => p.acc) },
+  { id: 'datPronoun', label: 'Pronomen (Dativ)', values: DAT_PRONOUNS.map((p) => p.de) },
 ]
 
 /** Everything configurable, in hamburger-menu order: dials first, then features. */
@@ -324,13 +354,17 @@ export const MENU_TOGGLES: { key: keyof Toggles; label: string }[] = [
   { key: 'voice', label: 'Genus Verbi' },
   { key: 'satzart', label: 'Satzart' },
   { key: 'negation', label: 'Negation' },
-  { key: 'objectPronoun', label: 'Pronomen (Objekt)' },
+  { key: 'objectPronoun', label: 'Akkusativ als Pronomen' },
+  { key: 'dativePronoun', label: 'Dativ als Pronomen' },
 ]
 
-/** Menu entries locked in the current state: a pronoun object takes no adjective.
+/** Menu entries locked in the current state: a pronoun object takes no adjective,
+ *  and the dative pronoun needs the dative dimension to exist first.
  *  (Articles moved out of the menu into per-selector der/ein switches.) */
 export function isToggleLocked(key: keyof Toggles, toggles: Toggles): boolean {
-  return key === 'adjective' && toggles.objectPronoun
+  if (key === 'adjective') return toggles.objectPronoun
+  if (key === 'dativePronoun') return !toggles.dative
+  return false
 }
 
 export function initialSelection(): Selection {
@@ -350,6 +384,7 @@ export function initialSelection(): Selection {
       recipientIndefinite: false,
       negation: false,
       objectPronoun: false,
+      dativePronoun: false,
       dative: false,
     },
   }
@@ -357,11 +392,15 @@ export function initialSelection(): Selection {
 
 export function isDialDisabled(dial: number, toggles: Toggles): boolean {
   switch (DIALS[dial].id) {
-    // Exactly one of Subjekt/Person drives the sentence at a time.
+    // Noun and pronoun sources share one UI slot; exactly one drives at a time.
     case 'subject':
       return toggles.person
     case 'person':
       return !toggles.person
+    case 'object':
+      return toggles.objectPronoun
+    case 'accPronoun':
+      return !toggles.objectPronoun
     case 'modal':
       return !toggles.modal
     case 'adjective':
@@ -374,7 +413,9 @@ export function isDialDisabled(dial: number, toggles: Toggles): boolean {
     case 'satzart':
       return !toggles.satzart
     case 'recipient':
-      return !toggles.dative
+      return !toggles.dative || toggles.dativePronoun
+    case 'datPronoun':
+      return !toggles.dative || !toggles.dativePronoun
     default:
       return false
   }
@@ -396,7 +437,8 @@ interface Ctx {
   object: Obj
   adjective: Adjective | null
   recipient: Recipient | null
-  objPron: boolean
+  /** When set, the pronoun replaces the accusative noun phrase entirely. */
+  accPron: AccPronoun | null
   indef: boolean
   subjIndef: boolean
   recIndef: boolean
@@ -406,7 +448,7 @@ interface Ctx {
 // German negates an indefinite noun phrase in its article (kein-) and
 // everything else with `nicht` before the final verb cluster.
 function usesKein(c: Ctx): boolean {
-  return c.neg && c.indef && !c.objPron
+  return c.neg && c.indef && !c.accPron
 }
 
 function nichtTokens(c: Ctx): Token[] {
@@ -432,7 +474,7 @@ function adjectiveEnding(gender: 'm' | 'f' | 'n', kase: 'nom' | 'acc', indef: bo
 
 function objectTokens(c: Ctx, kase: 'nom' | 'acc'): Token[] {
   const o = c.object
-  if (c.objPron) return [[kase === 'nom' ? o.pronNom : o.pronAcc, 'obj']]
+  if (c.accPron) return [[kase === 'nom' ? c.accPron.nom : c.accPron.acc, 'obj']]
   let article = c.indef
     ? kase === 'nom' ? o.einNom : o.einAcc
     : kase === 'nom' ? o.artNom : o.artAcc
@@ -458,7 +500,7 @@ const recipientTokens = (c: Ctx): Token[] =>
 const objPhrase: Slot = (c) => {
   const dat = recipientTokens(c)
   const acc = objectTokens(c, 'acc')
-  return [...(c.objPron ? [...acc, ...dat] : [...dat, ...acc]), ...nichtTokens(c)]
+  return [...(c.accPron ? [...acc, ...dat] : [...dat, ...acc]), ...nichtTokens(c)]
 }
 const objAsSubject: Slot = (c) => objectTokens(c, 'nom')
 // In Passiv the dative stays dative and precedes the von-agent:
@@ -572,8 +614,8 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
     // Russian mirrors the German Mittelfeld order: dative before an accusative
     // noun (открывает женщине дверь), after an accusative pronoun (открывает её женщине).
     const dat = c.recipient ? c.recipient.ru : ''
-    const obj = (c.objPron
-      ? [object.ruAccPron, dat]
+    const obj = (c.accPron
+      ? [c.accPron.ruAcc, dat]
       : [dat, adjective ? ruAdjective(adjective, object.ruGender, 'acc') : '', object.ruAcc]
     )
       .filter(Boolean)
@@ -595,19 +637,23 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
         return `${subj} ${ne}${verb.ru.fut[subject.person]} ${obj}`
     }
   }
-  const objSubj = c.objPron
-    ? object.ruNomPron
+  const objSubj = c.accPron
+    ? c.accPron.ruNom
     : `${adjective ? ruAdjective(adjective, object.ruGender, 'nom') + ' ' : ''}${object.ru}`
+  // The pronoun brings its own gender for all agreement below (он был открыт).
+  const gender = c.accPron ? c.accPron.ruGender : object.ruGender
+  const was = c.accPron ? RU_WAS[gender] : object.ruWas
+  const willBe = c.accPron ? 'будет' : object.ruWillBe
   // A dative would be stilted in the Russian passive; «для + genitive» keeps
   // the beneficiary readable: открывается мужчиной для женщины.
   const agent = subject.ruInstr + (c.recipient ? ` ${c.recipient.ruFor}` : '')
-  const part = verb.ru.passivPart[object.ruGender]
+  const part = verb.ru.passivPart[gender]
   if (modal) {
     // The modal agrees with the passive subject: дверь может/должна быть открыта.
     const form =
       tense === 'Präteritum'
-        ? modal.ru.past[object.ruGender]
-        : ruModalPres(modal, 2, object.ruGender)
+        ? modal.ru.past[gender]
+        : ruModalPres(modal, 2, gender)
     return `${objSubj} ${ne}${form} быть ${part} ${agent}`
   }
   switch (tense) {
@@ -615,9 +661,9 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
       return `${objSubj} ${ne}${verb.ru.passivPres} ${agent}`
     case 'Präteritum':
     case 'Perfekt':
-      return `${objSubj} ${ne}${object.ruWas} ${part} ${agent}`
+      return `${objSubj} ${ne}${was} ${part} ${agent}`
     case 'Futur I':
-      return `${objSubj} ${ne}${object.ruWillBe} ${part} ${agent}`
+      return `${objSubj} ${ne}${willBe} ${part} ${agent}`
   }
 }
 
@@ -639,7 +685,7 @@ function composeRussian(c: Ctx, tense: Tense, voice: Voice, satzart: Satzart): s
 // their do-support (Does the man open …?).
 
 function enObjPhrase(c: Ctx): string {
-  if (c.objPron) return 'it'
+  if (c.accPron) return 'it'
   const adjective = c.adjective?.en
   const first = adjective ?? c.object.en
   const article = c.indef ? (/^[aeiou]/.test(first) ? 'an' : 'a') : 'the'
@@ -772,8 +818,13 @@ export function compose(sel: Selection): SentenceVariant {
     modal: toggles.modal ? MODALS[sel.indices[DIAL.modal]] : null,
     object: OBJECTS[sel.indices[DIAL.object]],
     adjective: toggles.adjective && !toggles.objectPronoun ? ADJECTIVES[sel.indices[DIAL.adjective]] : null,
-    recipient: toggles.dative ? RECIPIENTS[sel.indices[DIAL.recipient]] : null,
-    objPron: toggles.objectPronoun,
+    // Like Subjekt/Person, the noun and pronoun sources share one UI slot.
+    recipient: toggles.dative
+      ? toggles.dativePronoun
+        ? DAT_PRONOUNS[sel.indices[DIAL.datPronoun]]
+        : RECIPIENTS[sel.indices[DIAL.recipient]]
+      : null,
+    accPron: toggles.objectPronoun ? ACC_PRONOUNS[sel.indices[DIAL.accPronoun]] : null,
     indef: toggles.indefinite,
     // Pronoun subjects carry no article, so the switch state is ignored while Person drives.
     subjIndef: toggles.subjectIndefinite && !toggles.person,

@@ -54,9 +54,22 @@ describe('reducer', () => {
 
   it('toggling a feature that changes the sentence pushes history with highlights', () => {
     const state = run({ type: 'toggle', key: 'objectPronoun' })
-    expect(state.history[0].de).toBe('Der Mann öffnet sie.')
+    expect(state.history[0].de).toBe('Der Mann öffnet ihn.')
     expect(state.changed.some((flag) => flag)).toBe(true)
     expect(state.generation).toBe(1)
+  })
+
+  it('the dative pronoun swaps the recipient dial and resets with the dative dimension', () => {
+    const state = run(
+      { type: 'toggle', key: 'dative' },
+      { type: 'toggle', key: 'dativePronoun' },
+      { type: 'select', dial: DIAL.datPronoun, index: 4 },
+    )
+    expect(state.history[0].de).toBe('Der Mann öffnet uns eine Tür.')
+    const off = reduce(state, { type: 'toggle', key: 'dative' })
+    expect(off.selection.toggles.dativePronoun).toBe(false)
+    expect(off.selection.indices[DIAL.datPronoun]).toBe(0)
+    expect(off.history[0].de).toBe('Der Mann öffnet eine Tür.')
   })
 
   it('toggling a dimension on does not change the sentence or history', () => {

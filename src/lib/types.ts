@@ -39,8 +39,10 @@ export interface Toggles {
   recipientIndefinite: boolean
   /** On → negated sentence: `nicht` before the verb cluster, or `kein-` when the object is indefinite. */
   negation: boolean
-  /** On → the object renders as a pronoun (ihn/sie/es); suppresses the adjective. */
+  /** On → personal pronouns (ihn/sie/es) fill the Accusative UI slot; suppresses adjective and article. */
   objectPronoun: boolean
+  /** On → personal pronouns (mir/dir/…) fill the Dative UI slot. Only meaningful while dative is on. */
+  dativePronoun: boolean
   /** On → a dative recipient joins the sentence (öffnet der Frau die Tür), recipient dial shown. */
   dative: boolean
 }

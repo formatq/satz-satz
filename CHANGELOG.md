@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-07-13
+
+### Added
+
+- Dative pronoun mode: **Dativ als Pronomen** swaps the Dative column to the full personal paradigm `mir / dir / ihm / ihr / uns / euch / ihnen` (`Der Mann öffnet mir die Tür`). The menu entry is locked until the dative dimension is on and resets together with it.
+- Pronoun word order falls out of the existing Mittelfeld rule: a pronoun precedes a noun phrase, and with two pronouns the accusative comes first (`öffnet sie mir`, `öffnet sie der Frau`, `öffnet mir die Tür`).
+
+### Changed
+
+- **Object pronoun** reworked into **Accusative as pronoun**: like *Subject as pronoun*, the toggle now swaps the Accusative column to selectable pronouns `ihn / sie / es` instead of deriving the pronoun from the chosen noun. In Passiv the pronoun takes the nominative (`Er wird vom Mann geöffnet`), and the Russian translation agrees in gender (`Он был открыт`).
+- Six new unit tests (98 total).
+
 ## [1.2.0] - 2026-07-13
 
 ### Added
@@ -51,7 +63,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Replaced the original four-dial, pregenerated-variant prototype with runtime sentence composition and progressive feature disclosure.
 - Redesigned the interface around fixed-width selector blocks, stable 1–8 UI positions, and beginner-friendly English/Russian chrome.
 
-[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.2.0...HEAD
+[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.3.0...HEAD
+[1.3.0]: https://github.com/formatq/satz-satz/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/formatq/satz-satz/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/formatq/satz-satz/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/formatq/satz-satz/releases/tag/v1.0.0

@@ -1,6 +1,6 @@
 # satz-satz — German sentence modulator
 
-> Release specification for 1.2.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
+> Release specification for 1.3.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
 
 ## Purpose
 
@@ -12,13 +12,13 @@ The first screen deliberately contains only Subject, Verb, and Object. The rest 
 
 ## Grammar model
 
-The UI has nine stable numbered positions. A hidden optional position retains its number; there is never a separate Person column.
+The UI has nine stable numbered positions. A hidden optional position retains its number, and noun/pronoun sources share one position — there is never a separate pronoun column.
 
 1. **Subject** — `der Mann`, `die Frau`, `das Kind`, `die Kinder`; with **Subject as pronoun**, the same slot instead contains `ich`, `du`, `er`, `wir`, `ihr`, `sie`.
 2. **Verb** — `öffnen`, `reparieren`, `aufmachen`, `zumachen`.
 3. **Modal verb** — `können`, `müssen`, `wollen`.
-4. **Accusative** (the direct object) — `die Tür`, `der Schrank`, `das Fenster`. The short case label carries a full hover explanation.
-5. **Dative** — `der Frau`, `dem Kind`, `dem Mann`, `den Kindern`. A benefactive dative recipient; the nouns repeat the Subject dial so the learner sees the same words change case.
+4. **Accusative** (the direct object) — `die Tür`, `der Schrank`, `das Fenster`; with **Accusative as pronoun**, the same slot instead contains `ihn`, `sie`, `es`. The short case label carries a full hover explanation.
+5. **Dative** — `der Frau`, `dem Kind`, `dem Mann`, `den Kindern`; with **Dative as pronoun**, the same slot instead contains `mir`, `dir`, `ihm`, `ihr`, `uns`, `euch`, `ihnen`. A benefactive dative recipient; the nouns repeat the Subject dial so the learner sees the same words change case.
 6. **Adjective** — `alt`, `neu`, `kaputt`.
 7. **Tense** — Präsens, Präteritum, Perfekt, Futur I.
 8. **Voice** — Aktiv and Vorgangspassiv.
@@ -45,6 +45,7 @@ Each of the three noun phrases — Subject, Accusative, Dative — has a **der/e
 | Object pronoun with a dative object | Der Mann öffnet **sie dem Kind**. |
 | Subject article → ein | **Ein** Mann öffnet eine Tür. |
 | Plural subject with ein | **Kinder** öffnen eine Tür. |
+| Accusative and dative pronouns | Der Mann öffnet **sie mir**. |
 
 ## Menu features
 
@@ -54,7 +55,8 @@ All configuration is in the top-left hamburger menu.
 - **Dative object** adds a recipient in the Mittelfeld: before an accusative noun, after an accusative pronoun, and before the `von` agent in Passiv. Translations render it as a Russian dative (active) or «для …» (passive) and as an English for-phrase.
 - Articles are not in the menu: each noun phrase has its own der/ein switch in the selector header. The accusative switch drives adjective endings (weak after der-words, mixed after ein-words) and negation (`kein-` for an indefinite object, `nicht` otherwise).
 - **Negation** uses `nicht` after the object or agent phrase, but uses `kein-` for an indefinite object.
-- **Object pronoun** changes `der Schrank → ihn` in active voice and `→ er` in passive voice. It locks Adjective and hides the accusative article switch.
+- **Accusative as pronoun** swaps the Accusative column to `ihn/sie/es` (nominative `er/sie/es` in Passiv). It locks Adjective and hides the accusative article switch.
+- **Dative as pronoun** swaps the Dative column to the full personal paradigm `mir … ihnen` and hides the dative article switch. The entry is locked until Dative object is on and resets together with it. Pronoun order follows the Mittelfeld rule: a pronoun precedes a noun phrase, and the accusative pronoun precedes the dative one (`öffnet sie mir`).
 - **Appearance** switches between light and dark themes.
 - **About** explains the trainer in the selected interface language.
 
@@ -91,7 +93,7 @@ The internal grammar model retains separate Subject and Person data sources, but
 - Language and theme selections persist across reloads; English and Russian localise the surrounding interface and About content.
 - Keyboard, click, and wheel controls work with the stable 1–9 UI positions.
 - The responsive selector grid and sticky sentence do not let corner controls cover sentence text.
-- The app makes no network requests after it loads, builds successfully, and has 92 passing unit tests.
+- The app makes no network requests after it loads, builds successfully, and has 98 passing unit tests.
 
 ## Future ideas
 
