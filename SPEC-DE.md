@@ -1,6 +1,6 @@
 # satz-satz — German sentence modulator
 
-> Release specification for 1.0.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
+> Release specification for 1.1.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
 
 ## Purpose
 
@@ -12,16 +12,17 @@ The first screen deliberately contains only Subject, Verb, and Object. The rest 
 
 ## Grammar model
 
-The UI has eight stable numbered positions. A hidden optional position retains its number; there is never a separate Person column.
+The UI has nine stable numbered positions. A hidden optional position retains its number; there is never a separate Person column.
 
 1. **Subject** — `der Mann`, `die Frau`, `das Kind`, `die Kinder`; with **Subject as pronoun**, the same slot instead contains `ich`, `du`, `er`, `wir`, `ihr`, `sie`.
 2. **Verb** — `öffnen`, `reparieren`, `aufmachen`, `zumachen`.
 3. **Modal verb** — `können`, `müssen`, `wollen`.
 4. **Object** — `die Tür`, `der Schrank`, `das Fenster`.
-5. **Adjective** — `alt`, `neu`, `kaputt`.
-6. **Tense** — Präsens, Präteritum, Perfekt, Futur I.
-7. **Voice** — Aktiv and Vorgangspassiv.
-8. **Sentence type** — Hauptsatz, Frage, Nebensatz.
+5. **Dative object** — `der Frau`, `dem Kind`, `dem Mann`, `den Kindern`. A benefactive dative recipient; the nouns repeat the Subject dial so the learner sees the same words change case.
+6. **Adjective** — `alt`, `neu`, `kaputt`.
+7. **Tense** — Präsens, Präteritum, Perfekt, Futur I.
+8. **Voice** — Aktiv and Vorgangspassiv.
+9. **Sentence type** — Hauptsatz, Frage, Nebensatz.
 
 All enabled combinations compose to a valid sentence. Modal verbs restrict tense to Präsens and Präteritum, intentionally avoiding double infinitives such as `hat aufmachen können`.
 
@@ -38,12 +39,15 @@ All enabled combinations compose to a valid sentence. Modal verbs restrict tense
 | Sentence type → Nebensatz | …, weil die Kinder eine Tür **aufmachen**. |
 | Negation with an indefinite object | Der Mann öffnet **keine** Tür. |
 | Modal verb → müssen | Der Mann **muss** eine Tür **öffnen**. |
+| Dative object → dem Kind | Der Mann öffnet **dem Kind** eine Tür. |
+| Object pronoun with a dative object | Der Mann öffnet **sie dem Kind**. |
 
 ## Menu features
 
 All configuration is in the top-left hamburger menu.
 
-- **Subject as pronoun**, Modal verb, Adjective, Tense, Voice, and Sentence type reveal their corresponding selector.
+- **Subject as pronoun**, Modal verb, Dative object, Adjective, Tense, Voice, and Sentence type reveal their corresponding selector.
+- **Dative object** adds a recipient in the Mittelfeld: before an accusative noun, after an accusative pronoun, and before the `von` agent in Passiv. Translations render it as a Russian dative (active) or «для …» (passive) and as an English for-phrase.
 - **Indefinite article** is on by default. Turning it off restores definite articles and changes adjective endings from mixed to weak declension.
 - **Negation** uses `nicht` after the object or agent phrase, but uses `kein-` for an indefinite object.
 - **Object pronoun** changes `der Schrank → ihn` in active voice and `→ er` in passive voice. It locks Article and Adjective.
@@ -55,7 +59,7 @@ Turning a dimension off resets its value to the default. Values made unavailable
 ## Interaction and layout
 
 - Click a value to choose it. Wheel movement over a selector is accumulated in ~40 px steps.
-- `←` / `→` move the active visible selector cyclically; `↑` / `↓` step values without wrapping; `1`–`8` select the associated logical UI position when it is visible.
+- `←` / `→` move the active visible selector cyclically; `↑` / `↓` step values without wrapping; `1`–`9` select the associated logical UI position when it is visible.
 - Every selector is 148 px wide. It displays a three-row sliding window by default; **show all** expands the complete list.
 - The sentence has a fading, token-level diff highlight. The newest history entry types at 18 ms per character; consecutive duplicates are dropped and history is capped at 50.
 - On desktop, sentence, selectors, and fixed corner controls remain in place while the history scrolls internally.
@@ -81,9 +85,9 @@ The internal grammar model retains separate Subject and Person data sources, but
 - All German grammar combinations produced by enabled controls are valid; Passiv Perfekt uses `worden`, and adjective/article/pronoun agreement is correct.
 - Changing a value highlights the changed German tokens without blocking further input.
 - Language and theme selections persist across reloads; English and Russian localise the surrounding interface and About content.
-- Keyboard, click, and wheel controls work with the stable 1–8 UI positions.
+- Keyboard, click, and wheel controls work with the stable 1–9 UI positions.
 - The responsive selector grid and sticky sentence do not let corner controls cover sentence text.
-- The app makes no network requests after it loads, builds successfully, and has 75 passing unit tests.
+- The app makes no network requests after it loads, builds successfully, and has 85 passing unit tests.
 
 ## Future ideas
 

@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-07-13
+
+### Added
+
+- Dative object: a **Dativobjekt** toggle reveals a recipient selector (`der Frau`, `dem Kind`, `dem Mann`, `den Kindern`). The benefactive dative combines with every verb, object, tense, voice, and sentence type.
+- Correct Mittelfeld word order: the dative precedes an accusative noun (`öffnet der Frau die Tür`) but follows an accusative pronoun (`öffnet sie der Frau`); in Passiv it precedes the `von` agent (`Die Tür wird der Frau vom Mann geöffnet`).
+- Recipient translations: Russian dative in active clauses (`открывает женщине дверь`) and «для …» in passive ones; an English for-phrase (`opens the door for the woman`).
+- Ten new unit tests (85 total).
+
+### Changed
+
+- The UI grows to nine stable positions: the dative object is position 5; Adjective, Tense, Voice, and Sentence type shift to 6–9, and keyboard shortcuts extend to `1`–`9`.
+
 ## [1.0.0] - 2026-07-12
 
 ### Added
@@ -24,5 +37,6 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Replaced the original four-dial, pregenerated-variant prototype with runtime sentence composition and progressive feature disclosure.
 - Redesigned the interface around fixed-width selector blocks, stable 1–8 UI positions, and beginner-friendly English/Russian chrome.
 
-[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/formatq/satz-satz/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/formatq/satz-satz/releases/tag/v1.0.0

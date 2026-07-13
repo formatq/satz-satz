@@ -12,6 +12,7 @@ import { compose, DIAL, initialSelection } from './grammar'
 // satzart: 0 Hauptsatz · 1 Frage · 2 Nebensatz
 // person:  0 ich · 1 du · 2 er · 3 wir · 4 ihr · 5 sie
 // modal:   0 können · 1 müssen · 2 wollen
+// recipient: 0 der Frau · 1 dem Kind · 2 dem Mann · 3 den Kindern
 
 interface Setup {
   subject?: number
@@ -23,6 +24,7 @@ interface Setup {
   tense?: number
   voice?: number
   satzart?: number
+  recipient?: number
   toggles?: Partial<Toggles>
 }
 
@@ -37,6 +39,7 @@ function make(setup: Setup): Selection {
   selection.indices[DIAL.tense] = setup.tense ?? 0
   selection.indices[DIAL.voice] = setup.voice ?? 0
   selection.indices[DIAL.satzart] = setup.satzart ?? 0
+  selection.indices[DIAL.recipient] = setup.recipient ?? 0
   selection.toggles = {
     ...selection.toggles,
     // The app defaults to the indefinite article; these golden tests were
@@ -46,6 +49,7 @@ function make(setup: Setup): Selection {
     tenses: setup.tense !== undefined,
     voice: setup.voice !== undefined,
     satzart: setup.satzart !== undefined,
+    dative: setup.recipient !== undefined,
     ...setup.toggles,
   }
   return selection
@@ -182,6 +186,65 @@ describe('object pronoun', () => {
 
   it('suppresses the adjective while the object is a pronoun', () => {
     expect(de({ toggles: { adjective: true, objectPronoun: true } })).toBe('Der Mann öffnet sie.')
+  })
+})
+
+describe('dative object', () => {
+  it('places the dative recipient before the accusative object', () => {
+    expect(de({ recipient: 0 })).toBe('Der Mann öffnet der Frau die Tür.')
+    expect(ru({ recipient: 0 })).toBe('Мужчина открывает женщине дверь.')
+    expect(en({ recipient: 0 })).toBe('The man opens the door for the woman.')
+  })
+
+  it('declines the dative article by gender, with -n on the plural noun', () => {
+    expect(de({ recipient: 1 })).toBe('Der Mann öffnet dem Kind die Tür.')
+    expect(de({ recipient: 2, subject: 1 })).toBe('Die Frau öffnet dem Mann die Tür.')
+    expect(de({ recipient: 3 })).toBe('Der Mann öffnet den Kindern die Tür.')
+    expect(ru({ recipient: 3 })).toBe('Мужчина открывает детям дверь.')
+  })
+
+  it('keeps the dative through tenses and separable verbs', () => {
+    expect(de({ recipient: 1, verb: 2 })).toBe('Der Mann macht dem Kind die Tür auf.')
+    expect(de({ recipient: 1, verb: 2, tense: 2 })).toBe('Der Mann hat dem Kind die Tür aufgemacht.')
+    expect(de({ recipient: 1, tense: 3 })).toBe('Der Mann wird dem Kind die Tür öffnen.')
+  })
+
+  it('moves an accusative pronoun ahead of the dative', () => {
+    expect(de({ recipient: 0, toggles: { objectPronoun: true } })).toBe('Der Mann öffnet sie der Frau.')
+    expect(de({ recipient: 1, object: 1, toggles: { objectPronoun: true } })).toBe('Der Mann öffnet ihn dem Kind.')
+    expect(ru({ recipient: 0, toggles: { objectPronoun: true } })).toBe('Мужчина открывает её женщине.')
+  })
+
+  it('negates after the object pair, or with kein- on an indefinite object', () => {
+    expect(de({ recipient: 0, toggles: { negation: true } })).toBe('Der Mann öffnet der Frau die Tür nicht.')
+    expect(de({ recipient: 0, toggles: { negation: true, indefinite: true } })).toBe('Der Mann öffnet der Frau keine Tür.')
+  })
+
+  it('keeps the dative before the von-agent in Passiv', () => {
+    expect(de({ recipient: 0, voice: 1 })).toBe('Die Tür wird der Frau vom Mann geöffnet.')
+    expect(de({ recipient: 3, voice: 1, tense: 2, verb: 2 })).toBe('Die Tür ist den Kindern vom Mann aufgemacht worden.')
+    expect(ru({ recipient: 0, voice: 1 })).toBe('Дверь открывается мужчиной для женщины.')
+    expect(en({ recipient: 0, voice: 1 })).toBe('The door is opened for the woman by the man.')
+  })
+
+  it('works with modals, Frage and Nebensatz', () => {
+    expect(de({ recipient: 1, toggles: { modal: true } })).toBe('Der Mann kann dem Kind die Tür öffnen.')
+    expect(de({ recipient: 1, satzart: 1 })).toBe('Öffnet der Mann dem Kind die Tür?')
+    expect(de({ recipient: 1, satzart: 2, verb: 2 })).toBe('…, weil der Mann dem Kind die Tür aufmacht.')
+    expect(ru({ recipient: 1, toggles: { modal: true } })).toBe('Мужчина может открыть ребёнку дверь.')
+  })
+
+  it('combines the dative with the adjective and the indefinite article', () => {
+    expect(de({ recipient: 0, toggles: { adjective: true, indefinite: true } })).toBe(
+      'Der Mann öffnet der Frau eine alte Tür.',
+    )
+    expect(ru({ recipient: 0, toggles: { adjective: true, indefinite: true } })).toBe(
+      'Мужчина открывает женщине старую дверь.',
+    )
+  })
+
+  it('stays out of the sentence while the toggle is off', () => {
+    expect(de({ recipient: 2, toggles: { dative: false } })).toBe('Der Mann öffnet die Tür.')
   })
 })
 

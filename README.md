@@ -8,16 +8,17 @@ The app starts with just **Subject · Verb · Object**. More grammar appears pro
 
 ## What it teaches
 
-There are eight stable UI positions and keyboard shortcuts:
+There are nine stable UI positions and keyboard shortcuts:
 
 1. **Subject** — a noun subject (`der Mann`, `die Frau` …), or personal pronouns (`ich`, `du`, `er` …) when **Subject as pronoun** is enabled.
 2. **Verb** — `öffnen`, `reparieren`, `aufmachen`, `zumachen`.
 3. **Modal verb** — `können`, `müssen`, `wollen`.
 4. **Object** — `die Tür`, `der Schrank`, `das Fenster`.
-5. **Adjective** — `alt`, `neu`, `kaputt`.
-6. **Tense** — Präsens, Präteritum, Perfekt, Futur I.
-7. **Voice** — Aktiv or Vorgangspassiv.
-8. **Sentence type** — statement, question, or `weil` subordinate clause.
+5. **Dative object** — `der Frau`, `dem Kind`, `dem Mann`, `den Kindern`: a recipient that shows the accusative/dative contrast in one sentence (`Der Mann öffnet der Frau die Tür`).
+6. **Adjective** — `alt`, `neu`, `kaputt`.
+7. **Tense** — Präsens, Präteritum, Perfekt, Futur I.
+8. **Voice** — Aktiv or Vorgangspassiv.
+9. **Sentence type** — statement, question, or `weil` subordinate clause.
 
 The selected values always form a grammatical sentence. With a modal verb, Perfekt and Futur I are unavailable on purpose: the app stops before double-infinitive constructions.
 
@@ -26,7 +27,7 @@ The menu also offers an indefinite article (on by default), negation, object pro
 ## Interface and controls
 
 - Click a value to select it. Scroll over a selector, or use `↑` / `↓`, to step through values without wrapping.
-- `←` / `→` move the active selector, skipping hidden dimensions. `1`–`8` jump to the corresponding visible logical position.
+- `←` / `→` move the active selector, skipping hidden dimensions. `1`–`9` jump to the corresponding visible logical position.
 - A selector normally shows a three-value sliding window; **show all** expands it when needed.
 - A token-level diff highlights exactly the German words changed by the latest action. The history keeps the latest 50 distinct consecutive sentences and types the newest entry.
 - The top-right `DE → EN/RU` picker changes both the translations and the interface copy. Its choice is saved in `localStorage` (`satz-satz-lang`).
@@ -43,7 +44,7 @@ npm test
 npm run build
 ```
 
-Sentences are composed at runtime by `src/de/grammar.ts` from hand-encoded morphology tables and declarative word-order frames. No variant JSON is fetched or generated at runtime, and there are no network requests after page load. The suite contains 75 unit tests for grammar, reducer behavior, navigation, and token diffs.
+Sentences are composed at runtime by `src/de/grammar.ts` from hand-encoded morphology tables and declarative word-order frames. No variant JSON is fetched or generated at runtime, and there are no network requests after page load. The suite contains 85 unit tests for grammar, reducer behavior, navigation, and token diffs.
 
 ## Release notes
 

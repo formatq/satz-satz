@@ -1,6 +1,6 @@
 # Implementation notes for satz-satz
 
-Working notes for maintainers of the 1.0.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
+Working notes for maintainers of the 1.1.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
 
 ## Ground rules
 
@@ -25,9 +25,9 @@ Working notes for maintainers of the 1.0.0 app. Read `SPEC-DE.md` for product be
 
 ## Grammar and UI slots
 
-`DIALS` has nine internal data sources: Subject, Person, Verb, Modal, Object, Adjective, Tense, Voice, and Sentence type. Subject and Person must remain separate internally because their morphology differs.
+`DIALS` has ten internal data sources: Subject, Person, Verb, Modal, Object, Adjective, Tense, Voice, Sentence type, and Recipient (the dative object, appended last so earlier indices stay stable). Subject and Person must remain separate internally because their morphology differs.
 
-`App.tsx` maps them to eight stable UI positions. Position 1 is always Subject and selects `DIAL.subject` or `DIAL.person` according to the `person` toggle. Positions 2–8 are Verb, Modal verb, Object, Adjective, Tense, Voice, and Sentence type. Keep this mapping and the `1`–`8` keyboard shortcuts aligned whenever a dimension changes.
+`App.tsx` maps them to nine stable UI positions. Position 1 is always Subject and selects `DIAL.subject` or `DIAL.person` according to the `person` toggle. Positions 2–9 are Verb, Modal verb, Object, Dative object, Adjective, Tense, Voice, and Sentence type. Keep this mapping and the `1`–`9` keyboard shortcuts aligned whenever a dimension changes.
 
 `isDialDisabled` hides feature-gated sources and ensures Subject and Person are mutually exclusive. `isValueAvailable` currently only restricts Tense while a modal is enabled. The reducer resets a turned-off dimension to index zero, snaps unavailable values to the first valid value, and moves the active selector when it disappears.
 
@@ -39,6 +39,7 @@ Word order is data in `FRAMES` and `MODAL_FRAMES`, not a branch per sentence. Th
 
 - `nicht` follows the object or `von` phrase.
 - An indefinite negated object uses `kein-` and suppresses `nicht`.
+- The dative recipient lives inside `objPhrase`/`vonPhrase`, not in the frames: it precedes an accusative noun, follows an accusative pronoun, and precedes the `von` agent in Passiv.
 - A separable prefix is split in main-clause Präsens/Präteritum and fused in a Nebensatz.
 - Passiv Perfekt uses `worden`, never `geworden`.
 
@@ -71,7 +72,7 @@ At 700 px and below the body scrolls, the sentence is sticky, and its top paddin
 
 ## Tests and verification
 
-There are 75 unit tests: 50 grammar, 16 reducer, 5 diff, and 4 navigation. Run:
+There are 85 unit tests: 59 grammar, 17 reducer, 5 diff, and 4 navigation. Run:
 
 ```sh
 npm test

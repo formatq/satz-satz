@@ -163,6 +163,17 @@ describe('reducer', () => {
     expect(state.active).toBe(DIAL.subject)
   })
 
+  it('enabling the dative adds the recipient and pins it back on disable', () => {
+    const state = run(
+      { type: 'toggle', key: 'dative' },
+      { type: 'select', dial: DIAL.recipient, index: 3 },
+    )
+    expect(state.history[0].de).toBe('Der Mann öffnet den Kindern eine Tür.')
+    const off = reduce(state, { type: 'toggle', key: 'dative' })
+    expect(off.selection.indices[DIAL.recipient]).toBe(0)
+    expect(off.history[0].de).toBe('Der Mann öffnet eine Tür.')
+  })
+
   it('enabling the adjective adds it to the sentence and enables the dial', () => {
     const state = run(
       { type: 'toggle', key: 'adjective' },

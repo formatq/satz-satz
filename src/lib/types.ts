@@ -37,6 +37,8 @@ export interface Toggles {
   negation: boolean
   /** On → the object renders as a pronoun (ihn/sie/es); suppresses the adjective. */
   objectPronoun: boolean
+  /** On → a dative recipient joins the sentence (öffnet der Frau die Tür), recipient dial shown. */
+  dative: boolean
 }
 
 export interface Selection {

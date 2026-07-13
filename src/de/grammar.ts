@@ -251,6 +251,28 @@ const ADJECTIVES: Adjective[] = [
   { de: 'kaputt', en: 'broken', ru: { m: 'сломанный', f: 'сломанная', n: 'сломанное', fAcc: 'сломанную' } },
 ]
 
+interface Recipient {
+  de: string
+  /** Russian dative, for the active clause (открывает женщине дверь). */
+  ru: string
+  /** для + genitive, for the passive clause (открывается мужчиной для женщины). */
+  ruFor: string
+  en: string
+}
+
+// The benefactive dative combines with every verb × object pair (öffnet der
+// Frau die Tür, repariert dem Kind den Schrank), so the recipient is a third
+// participant on top of the existing inventories, not a new verb class. The
+// nouns repeat the Subjekt dial on purpose: the learner sees der → dem,
+// die → der, die → den on words they already know. die Frau leads so the
+// default doesn't collide with the default subject der Mann.
+const RECIPIENTS: Recipient[] = [
+  { de: 'der Frau', ru: 'женщине', ruFor: 'для женщины', en: 'for the woman' },
+  { de: 'dem Kind', ru: 'ребёнку', ruFor: 'для ребёнка', en: 'for the child' },
+  { de: 'dem Mann', ru: 'мужчине', ruFor: 'для мужчины', en: 'for the man' },
+  { de: 'den Kindern', ru: 'детям', ruFor: 'для детей', en: 'for the children' },
+]
+
 export const TENSES = ['Präsens', 'Präteritum', 'Perfekt', 'Futur I'] as const
 export const VOICES = ['Aktiv', 'Passiv'] as const
 export const SATZARTEN = ['Hauptsatz', 'Frage', 'Nebensatz'] as const
@@ -262,10 +284,11 @@ type Satzart = (typeof SATZARTEN)[number]
 // ---------------------------------------------------------------------------
 // Dial configuration (consumed by the UI and the reducer)
 
-export const DIAL = { subject: 0, person: 1, verb: 2, modal: 3, object: 4, adjective: 5, tense: 6, voice: 7, satzart: 8 } as const
+// recipient is appended so the existing dial indices stay stable.
+export const DIAL = { subject: 0, person: 1, verb: 2, modal: 3, object: 4, adjective: 5, tense: 6, voice: 7, satzart: 8, recipient: 9 } as const
 
 export interface DialSpec {
-  id: 'subject' | 'person' | 'verb' | 'modal' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart'
+  id: 'subject' | 'person' | 'verb' | 'modal' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart' | 'recipient'
   label: string
   values: string[]
 }
@@ -280,12 +303,14 @@ export const DIALS: DialSpec[] = [
   { id: 'tense', label: 'Zeitform', values: [...TENSES] },
   { id: 'voice', label: 'Genus Verbi', values: [...VOICES] },
   { id: 'satzart', label: 'Satzart', values: [...SATZARTEN] },
+  { id: 'recipient', label: 'Dativobjekt', values: RECIPIENTS.map((r) => r.de) },
 ]
 
 /** Everything configurable, in hamburger-menu order: dials first, then features. */
 export const MENU_TOGGLES: { key: keyof Toggles; label: string }[] = [
   { key: 'person', label: 'Subjekt als Pronomen' },
   { key: 'modal', label: 'Modalverb' },
+  { key: 'dative', label: 'Dativobjekt' },
   { key: 'adjective', label: 'Adjektiv' },
   { key: 'tenses', label: 'Zeitform' },
   { key: 'voice', label: 'Genus Verbi' },
@@ -315,6 +340,7 @@ export function initialSelection(): Selection {
       indefinite: true,
       negation: false,
       objectPronoun: false,
+      dative: false,
     },
   }
 }
@@ -337,6 +363,8 @@ export function isDialDisabled(dial: number, toggles: Toggles): boolean {
       return !toggles.voice
     case 'satzart':
       return !toggles.satzart
+    case 'recipient':
+      return !toggles.dative
     default:
       return false
   }
@@ -357,6 +385,7 @@ interface Ctx {
   modal: Modal | null
   object: Obj
   adjective: Adjective | null
+  recipient: Recipient | null
   objPron: boolean
   indef: boolean
   neg: boolean
@@ -408,11 +437,24 @@ function objectTokens(c: Ctx, kase: 'nom' | 'acc'): Token[] {
 type Slot = (c: Ctx) => Token[]
 
 const subjPhrase: Slot = (c) => nounPhrase(c.subject.de, 'subj')
+const recipientTokens = (c: Ctx): Token[] => (c.recipient ? nounPhrase(c.recipient.de, 'obj') : [])
 // `nicht` negates the predicate, so in every frame it lands right after the
 // object (Aktiv) / the agent (Passiv), just before the final verb cluster.
-const objPhrase: Slot = (c) => [...objectTokens(c, 'acc'), ...nichtTokens(c)]
+// Mittelfeld order: the dative precedes an accusative noun (öffnet der Frau
+// die Tür), but an accusative pronoun jumps ahead of it (öffnet sie der Frau).
+const objPhrase: Slot = (c) => {
+  const dat = recipientTokens(c)
+  const acc = objectTokens(c, 'acc')
+  return [...(c.objPron ? [...acc, ...dat] : [...dat, ...acc]), ...nichtTokens(c)]
+}
 const objAsSubject: Slot = (c) => objectTokens(c, 'nom')
-const vonPhrase: Slot = (c) => [...nounPhrase(c.subject.von, 'subj'), ...nichtTokens(c)]
+// In Passiv the dative stays dative and precedes the von-agent:
+// Die Tür wird der Frau vom Mann geöffnet.
+const vonPhrase: Slot = (c) => [
+  ...recipientTokens(c),
+  ...nounPhrase(c.subject.von, 'subj'),
+  ...nichtTokens(c),
+]
 const finPraesens: Slot = (c) => [[c.verb.praesens[c.subject.person], 'verb']]
 const finPraeteritum: Slot = (c) => [[c.verb.praeteritum[c.subject.person], 'verb']]
 // Verb-final position (Nebensatz): a separable verb fuses back onto its
@@ -514,9 +556,15 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
   const ne = c.neg ? 'не ' : ''
   if (voice === 'Aktiv') {
     const subj = subject.ru
-    const obj = c.objPron
-      ? object.ruAccPron
-      : `${adjective ? ruAdjective(adjective, object.ruGender, 'acc') + ' ' : ''}${object.ruAcc}`
+    // Russian mirrors the German Mittelfeld order: dative before an accusative
+    // noun (открывает женщине дверь), after an accusative pronoun (открывает её женщине).
+    const dat = c.recipient ? c.recipient.ru : ''
+    const obj = (c.objPron
+      ? [object.ruAccPron, dat]
+      : [dat, adjective ? ruAdjective(adjective, object.ruGender, 'acc') : '', object.ruAcc]
+    )
+      .filter(Boolean)
+      .join(' ')
     if (modal) {
       const form =
         tense === 'Präteritum'
@@ -537,7 +585,9 @@ function russianBody(c: Ctx, tense: Tense, voice: Voice): string {
   const objSubj = c.objPron
     ? object.ruNomPron
     : `${adjective ? ruAdjective(adjective, object.ruGender, 'nom') + ' ' : ''}${object.ru}`
-  const agent = subject.ruInstr
+  // A dative would be stilted in the Russian passive; «для + genitive» keeps
+  // the beneficiary readable: открывается мужчиной для женщины.
+  const agent = subject.ruInstr + (c.recipient ? ` ${c.recipient.ruFor}` : '')
   const part = verb.ru.passivPart[object.ruGender]
   if (modal) {
     // The modal agrees with the passive subject: дверь может/должна быть открыта.
@@ -606,7 +656,8 @@ function enActive(c: Ctx, tense: Tense, question: boolean): string {
   const verb = c.verb.en
   const is3 = c.subject.person === 2
   const subj = c.subject.en
-  const obj = enObjPhrase(c)
+  // English renders the beneficiary as a for-phrase: opens the door for the woman.
+  const obj = enObjPhrase(c) + (c.recipient ? ` ${c.recipient.en}` : '')
   const not = c.neg
   const past = tense === 'Präteritum'
   if (c.modal) {
@@ -644,7 +695,8 @@ function enActive(c: Ctx, tense: Tense, question: boolean): string {
 function enPassive(c: Ctx, tense: Tense, question: boolean): string {
   const verb = c.verb.en
   const objSubj = enObjPhrase(c)
-  const by = c.subject.enBy
+  // The for-phrase precedes the by-agent: opened for the woman by the man.
+  const by = (c.recipient ? `${c.recipient.en} ` : '') + c.subject.enBy
   const not = c.neg
   const past = tense === 'Präteritum'
   if (c.modal) {
@@ -705,6 +757,7 @@ export function compose(sel: Selection): SentenceVariant {
     modal: toggles.modal ? MODALS[sel.indices[DIAL.modal]] : null,
     object: OBJECTS[sel.indices[DIAL.object]],
     adjective: toggles.adjective && !toggles.objectPronoun ? ADJECTIVES[sel.indices[DIAL.adjective]] : null,
+    recipient: toggles.dative ? RECIPIENTS[sel.indices[DIAL.recipient]] : null,
     objPron: toggles.objectPronoun,
     indef: toggles.indefinite,
     neg: toggles.negation,

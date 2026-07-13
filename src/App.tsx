@@ -25,7 +25,7 @@ const LANGS: { id: Lang; label: string }[] = [
 ]
 
 const UI: Record<Lang, {
-  dials: Record<'subject' | 'verb' | 'modal' | 'object' | 'adjective' | 'tense' | 'voice' | 'satzart', string>
+  dials: Record<'subject' | 'verb' | 'modal' | 'object' | 'recipient' | 'adjective' | 'tense' | 'voice' | 'satzart', string>
   toggles: Record<keyof Toggles, string>
   dimensions: string
   options: string
@@ -45,26 +45,26 @@ const UI: Record<Lang, {
   closeAria: string
 }> = {
   en: {
-    dials: { subject: 'Subject', verb: 'Verb', modal: 'Modal verb', object: 'Object', adjective: 'Adjective', tense: 'Tense', voice: 'Voice', satzart: 'Sentence type' },
-    toggles: { person: 'Subject as pronoun', modal: 'Modal verb', adjective: 'Adjective', tenses: 'Tense', voice: 'Voice', satzart: 'Sentence type', indefinite: 'Indefinite article', negation: 'Negation', objectPronoun: 'Object pronoun' },
+    dials: { subject: 'Subject', verb: 'Verb', modal: 'Modal verb', object: 'Object', recipient: 'Dative object', adjective: 'Adjective', tense: 'Tense', voice: 'Voice', satzart: 'Sentence type' },
+    toggles: { person: 'Subject as pronoun', modal: 'Modal verb', dative: 'Dative object', adjective: 'Adjective', tenses: 'Tense', voice: 'Voice', satzart: 'Sentence type', indefinite: 'Indefinite article', negation: 'Negation', objectPronoun: 'Object pronoun' },
     dimensions: 'Dimensions', options: 'Options', appearance: 'Appearance', light: 'Light', dark: 'Dark',
     aboutButton: 'About Satz-Satz', aboutKicker: 'About the project', aboutTitle: 'Satz-Satz',
     about: [
       'An interactive trainer for German sentence grammar. Instead of memorising rules first, change one part of a sentence and instantly see what else changes.',
       'The selectors control the subject, verb, object, tense, active and passive voice, and more. Highlighted words show the grammatical effect of every change.',
-      'Use the mouse, mouse wheel, or keyboard: ← → changes a dimension, ↑ ↓ changes a value, and 1–8 jumps directly.',
+      'Use the mouse, mouse wheel, or keyboard: ← → changes a dimension, ↑ ↓ changes a value, and 1–9 jumps directly.',
     ],
     history: 'History', showAll: (count) => `show all ${count}`, less: 'show less', settingsAria: 'Settings', languageAria: 'Translation language', themeAria: 'Colour theme', closeAria: 'Close',
   },
   ru: {
-    dials: { subject: 'Подлежащее', verb: 'Глагол', modal: 'Модальный глагол', object: 'Дополнение', adjective: 'Прилагательное', tense: 'Время', voice: 'Залог', satzart: 'Тип предложения' },
-    toggles: { person: 'Подлежащее — местоимение', modal: 'Модальный глагол', adjective: 'Прилагательное', tenses: 'Время', voice: 'Залог', satzart: 'Тип предложения', indefinite: 'Неопределённый артикль', negation: 'Отрицание', objectPronoun: 'Местоимение-дополнение' },
+    dials: { subject: 'Подлежащее', verb: 'Глагол', modal: 'Модальный глагол', object: 'Дополнение', recipient: 'Дополнение (датив)', adjective: 'Прилагательное', tense: 'Время', voice: 'Залог', satzart: 'Тип предложения' },
+    toggles: { person: 'Подлежащее — местоимение', modal: 'Модальный глагол', dative: 'Дательное дополнение', adjective: 'Прилагательное', tenses: 'Время', voice: 'Залог', satzart: 'Тип предложения', indefinite: 'Неопределённый артикль', negation: 'Отрицание', objectPronoun: 'Местоимение-дополнение' },
     dimensions: 'Параметры', options: 'Опции', appearance: 'Оформление', light: 'Светлая', dark: 'Тёмная',
     aboutButton: 'О Satz-Satz', aboutKicker: 'О проекте', aboutTitle: 'Satz-Satz',
     about: [
       'Интерактивный тренажёр грамматики немецких предложений. Вместо того чтобы сначала запоминать правила, измените одну часть предложения и сразу увидите, что меняется вместе с ней.',
       'Селекторы управляют подлежащим, глаголом, дополнением, временем, активным и пассивным залогом и другими частями. Выделенные слова показывают грамматический результат каждого изменения.',
-      'Используйте мышь, колёсико или клавиатуру: ← → меняют параметр, ↑ ↓ — значение, 1–8 сразу выбирают нужный блок.',
+      'Используйте мышь, колёсико или клавиатуру: ← → меняют параметр, ↑ ↓ — значение, 1–9 сразу выбирают нужный блок.',
     ],
     history: 'История', showAll: (count) => `показать все (${count})`, less: 'свернуть', settingsAria: 'Настройки', languageAria: 'Язык перевода', themeAria: 'Цветовая тема', closeAria: 'Закрыть',
   },
@@ -114,10 +114,11 @@ export default function App() {
     { key: 'verb', number: 2, dial: DIAL.verb, label: ui.dials.verb },
     { key: 'modal', number: 3, dial: DIAL.modal, label: ui.dials.modal },
     { key: 'object', number: 4, dial: DIAL.object, label: ui.dials.object },
-    { key: 'adjective', number: 5, dial: DIAL.adjective, label: ui.dials.adjective },
-    { key: 'tense', number: 6, dial: DIAL.tense, label: ui.dials.tense },
-    { key: 'voice', number: 7, dial: DIAL.voice, label: ui.dials.voice },
-    { key: 'satzart', number: 8, dial: DIAL.satzart, label: ui.dials.satzart },
+    { key: 'recipient', number: 5, dial: DIAL.recipient, label: ui.dials.recipient },
+    { key: 'adjective', number: 6, dial: DIAL.adjective, label: ui.dials.adjective },
+    { key: 'tense', number: 7, dial: DIAL.tense, label: ui.dials.tense },
+    { key: 'voice', number: 8, dial: DIAL.voice, label: ui.dials.voice },
+    { key: 'satzart', number: 9, dial: DIAL.satzart, label: ui.dials.satzart },
   ].filter(({ dial }) => !isDialDisabled(dial, toggles))
   const dialSlotsSignature = dialSlots.map(({ number, dial }) => `${number}:${dial}`).join(',')
 
@@ -159,8 +160,8 @@ export default function App() {
     '--dial-columns-mobile-wide': String(Math.min(visibleDialCount, 3)),
     '--dial-columns-small': String(Math.min(visibleDialCount, 2)),
   } as CSSProperties
-  const dimensionToggles = MENU_TOGGLES.slice(0, 6)
-  const optionToggles = MENU_TOGGLES.slice(6)
+  const dimensionToggles = MENU_TOGGLES.slice(0, 7)
+  const optionToggles = MENU_TOGGLES.slice(7)
 
   const renderToggle = ({ key }: (typeof MENU_TOGGLES)[number]) => (
     <label key={key} className="menu-toggle">
