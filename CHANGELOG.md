@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-03
+
+### Added
+
+- Keyboard shortcut keycaps `1`–`9` and vector SVG icons (favicon, modal close).
+
+### Changed
+
+- UI craft overhaul: 4px spacing grid, system grotesk typography, sentence-case labels, WCAG AA contrast, and unified corner radii.
+
 ## [1.3.0] - 2026-07-13
 
 ### Added
@@ -63,7 +73,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Replaced the original four-dial, pregenerated-variant prototype with runtime sentence composition and progressive feature disclosure.
 - Redesigned the interface around fixed-width selector blocks, stable 1–8 UI positions, and beginner-friendly English/Russian chrome.
 
-[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.3.0...HEAD
+[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.4.0...HEAD
+[1.4.0]: https://github.com/formatq/satz-satz/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/formatq/satz-satz/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/formatq/satz-satz/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/formatq/satz-satz/compare/v1.0.0...v1.1.0
