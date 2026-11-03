@@ -299,7 +299,11 @@ export default function App() {
         <div className="about-layer" role="presentation">
           <div className="about-backdrop" onClick={() => setAboutOpen(false)} />
           <section className="about-dialog" role="dialog" aria-modal="true" aria-labelledby="about-title">
-            <button type="button" className="about-close" aria-label={ui.closeAria} onClick={() => setAboutOpen(false)}>×</button>
+            <button type="button" className="about-close" aria-label={ui.closeAria} onClick={() => setAboutOpen(false)}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
+                <path d="M1 1l12 12M13 1L1 13" />
+              </svg>
+            </button>
             <div className="about-kicker">{ui.aboutKicker}</div>
             <h2 id="about-title">{ui.aboutTitle}</h2>
             <p>{ui.about[0]}</p>

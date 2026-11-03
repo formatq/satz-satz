@@ -81,7 +81,7 @@ export function Selector({
     <div className="selector-block">
       <div className={`selector-head${active ? ' selector-head-active' : ''}`}>
         <button type="button" className="selector-head-label" title={labelTitle ?? label} onClick={onActivate}>
-          <span className="selector-key">{dialNumber}</span>
+          <kbd className="selector-key">{dialNumber}</kbd>
           <span>{label}</span>
         </button>
         {article && (
