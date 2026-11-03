@@ -1,6 +1,6 @@
 # satz-satz — German sentence modulator
 
-> Release specification for 1.3.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
+> Release specification for 1.4.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
 
 ## Purpose
 
@@ -69,7 +69,7 @@ Turning a dimension off resets its value to the default. Values made unavailable
 - Every selector is 148 px wide. It displays a three-row sliding window by default; **show all** expands the complete list.
 - The sentence has a fading, token-level diff highlight. The newest history entry types at 18 ms per character; consecutive duplicates are dropped and history is capped at 50.
 - On desktop, sentence, selectors, and fixed corner controls remain in place while the history scrolls internally.
-- At viewport widths of 1370 px, 700 px, and 500 px, the selector grid uses at most four, three, and two columns respectively. At 700 px and below, the page scrolls and the sentence becomes sticky below the fixed controls.
+- The grid displays at most eight columns on wide desktop. At viewport widths of 1370 px, 700 px, and 500 px, the selector grid uses at most four, three, and two columns respectively. At 700 px and below, the page scrolls and the sentence becomes sticky below the fixed controls.
 
 ## Languages, themes, and About
 
@@ -83,7 +83,7 @@ The menu theme choice persists as `satz-satz-theme`. Before a choice is saved, t
 
 There is no pregenerated variant data. `src/de/grammar.ts` composes sentences from small morphology tables and declarative word-order frames. It returns role-tagged German tokens plus Russian and English translations. `useReducer` manages value indices, feature toggles, active selector, diff generation, and history.
 
-The internal grammar model retains separate Subject and Person data sources, but `App.tsx` presents them as the one Subject UI slot. This preserves complete conjugation data without creating a confusing ninth UI dimension.
+The internal grammar model retains separate noun and pronoun data sources for Subject, Accusative, and Dative, but `App.tsx` collapses each pair into a shared UI slot (positions 1, 4, and 5). This preserves complete morphology data without inflating the interface beyond the nine stable positions.
 
 ## Acceptance criteria
 

@@ -1,6 +1,6 @@
 # Implementation notes for satz-satz
 
-Working notes for maintainers of the 1.3.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
+Working notes for maintainers of the 1.4.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
 
 ## Ground rules
 
