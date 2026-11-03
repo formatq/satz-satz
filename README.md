@@ -1,4 +1,4 @@
-# [satz-satz](https://github.com/formatq/satz-satz) — German sentence modulator
+# [satz-satz](https://formatq.github.io/satz-satz) — German sentence modulator
 
 An interactive German grammar trainer for English- and Russian-speaking beginners. Change one part of a German sentence and immediately see the grammatical ripples: articles agree, separable prefixes move, passive voice promotes the object, and subordinate clauses move the finite verb to the end.
 
