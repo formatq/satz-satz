@@ -25,6 +25,8 @@ export type Action =
   | { type: 'activate'; dial: number }
   | { type: 'move-active'; direction: 1 | -1 }
   | { type: 'toggle'; key: keyof Toggles }
+  | { type: 'randomize' }
+  | { type: 'set-selection'; selection: Selection }
 
 const HISTORY_CAP = 50
 
@@ -32,8 +34,8 @@ export function sentenceText(variant: SentenceVariant): string {
   return variant.de.map(([text]) => text).join(' ') + variant.end
 }
 
-export function makeInitialState(): AppState {
-  const selection = initialSelection()
+export function makeInitialState(overrideSelection?: Selection): AppState {
+  const selection = overrideSelection ?? initialSelection()
   const variant = compose(selection)
   return {
     selection,
@@ -141,6 +143,38 @@ export function reduce(state: AppState, action: Action): AppState {
         ? DIALS.findIndex((_, dial) => !isDialDisabled(dial, nextToggles))
         : state.active
       return withSelection(state, { indices, toggles: nextToggles }, active)
+    }
+
+    case 'set-selection': {
+      const active = isDialDisabled(state.active, action.selection.toggles)
+        ? DIALS.findIndex((_, dial) => !isDialDisabled(dial, action.selection.toggles))
+        : state.active
+      return withSelection(state, action.selection, active)
+    }
+
+    case 'randomize': {
+      let nextIndices = state.selection.indices.slice()
+      const prevText = sentenceText(compose(state.selection))
+      for (let attempt = 0; attempt < 10; attempt++) {
+        const candidate = state.selection.indices.slice()
+        for (let dial = 0; dial < DIALS.length; dial++) {
+          if (isDialDisabled(dial, toggles)) continue
+          const available: number[] = []
+          for (let i = 0; i < DIALS[dial].values.length; i++) {
+            if (isValueAvailable(dial, i, toggles)) {
+              available.push(i)
+            }
+          }
+          if (available.length > 0) {
+            candidate[dial] = available[Math.floor(Math.random() * available.length)]
+          }
+        }
+        nextIndices = candidate
+        if (sentenceText(compose({ indices: candidate, toggles })) !== prevText) {
+          break
+        }
+      }
+      return withSelection(state, { ...state.selection, indices: nextIndices }, state.active)
     }
   }
 }

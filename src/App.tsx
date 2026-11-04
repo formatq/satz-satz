@@ -11,8 +11,9 @@ import {
   isValueAvailable,
   MENU_TOGGLES,
 } from './de/grammar'
-import { makeInitialState, reduce } from './lib/reducer'
+import { makeInitialState, reduce, type AppState } from './lib/reducer'
 import type { Lang, Toggles } from './lib/types'
+import { decodeSelectionFromHash, encodeSelectionToHash } from './lib/url'
 
 const LANG_KEY = 'satz-satz-lang'
 const THEME_KEY = 'satz-satz-theme'
@@ -46,6 +47,8 @@ const UI: Record<Lang, {
   languageAria: string
   themeAria: string
   closeAria: string
+  randomTitle: string
+  randomAria: string
 }> = {
   en: {
     dials: { subject: 'Subject', verb: 'Verb', modal: 'Modal verb', object: 'Accusative', recipient: 'Dative', adjective: 'Adjective', tense: 'Tense', voice: 'Voice', satzart: 'Sentence type' },
@@ -57,9 +60,10 @@ const UI: Record<Lang, {
     about: [
       'An interactive trainer for German sentence grammar. Instead of memorising rules first, change one part of a sentence and instantly see what else changes.',
       'The selectors control the subject, verb, object, tense, active and passive voice, and more. Highlighted words show the grammatical effect of every change.',
-      'Use the mouse, mouse wheel, or keyboard: ← → changes a dimension, ↑ ↓ changes a value, and 1–9 jumps directly.',
+      'Use the mouse, mouse wheel, or keyboard: ← → changes a dimension, ↑ ↓ changes a value, 1–9 jumps directly, and R picks a random sentence.',
     ],
     history: 'History', showAll: (count) => `show all ${count}`, less: 'show less', settingsAria: 'Settings', languageAria: 'Translation language', themeAria: 'Colour theme', closeAria: 'Close',
+    randomTitle: 'Random sentence (R)', randomAria: 'Random sentence',
   },
   ru: {
     dials: { subject: 'Подлежащее', verb: 'Глагол', modal: 'Модальный глагол', object: 'Аккузатив', recipient: 'Датив', adjective: 'Прилагательное', tense: 'Время', voice: 'Залог', satzart: 'Тип предложения' },
@@ -71,9 +75,10 @@ const UI: Record<Lang, {
     about: [
       'Интерактивный тренажёр грамматики немецких предложений. Вместо того чтобы сначала запоминать правила, измените одну часть предложения и сразу увидите, что меняется вместе с ней.',
       'Селекторы управляют подлежащим, глаголом, дополнением, временем, активным и пассивным залогом и другими частями. Выделенные слова показывают грамматический результат каждого изменения.',
-      'Используйте мышь, колёсико или клавиатуру: ← → меняют параметр, ↑ ↓ — значение, 1–9 сразу выбирают нужный блок.',
+      'Используйте мышь, колёсико или клавиатуру: ← → меняют параметр, ↑ ↓ — значение, 1–9 сразу выбирают нужный блок, а R создаёт случайное предложение.',
     ],
     history: 'История', showAll: (count) => `показать все (${count})`, less: 'свернуть', settingsAria: 'Настройки', languageAria: 'Язык перевода', themeAria: 'Цветовая тема', closeAria: 'Закрыть',
+    randomTitle: 'Случайное предложение (R)', randomAria: 'Случайное предложение',
   },
 }
 
@@ -89,8 +94,16 @@ function initialTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
 }
 
+function initAppState(): AppState {
+  if (typeof window !== 'undefined') {
+    const fromUrl = decodeSelectionFromHash(window.location.hash)
+    if (fromUrl) return makeInitialState(fromUrl)
+  }
+  return makeInitialState()
+}
+
 export default function App() {
-  const [state, dispatch] = useReducer(reduce, undefined, makeInitialState)
+  const [state, dispatch] = useReducer(reduce, undefined, initAppState)
   const [menuOpen, setMenuOpen] = useState(false)
   const [lang, setLang] = useState<Lang>(initialLang)
   const [langOpen, setLangOpen] = useState(false)
@@ -148,7 +161,28 @@ export default function App() {
   const dialSlotsSignature = dialSlots.map(({ number, dial }) => `${number}:${dial}`).join(',')
 
   useEffect(() => {
+    if (state.generation > 0 || window.location.hash) {
+      const hash = encodeSelectionToHash(state.selection)
+      if (window.location.hash !== hash) {
+        window.history.replaceState(null, '', hash)
+      }
+    }
+  }, [state.selection, state.generation])
+
+  useEffect(() => {
+    const onHashChange = () => {
+      const fromUrl = decodeSelectionFromHash(window.location.hash)
+      if (fromUrl) {
+        dispatch({ type: 'set-selection', selection: fromUrl })
+      }
+    }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return
       switch (event.key) {
         case 'ArrowLeft':
           dispatch({ type: 'move-active', direction: -1 })
@@ -161,6 +195,10 @@ export default function App() {
           break
         case 'ArrowDown':
           dispatch({ type: 'spin', dial: 'active', direction: 1 })
+          break
+        case 'r':
+        case 'R':
+          dispatch({ type: 'randomize' })
           break
         default: {
           const digit = Number(event.key)
@@ -247,6 +285,22 @@ export default function App() {
           <span />
           <span />
           <span />
+        </button>
+        <button
+          type="button"
+          className="settings-button random-button"
+          aria-label={ui.randomAria}
+          title={ui.randomTitle}
+          onClick={() => dispatch({ type: 'randomize' })}
+        >
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="2.5" y="2.5" width="13" height="13" rx="2.5" />
+            <circle cx="6" cy="6" r="0.8" fill="currentColor" stroke="none" />
+            <circle cx="12" cy="6" r="0.8" fill="currentColor" stroke="none" />
+            <circle cx="9" cy="9" r="0.8" fill="currentColor" stroke="none" />
+            <circle cx="6" cy="12" r="0.8" fill="currentColor" stroke="none" />
+            <circle cx="12" cy="12" r="0.8" fill="currentColor" stroke="none" />
+          </svg>
         </button>
         {menuOpen && (
           <>

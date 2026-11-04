@@ -207,4 +207,37 @@ describe('reducer', () => {
     )
     expect(state.history[0].de).toBe('Der Mann öffnet eine kaputte Tür.')
   })
+
+  it('randomize selects valid indices for enabled dials while keeping disabled dials at 0', () => {
+    // Only subject, verb, object are enabled by default
+    const state = run({ type: 'randomize' })
+    expect(state.selection.indices[DIAL.tense]).toBe(0)
+    expect(state.selection.indices[DIAL.voice]).toBe(0)
+    expect(state.selection.indices[DIAL.subject]).toBeGreaterThanOrEqual(0)
+    expect(state.selection.indices[DIAL.subject]).toBeLessThan(4)
+    expect(state.selection.indices[DIAL.verb]).toBeGreaterThanOrEqual(0)
+    expect(state.selection.indices[DIAL.verb]).toBeLessThan(4)
+    expect(state.selection.indices[DIAL.object]).toBeGreaterThanOrEqual(0)
+    expect(state.selection.indices[DIAL.object]).toBeLessThan(3)
+  })
+
+  it('randomize respects modal restriction on tense (only Präsens / Präteritum)', () => {
+    const state = run(
+      { type: 'toggle', key: 'modal' },
+      { type: 'toggle', key: 'tenses' },
+      { type: 'randomize' },
+    )
+    // Tense must be 0 (Präsens) or 1 (Präteritum)
+    expect(state.selection.indices[DIAL.tense]).toBeLessThan(2)
+  })
+
+  it('set-selection replaces the selection and clamps active dial if needed', () => {
+    const custom = makeInitialState().selection
+    custom.toggles.tenses = true
+    custom.indices[DIAL.tense] = 2
+
+    const state = run({ type: 'set-selection', selection: custom })
+    expect(state.selection.indices[DIAL.tense]).toBe(2)
+    expect(state.selection.toggles.tenses).toBe(true)
+  })
 })

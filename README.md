@@ -30,10 +30,12 @@ The menu also offers negation, pronoun modes for the accusative and dative slots
 
 - Click a value to select it. Scroll over a selector, or use `↑` / `↓`, to step through values without wrapping.
 - `←` / `→` move the active selector, skipping hidden dimensions. `1`–`9` jump to the corresponding visible logical position.
+- Press `R` or click the dice button to generate a random sentence from enabled dimensions.
 - A selector normally shows a three-value sliding window; **show all** expands it when needed.
 - A token-level diff highlights exactly the German words changed by the latest action. The history keeps the latest 50 distinct consecutive sentences and types the newest entry.
 - The top-right `DE → EN/RU` picker changes both the translations and the interface copy. Its choice is saved in `localStorage` (`satz-satz-lang`).
 - The theme picker in the menu saves `satz-satz-theme`; the system colour preference is used until a choice is saved.
+- Active selections and feature toggles sync to the URL hash, allowing direct sharing of any grammatical variation.
 
 On wide screens up to eight 148 px selector blocks fit in one row. The layout changes to four columns at 1370 px, three at 700 px, and two at 500 px. On mobile the sentence stays sticky below the fixed corner controls while the page scrolls.
 

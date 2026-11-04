@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-11-04
+
+### Added
+
+- Random sentence generator: a die button in the header and the `R` key shortcut pick random available values across visible dials.
+- URL state persistence and deep linking: the current dials and feature toggles encode into `window.location.hash`, enabling direct link sharing and restoring state on page load.
+- Eight new unit tests covering deep linking, serialization roundtrips, and randomize actions (106 total).
+
 ## [1.4.0] - 2026-11-03
 
 ### Added
@@ -73,7 +81,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Replaced the original four-dial, pregenerated-variant prototype with runtime sentence composition and progressive feature disclosure.
 - Redesigned the interface around fixed-width selector blocks, stable 1–8 UI positions, and beginner-friendly English/Russian chrome.
 
-[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/formatq/satz-satz/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/formatq/satz-satz/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/formatq/satz-satz/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/formatq/satz-satz/compare/v1.1.0...v1.2.0

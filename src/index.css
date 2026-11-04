@@ -401,6 +401,9 @@ kbd.selector-key {
 
 .settings {
   left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .lang {
@@ -434,6 +437,15 @@ kbd.selector-key {
   padding: 0;
 }
 
+.random-button {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
 .menu-button span {
   width: 16px;
   height: 1.5px;
@@ -461,6 +473,7 @@ kbd.selector-key {
 .settings-menu {
   position: absolute;
   top: calc(100% + 8px);
+  left: 0;
   min-width: 280px;
   padding: 12px 16px 16px;
   border: 1px solid var(--menu-border);

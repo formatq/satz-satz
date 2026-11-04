@@ -1,6 +1,6 @@
 # Implementation notes for satz-satz
 
-Working notes for maintainers of the 1.4.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
+Working notes for maintainers of the 1.5.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
 
 ## Ground rules
 
@@ -17,6 +17,7 @@ Working notes for maintainers of the 1.4.0 app. Read `SPEC-DE.md` for product be
 - `src/lib/reducer.ts` — pure `spin`, `select`, `activate`, `move-active`, and `toggle` actions; history dedupe and cap.
 - `src/lib/diff.ts` — token-level LCS diff.
 - `src/lib/navigation.ts` — clamped stepping.
+- `src/lib/url.ts` — hash serialization, deserialization, deep linking, and URL state consistency.
 - `src/components/Sentence.tsx` — sentence tokens, diff animation, translation.
 - `src/components/Selector.tsx` — a fixed-width selector, wheel accumulator, three-row viewport, and expand button.
 - `src/components/HistoryFeed.tsx` — typed newest history entry.
@@ -76,7 +77,7 @@ At 700 px and below the body scrolls, the sentence is sticky, and its top paddin
 
 ## Tests and verification
 
-There are 98 unit tests: 70 grammar, 19 reducer, 5 diff, and 4 navigation. Run:
+There are 106 unit tests: 70 grammar, 22 reducer, 5 diff, 4 navigation, and 5 url. Run:
 
 ```sh
 npm test

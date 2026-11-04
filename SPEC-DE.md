@@ -1,6 +1,6 @@
 # satz-satz — German sentence modulator
 
-> Release specification for 1.4.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
+> Release specification for 1.5.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
 
 ## Purpose
 
@@ -66,6 +66,8 @@ Turning a dimension off resets its value to the default. Values made unavailable
 
 - Click a value to choose it. Wheel movement over a selector is accumulated in ~40 px steps.
 - `←` / `→` move the active visible selector cyclically; `↑` / `↓` step values without wrapping; `1`–`9` select the associated logical UI position when it is visible.
+- `R` or the dice button randomises enabled visible selectors.
+- State syncs to `window.location.hash` and restores automatically on page load.
 - Every selector is 148 px wide. It displays a three-row sliding window by default; **show all** expands the complete list.
 - The sentence has a fading, token-level diff highlight. The newest history entry types at 18 ms per character; consecutive duplicates are dropped and history is capped at 50.
 - On desktop, sentence, selectors, and fixed corner controls remain in place while the history scrolls internally.
@@ -92,14 +94,14 @@ The internal grammar model retains separate noun and pronoun data sources for Su
 - Changing a value highlights the changed German tokens without blocking further input.
 - Language and theme selections persist across reloads; English and Russian localise the surrounding interface and About content.
 - Keyboard, click, and wheel controls work with the stable 1–9 UI positions.
+- `R` and dice button roll random valid combinations among enabled dials.
 - The responsive selector grid and sticky sentence do not let corner controls cover sentence text.
-- The app makes no network requests after it loads, builds successfully, and has 98 passing unit tests.
+- The app makes no network requests after it loads, builds successfully, and has passing unit tests.
 
 ## Future ideas
 
 - Audio via Web Speech API.
 - Quiz mode and spaced repetition.
 - Persistent role colouring.
-- URL state for sharing a selection.
 - PWA support.
 - More sentence templates and vocabulary.
