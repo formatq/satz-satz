@@ -1,10 +1,10 @@
 # Implementation notes for satz-satz
 
-Working notes for maintainers of the 1.5.0 app. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
+Working notes for maintainers. Read `SPEC-DE.md` for product behaviour; this document explains how that behaviour is implemented.
 
 ## Ground rules
 
-- **Stack:** Vite, React 18, TypeScript, Vitest, and plain CSS. No UI library or state manager.
+- **Stack:** Vite, React, TypeScript, Vitest, and plain CSS. No UI library or state manager.
 - **Runtime composition:** grammar data is bundled and sentences are composed synchronously. The app makes no network requests after initial load.
 - **UI language:** German is the learning material. All surrounding interface copy is English or Russian and is selected with the translation picker.
 - **Pure state:** the reducer has no effects. Animations only decorate synchronous state updates.
@@ -77,7 +77,7 @@ At 700 px and below the body scrolls, the sentence is sticky, and its top paddin
 
 ## Tests and verification
 
-There are 106 unit tests: 70 grammar, 22 reducer, 5 diff, 4 navigation, and 5 url. Run:
+Run:
 
 ```sh
 npm test

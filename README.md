@@ -48,11 +48,11 @@ npm test
 npm run build
 ```
 
-Sentences are composed at runtime by `src/de/grammar.ts` from hand-encoded morphology tables and declarative word-order frames. No variant JSON is fetched or generated at runtime, and there are no network requests after page load. The suite contains 98 unit tests for grammar, reducer behavior, navigation, and token diffs.
+Sentences are composed at runtime by `src/de/grammar.ts` from hand-encoded morphology tables and declarative word-order frames. No variant JSON is fetched or generated at runtime, and there are no network requests after page load.
 
 ## Release notes
 
-See [CHANGELOG.md](CHANGELOG.md) for notable changes. The project follows [Semantic Versioning](https://semver.org/).
+See [CHANGELOG.md](CHANGELOG.md) for notable changes.
 
 ## Deploy
 

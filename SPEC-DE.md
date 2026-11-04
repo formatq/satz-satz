@@ -1,6 +1,6 @@
 # satz-satz — German sentence modulator
 
-> Release specification for 1.5.0. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
+> Release specification. `IMPLEMENTATION-NOTES.md` describes the code-level decisions.
 
 ## Purpose
 

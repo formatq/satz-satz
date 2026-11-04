@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-11-04
+
+### Changed
+
+- Upgraded core build and runtime toolchain: React 19 (`react`, `react-dom`, `@types/react`, `@types/react-dom`), TypeScript 7, Vite 8, Vitest 5, and `@vitejs/plugin-react` 6.
+
 ## [1.5.0] - 2026-11-04
 
 ### Added
@@ -81,7 +87,8 @@ The format is based on [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.
 - Replaced the original four-dial, pregenerated-variant prototype with runtime sentence composition and progressive feature disclosure.
 - Redesigned the interface around fixed-width selector blocks, stable 1–8 UI positions, and beginner-friendly English/Russian chrome.
 
-[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/formatq/satz-satz/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/formatq/satz-satz/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/formatq/satz-satz/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/formatq/satz-satz/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/formatq/satz-satz/compare/v1.2.0...v1.3.0
